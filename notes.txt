@@ -1,0 +1,2 @@
+implementing customer portal for subscriptions in Stripe
+https://www.pedroalonso.net/blog/stripe-subscriptions-nextjs/
