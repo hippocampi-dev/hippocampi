@@ -155,6 +155,9 @@ export const doctors = createTable(
     doctorId: varchar("user_id", { length: 255 })
       .notNull()
       .references(() => users.id),
+    email: varchar("email", { length: 255 })
+      .notNull()
+      .references(() => users.email),
     location: text("location")
       .notNull(),
     branch: text("branch")
@@ -164,5 +167,36 @@ export const doctors = createTable(
 )
 
 export const doctorsRelations = relations(doctors, ({ one }) => ({
-  user: one(users, { fields: [doctors.doctorId], references: [users.id] }),
+  user: one(users, { fields: [doctors.doctorId, doctors.email], references: [users.id, users.email] }),
 }));
+
+// Patient
+export const patients = createTable(
+  "patients",
+  {
+    patientId: varchar("patient_id", { length: 255 })
+      .notNull()
+      .references(() => users.id),  
+    email: varchar("email", { length: 255 })
+      .notNull()
+      .references(() => users.email),
+    location: text("location")
+        .notNull(),
+  }
+)
+
+export const patientsRelations = relations(patients, ({ one }) => ({
+  user: one(users, { fields: [patients.patientId, patients.email], references: [users.id, users.email] }),
+}));
+
+// Doctor Availability Times
+export const doctorAvailability = createTable(
+  "doctor_availability",
+  {
+    
+  }
+)
+
+// patient-doctor management
+
+// Scheduled meetings
