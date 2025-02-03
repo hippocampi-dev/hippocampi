@@ -155,10 +155,13 @@ export const doctors = createTable(
     doctorId: varchar("user_id", { length: 255 })
       .notNull()
       .references(() => users.id),
-    type: varchar("type") // what type of doctor specialist
+    location: text("location")
+      .notNull(),
+    branch: text("branch")
+      .notNull(),
+    specialty: varchar("type"), // what type of doctor specialist
   }
 )
-
 
 export const doctorsRelations = relations(doctors, ({ one }) => ({
   user: one(users, { fields: [doctors.doctorId], references: [users.id] }),
