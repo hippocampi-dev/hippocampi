@@ -8,16 +8,14 @@ export default function Navbar() {
     <header className="flex gap-4">
       {session ? (
         <>
-          <p>Welcome, {session.user?.name}</p>
-          <button onClick={() => signOut()}>Sign out</button>
         </>
       ) : (
         <>
-        <Link href={'/'}>Home</Link>
-        <Link href={'/checkout/one-time'}>One-time payment</Link>
-        <Link href={'/checkout/subscription'}>Subscription</Link>
-        <Link href={'/account'}>Manage subscription</Link>
-        <button onClick={() => signIn("google")}>Sign in with Google</button>
+        <Link href={'/'}>Hippocampi</Link>
+        <Link href='/sign-up'>Sign up</Link>
+        {/* <button onClick={() => signIn("google", {
+          callbackUrl: `${window.location.origin}/dashboard` // redirect to /dashboard after login
+        })}>Sign up</button> */}
         </>
       )}
     </header>

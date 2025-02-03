@@ -1,3 +1,5 @@
+// Ignore for now, used to manage Stripe subscriptions
+
 'use client';
 
 import { useState } from 'react';

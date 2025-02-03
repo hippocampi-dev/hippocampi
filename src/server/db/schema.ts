@@ -16,7 +16,7 @@ import { type AdapterAccount } from "next-auth/adapters";
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = pgTableCreator((name) => `boilerplate_${name}`);
+export const createTable = pgTableCreator((name) => `hippocampi_${name}`);
 
 // export const posts = createTable(
 //   "post",
@@ -39,6 +39,7 @@ export const createTable = pgTableCreator((name) => `boilerplate_${name}`);
 //   })
 // );
 
+// Users
 export const users = createTable("user", {
   id: varchar("id", { length: 255 })
     .notNull()
@@ -57,6 +58,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
 }));
 
+// Accounts
 export const accounts = createTable(
   "account",
   {
@@ -90,6 +92,7 @@ export const accountsRelations = relations(accounts, ({ one }) => ({
   user: one(users, { fields: [accounts.userId], references: [users.id] }),
 }));
 
+// Sessions
 export const sessions = createTable(
   "session",
   {
@@ -113,6 +116,7 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, { fields: [sessions.userId], references: [users.id] }),
 }));
 
+// Verification Tokens
 export const verificationTokens = createTable(
   "verification_token",
   {
@@ -127,3 +131,35 @@ export const verificationTokens = createTable(
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
   })
 );
+
+// User Roles
+export const userRoles = createTable(
+  "user_roles",
+  {
+    userId: varchar("user_id", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    userRole: varchar("user_role", { length: 255 }) // either patient or doctor
+      .notNull()
+  }
+)
+
+export const userRolesRelations = relations(userRoles, ({ one }) => ({
+  user: one(users, { fields: [userRoles.userId], references: [users.id] }),
+}));
+
+// Doctors (Types)
+export const doctors = createTable(
+  "doctors",
+  {
+    doctorId: varchar("user_id", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    type: varchar("type") // what type of doctor specialist
+  }
+)
+
+
+export const doctorsRelations = relations(doctors, ({ one }) => ({
+  user: one(users, { fields: [doctors.doctorId], references: [users.id] }),
+}));
