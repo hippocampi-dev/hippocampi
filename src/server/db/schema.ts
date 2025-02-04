@@ -200,3 +200,5 @@ export const doctorAvailability = createTable(
 // patient-doctor management
 
 // Scheduled meetings
+
+// patient surveys
