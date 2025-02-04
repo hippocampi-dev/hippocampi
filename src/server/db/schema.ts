@@ -162,7 +162,7 @@ export const doctors = createTable(
       .notNull(),
     branch: text("branch")
       .notNull(),
-    specialty: varchar("type"), // what type of doctor specialist
+    specialty: varchar("specialty"), // what type of doctor specialist
   }
 )
 
