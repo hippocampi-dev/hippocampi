@@ -20,7 +20,7 @@ import { patients } from "./patient";
 export const createTable = pgTableCreator((name) => `hippocampi_${name}`);
 
 // Users
-export const users = createTable("user", {
+export const users = createTable("users", {
   id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
@@ -36,7 +36,7 @@ export const users = createTable("user", {
 
 // Accounts
 export const accounts = createTable(
-  "account",
+  "accounts",
   {
     userId: varchar("user_id", { length: 255 })
       .notNull()
@@ -66,7 +66,7 @@ export const accounts = createTable(
 
 // Sessions
 export const sessions = createTable(
-  "session",
+  "sessions",
   {
     sessionToken: varchar("session_token", { length: 255 })
       .notNull()

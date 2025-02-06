@@ -10,7 +10,7 @@ import { db } from '.';
 
 // add user role
 export const addUserRole = async (user: UsersRolesInterface) => {
-  return db.insert(schema_management.userRoles).values(user).onConflictDoNothing();
+  return db.insert(schema_management.userRoles).values(user).onConflictDoNothing().returning();
 }
 
 // get user role
@@ -33,7 +33,7 @@ export const hasUserRole = async (user_id: UserIdInterface) => {
 
 // add patient
 export const addPatient = async (patient: PatientsInterface) => {
-  return db.insert(schema_patient.patients).values(patient).onConflictDoNothing();
+  return db.insert(schema_patient.patients).values(patient).onConflictDoNothing().returning();
 }
 
 // get patient
@@ -45,7 +45,7 @@ export const getPatient = async (user_id: UserIdInterface) => {
 
 // add doctor
 export const addDoctor = async (doctor: DoctorsInterface) => {
-  return db.insert(schema_doctor.doctors).values(doctor).onConflictDoNothing();
+  return db.insert(schema_doctor.doctors).values(doctor).onConflictDoNothing().returning();
 }
 
 // get doctor
@@ -57,7 +57,7 @@ export const getDoctor = async (user_id: UserIdInterface) => {
 
 // add patient-doctor management
 export const addPatientDoctorManagement = async (data: PatientDoctorManagementInterface) => {
-  return db.insert(schema_management.patientDoctorManagement).values(data).onConflictDoNothing();
+  return db.insert(schema_management.patientDoctorManagement).values(data).onConflictDoNothing().returning();
 }
 
 // get patient-doctor management
@@ -79,7 +79,7 @@ export const getPatientDoctorManagement = async (patient_id: PatientsInterface |
 
 // add scheduled meeting
 export const addScheduledMeeting = async (meeting: ScheduledMeetingsInterface) => {
-  return db.insert(schema_management.scheduledMeetings).values(meeting).onConflictDoNothing();
+  return db.insert(schema_management.scheduledMeetings).values(meeting).onConflictDoNothing().returning();
 }
 
 // get scheduled meeting
@@ -101,7 +101,7 @@ export const getScheduledMeeting = async (patient_id: PatientsInterface | null, 
 
 // add allergies
 export const addAllergies = async (allergy: PatientAllergiesInterface) => {
-  return db.insert(schema_patient.allergies).values(allergy).onConflictDoNothing();
+  return db.insert(schema_patient.allergies).values(allergy).onConflictDoNothing().returning();
 }
 
 // get allergies
@@ -113,7 +113,7 @@ export const getAllergies = async (user_id: UserIdInterface) => {
 
 // add cognitive symptoms
 export const addCognitiveSymptoms = async (cognitiveSymptom: PatientCognitiveSymptomsInterface) => {
-  return db.insert(schema_patient.cognitiveSymptoms).values(cognitiveSymptom).onConflictDoNothing();
+  return db.insert(schema_patient.cognitiveSymptoms).values(cognitiveSymptom).onConflictDoNothing().returning();
 }
 
 // get cognitive symptoms
@@ -125,7 +125,7 @@ export const getCognitiveSymptoms = async (user_id: UserIdInterface) => {
 
 // add diagnoses
 export const addDiagnoses = async (dianosis: PatientDiagnosesInterface) => {
-  return db.insert(schema_patient.diagnoses).values(dianosis).onConflictDoNothing();
+  return db.insert(schema_patient.diagnoses).values(dianosis).onConflictDoNothing().returning();
 }
 
 // get diagnoses
@@ -137,7 +137,7 @@ export const getDiagnoses = async (user_id: UserIdInterface) => {
 
 // add Emergency Contact
 export const addEmergencyContact = async (emergencyContact: PatientEmergencyContactsInterface) => {
-  return db.insert(schema_patient.emergencyContacts).values(emergencyContact).onConflictDoNothing();
+  return db.insert(schema_patient.emergencyContacts).values(emergencyContact).onConflictDoNothing().returning();
 }
 
 // get Emergency Contact
@@ -149,7 +149,7 @@ export const getEmergencyContact = async (user_id: UserIdInterface) => {
 
 // add medications
 export const addMedications = async (medication: PatientMedicationsInterface) => {
-  return db.insert(schema_patient.medications).values(medication).onConflictDoNothing();
+  return db.insert(schema_patient.medications).values(medication).onConflictDoNothing().returning();
 }
 
 // get medications
