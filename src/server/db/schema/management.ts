@@ -1,5 +1,6 @@
 import {
   index,
+  pgEnum,
   primaryKey,
   text,
   timestamp,
@@ -45,6 +46,12 @@ export const patientDoctorManagement = createTable(
 )
 
 // Scheduled meetings
+export const statusEnum = pgEnum("status", [
+  "scheduled",
+  "canceled",
+  "completed"
+]);
+
 export const scheduledMeetings = createTable(
   "scheduled_meetings",
   {
@@ -60,9 +67,7 @@ export const scheduledMeetings = createTable(
       .references(() => patients.patientId),
     scheduledAt: timestamp("scheduled_at", { withTimezone: true, mode: "date", precision: 0 })
       .notNull(),
-    status: varchar("status", { length: 50 })
-      .notNull()
-      .default("scheduled"), // Options: scheduled, completed, canceled
+    status: statusEnum("status").notNull().default("scheduled"), // Options: scheduled, completed, canceled
     notes: text("notes"), // Optional field for additional info
     ...timestamps
   },

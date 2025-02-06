@@ -71,7 +71,9 @@ export const emergencyContacts = createTable('emergency_contacts', {
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  patientId: varchar("doctorId", { length: 255 }).references(() => patients.patientId, {onDelete: 'cascade'}).notNull(),
+  patientId: varchar("doctorId", { length: 255 }).
+    references(() => patients.patientId, {onDelete: 'cascade'})
+    .notNull(),
   name: varchar('name').notNull(),
   relationship: relationshipEnum("relationship").notNull(),
   phone_number: varchar('phone_number').notNull(),
@@ -84,7 +86,9 @@ export const medications = createTable('medications', {
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  patientId: varchar("doctorId", { length: 255 }).references(() => patients.patientId, {onDelete: 'cascade'}).notNull(),
+  patientId: varchar("doctorId", { length: 255 }).
+    references(() => patients.patientId, {onDelete: 'cascade'})
+    .notNull(),
   medication_name: varchar('medication_name').notNull(),
   dosage: text('dosage').notNull(),
   frequency: medicationFrequencyEnum("frequency").notNull(),
@@ -99,7 +103,9 @@ export const allergies = createTable('allergies', {
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  patientId: varchar("doctorId", { length: 255 }).references(() => patients.patientId, {onDelete: 'cascade'}).notNull(),
+  patientId: varchar("doctorId", { length: 255 }).
+    references(() => patients.patientId, {onDelete: 'cascade'})
+    .notNull(),
   allergen: varchar('allergen').notNull(),
   reaction_description: text('reaction_description'),
   severity_level: varchar('severity_level'),
@@ -112,7 +118,9 @@ export const diagnoses = createTable('diagnoses', {
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  patientId: varchar("doctorId", { length: 255 }).references(() => patients.patientId, {onDelete: 'cascade'}).notNull(),
+  patientId: varchar("doctorId", { length: 255 }).
+    references(() => patients.patientId, {onDelete: 'cascade'})
+    .notNull(),
   condition_name: varchar('condition_name').notNull(),
   diagnosis_date: date("diagnosis_date", { mode: "date" }).notNull(),
   status: varchar('status'),
@@ -125,7 +133,9 @@ export const cognitiveSymptoms = createTable('cognitive_symptoms', {
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  patientId: varchar("doctorId", { length: 255 }).references(() => patients.patientId, {onDelete: 'cascade'}).notNull(),
+  patientId: varchar("doctorId", { length: 255 }).
+    references(() => patients.patientId, {onDelete: 'cascade'})
+    .notNull(),
   symptom_type: varchar('symptom_type').notNull(),
   onset_date: date("onset_date", { mode: "date" }).defaultNow(),
   severity_level: numeric('severity_level'),

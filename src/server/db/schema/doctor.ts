@@ -11,7 +11,7 @@ import {
 import { createTable, users } from "./auth";
 import { timestamps } from "./util";
 
-// Doctors (Types)
+// Doctors
 export const doctors = createTable(
   "doctors",
   {
@@ -19,14 +19,34 @@ export const doctors = createTable(
       .notNull()
       .primaryKey()
       .references(() => users.id, {onDelete: 'cascade'}),
+    first_name: varchar('first_name').notNull(),
+    last_name: varchar('last_name').notNull(),
     email: varchar("email", { length: 255 })
       .notNull()
       .references(() => users.email, {onDelete: 'cascade'}),
     location: text("location")
       .notNull(),
-    branch: text("branch")
-      .notNull(),
-    specialty: varchar("specialty"),
+    specialization: varchar("specialization"),
+    ratings: varchar("ratings", { length:20 }).notNull(),
+    ...timestamps
+  }
+)
+
+// other info
+export const doctorCredentials = createTable(
+  "doctor_credentials",
+  {
+    doctorId: varchar("doctorId", { length: 255 })
+      .primaryKey()
+      .notNull()
+      .references(() => doctors.doctorId, {onDelete: 'cascade'}),
+    degree: varchar("degree", { length: 255 }).notNull(),
+    medicalSchool: varchar("medical_school", { length: 255 }).notNull(),
+    residency: varchar("residency", { length: 255 }).notNull(),
+    approach: text("approach").notNull(),
+    specialization: varchar("specialization", { length: 255 })
+      .notNull()
+      .references(() => doctors.specialization, {onDelete: 'cascade'}),
     ...timestamps
   }
 )

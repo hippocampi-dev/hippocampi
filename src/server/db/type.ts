@@ -2,7 +2,7 @@ import {
   users,
   userLogins,
 } from "./schema/auth";
-import { doctors } from "./schema/doctor";
+import { doctorCredentials, doctors } from "./schema/doctor";
 import { patientDoctorManagement, scheduledMeetings, userRoles } from "./schema/management";
 import { allergies, cognitiveSymptoms, diagnoses, emergencyContacts, medications, patients } from "./schema/patient";
 
@@ -10,13 +10,16 @@ import { allergies, cognitiveSymptoms, diagnoses, emergencyContacts, medications
 export type UserIdInterface = typeof users.id.dataType;
 
 // Users
-export type UsersInterface = typeof users.$inferInsert;
+export type UserInterface = typeof users.$inferInsert;
 
 // User Roles
-export type UsersRolesInterface = typeof userRoles.$inferInsert;
+export type UserRolesInterface = typeof userRoles.$inferInsert;
 
 // Doctors
 export type DoctorsInterface = typeof doctors.$inferInsert;
+
+// Doctor Credentials
+export type DoctorCredentialsInterface = typeof doctorCredentials.$inferInsert;
 
 // Patients
 export type PatientsInterface = typeof patients.$inferInsert;
@@ -26,6 +29,9 @@ export type PatientDoctorManagementInterface = typeof patientDoctorManagement.$i
 
 // Scheduled Meetings
 export type ScheduledMeetingsInterface = typeof scheduledMeetings.$inferInsert;
+
+// Scheduled Meetings Id
+export type ScheduledMeetingsIdInterface = typeof scheduledMeetings.id.dataType;
 
 // User Logins
 export type UserLoginsInterface = typeof userLogins.$inferInsert;
