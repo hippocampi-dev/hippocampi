@@ -111,6 +111,8 @@ export const addPatientDoctorManagement = async (patientDoctorManagement: Patien
     .returning();
 }
 
+// remove patient-doctor management
+
 // get patient-doctor management
 export const getPatientDoctorManagement = async (patient_id: PatientsInterface | null, doctor_id: DoctorsInterface | null) => {
   if (patient_id) { // if patients gets all doctors
