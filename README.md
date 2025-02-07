@@ -1,29 +1,121 @@
-# Create T3 App
+# HippoCampi Documentation
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+## API Documentation
 
-## What's next? How do I make an app with this?
+### Overview
+This API provides endpoints for managing resources through RESTful HTTP methods. All database types are defined in /src/server/db/type.ts.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+### Endpoints
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+#### GET Routes
+These endpoints retrieve existing data from the system.
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+| Endpoint | Description | Response Type |
+| --- | --- | --- |
+| `/api/db/patient/get` | Retrieve patient profile information | PatientsInterface |
+| `/api/db/patient/health-info/get` | Retrieve all health information | PatientHealthInformationInterface |
+| `/api/db/patient/health-info/allergies/get` | Retrieve patient allergies | PatientAllergiesInterface[] |
+| `/api/db/patient/health-info/cognitive-symptoms/get` | Retrieve patient cognitive symptoms | PatientCognitiveSymptomsInterface[] |
+| `/api/db/patient/health-info/diagnoses/get` | Retrieve patient diagnoses | PatientDiagnosesInterface[] |
+| `/api/db/patient/health-info/emergency-contacts/get` | Retrieve patient emergency contacts | PatientEmergencyContactsInterface[] |
+| `/api/db/patient/health-info/medications/get` | Retrieve patient medications | PatientMedicationsInterface[] |
+| `/api/db/doctor/get` | Retrieve doctor profile information | DoctorsInterface |
+| `/api/db/doctor/credentials/get` | Retrieve doctor credentials | DoctorCredentialsInterface |
+| `/api/db/management/user-role/get` | Retrieve user role (patient or doctor) | UserRolesInterface |
+| `/api/db/management/user-role/has` | Check if user had role | Boolean |
+| `/api/db/management/patient-doctor-management/get` | Retrieve patient-doctor pair | PatientDoctorManagementInterface[] |
+| `/api/db/management/scheduled-meetings/get` | Retrieve scheduled meetings | ScheduledMeetingsInterface[] |
 
-## Learn More
+#### POST Routes
+These endpoints create new entries in the system.
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+| Endpoint | Description | Request Body | Response Type |
+| --- | --- | --- | --- |
+| `/api/db/patient/add` | Add new patient profile information | PatientsInterface | PatientsInterface |
+| `/api/db/patient/set` | Update patient profile information | UserIdInterface, PatientsInterface | PatientsInterface |
+| `/api/db/patient/health-info/allergies/add` | Add new patient allergies | PatientAllergiesInterface | PatientAllergiesInterface |
+| `/api/db/patient/health-info/allergies/set` | Update patient allergies | UserIdInterface, PatientAllergiesInterface | PatientAllergiesInterface |
+| `/api/db/patient/health-info/cognitive-symptoms/get` | Retrieve patient cognitive symptoms | PatientCognitiveSymptomsInterface[] |
+| `/api/db/patient/health-info/diagnoses/get` | Retrieve patient diagnoses | PatientDiagnosesInterface[] |
+| `/api/db/patient/health-info/emergency-contacts/get` | Retrieve patient emergency contacts | PatientEmergencyContactsInterface[] |
+| `/api/db/patient/health-info/medications/get` | Retrieve patient medications | PatientMedicationsInterface[] |
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+### Database Types
+All database-related types are located in 
+:
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+```typescript
+// Example types structure
+interface Resource {
+  id: string;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
-## How do I deploy this?
+interface ResourceInput {
+  name: string;
+  // Other required fields for creation
+}
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+interface ResourceUpdate {
+  name?: string;
+  // Optional fields for updates
+}
+```
+
+### Usage Examples
+
+#### Getting Resources
+```bash
+GET /api/resources
+```
+
+Response:
+```json
+[
+  {
+    "id": "123",
+    "name": "Example Resource",
+    "createdAt": "2025-01-01T00:00:00Z",
+    "updatedAt": "2025-01-01T00:00:00Z"
+  }
+]
+```
+
+#### Creating Resources
+```bash
+POST /api/resources
+Content-Type: application/json
+
+{
+  "name": "New Resource"
+}
+```
+
+Response:
+```json
+{
+  "id": "456",
+  "name": "New Resource",
+  "createdAt": "2025-01-01T00:00:00Z",
+  "updatedAt": "2025-01-01T00:00:00Z"
+}
+```
+
+### Error Handling
+The API returns standard HTTP status codes:
+
+* 200 OK - Successful request
+* 400 Bad Request - Invalid request format
+* 404 Not Found - Resource not found
+* 500 Internal Server Error - Server error
+
+Error responses include detailed information:
+```json
+{
+  "status": 400,
+  "message": "Validation failed",
+  "details": ["Name is required"]
+}
+```
