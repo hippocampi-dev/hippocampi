@@ -8,8 +8,9 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
-import { createTable, users } from "./auth";
+import { users } from "./auth";
 import { timestamps } from "./util";
+import { createTable } from "./schema";
 
 // Doctors
 export const doctors = createTable(
@@ -44,9 +45,6 @@ export const doctorCredentials = createTable(
     medicalSchool: varchar("medical_school", { length: 255 }).notNull(),
     residency: varchar("residency", { length: 255 }).notNull(),
     approach: text("approach").notNull(),
-    specialization: varchar("specialization", { length: 255 })
-      .notNull()
-      .references(() => doctors.specialization, {onDelete: 'cascade'}),
     ...timestamps
   }
 )

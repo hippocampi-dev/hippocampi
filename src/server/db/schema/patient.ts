@@ -9,7 +9,7 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
-import { createTable } from "./auth";
+import { createTable } from "./schema";
 import { users } from "./auth";
 import { timestamps } from './util'
 

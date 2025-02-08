@@ -6,10 +6,11 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
-import { createTable, users } from "./auth";
+import { users } from "./auth";
 import { patients } from "./patient";
 import { doctors } from "./doctor";
 import { timestamps } from "./util";
+import { createTable } from "./schema";
 
 // User Roles
 export const userRoles = createTable(
