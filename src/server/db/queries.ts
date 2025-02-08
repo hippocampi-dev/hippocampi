@@ -114,20 +114,10 @@ export const addPatientDoctorManagement = async (patientDoctorManagement: Patien
 // remove patient-doctor management
 
 // get patient-doctor management
-export const getPatientDoctorManagement = async (patient_id: PatientsInterface | null, doctor_id: DoctorsInterface | null) => {
-  if (patient_id) { // if patients gets all doctors
-    return db.query.patientDoctorManagement.findMany({
-      where: (eq(schema_management.patientDoctorManagement.patientId, patient_id.patientId))
-    })
-  }
-
-  if (doctor_id) { // if doctor gets all patients
-    return db.query.patientDoctorManagement.findMany({
-      where: (eq(schema_management.patientDoctorManagement.doctorId, doctor_id.doctorId))
-    })
-  }
-
-  return null;
+export const getPatientDoctorManagement = async (user_id: UserIdInterface) => {
+  return db.query.patientDoctorManagement.findMany({
+    where: (eq(schema_management.patientDoctorManagement.patientId, user_id))
+  })
 }
 
 // add scheduled meeting
@@ -147,20 +137,10 @@ export const cancelScheduledMeeting = async (meeting_id: ScheduledMeetingsIdInte
 }
 
 // get scheduled meeting
-export const getScheduledMeeting = async (patient_id: PatientsInterface | null, doctor_id: DoctorsInterface | null) => {
-  if (patient_id) { // if patients gets all meetings
-    return db.query.scheduledMeetings.findMany({
-      where: (eq(schema_management.scheduledMeetings.patientId, patient_id.patientId))
-    })
-  }
-
-  if (doctor_id) { // if doctor gets all meetings
-    return db.query.scheduledMeetings.findMany({
-      where: (eq(schema_management.scheduledMeetings.doctorId, doctor_id.doctorId))
-    })
-  }
-
-  return null;
+export const getScheduledMeeting = async (user_id: UserIdInterface) => {
+  return db.query.scheduledMeetings.findMany({
+    where: (eq(schema_management.scheduledMeetings.patientId, user_id))
+  })
 }
 
 // add allergies
@@ -233,7 +213,7 @@ export const getDiagnoses = async (user_id: UserIdInterface) => {
 }
 
 // add Emergency Contact
-export const addEmergencyContact = async (emergencyContact: PatientEmergencyContactsInterface) => {
+export const addEmergencyContacts = async (emergencyContact: PatientEmergencyContactsInterface) => {
   return db.insert(schema_patient.emergencyContacts)
     .values(emergencyContact)
     .onConflictDoNothing()
@@ -241,7 +221,7 @@ export const addEmergencyContact = async (emergencyContact: PatientEmergencyCont
 }
 
 // set Emergency Contact
-export const setEmergencyContact = async (user_id: UserIdInterface, emergencyContact: PatientEmergencyContactsInterface) => {
+export const setEmergencyContacts = async (user_id: UserIdInterface, emergencyContact: PatientEmergencyContactsInterface) => {
   return db.update(schema_patient.emergencyContacts)
     .set(emergencyContact)
     .where(eq(schema_patient.emergencyContacts.patientId, user_id))
@@ -249,7 +229,7 @@ export const setEmergencyContact = async (user_id: UserIdInterface, emergencyCon
 }
 
 // get Emergency Contact
-export const getEmergencyContact = async (user_id: UserIdInterface) => {
+export const getEmergencyContacts = async (user_id: UserIdInterface) => {
   return db.query.emergencyContacts.findMany({
     where: eq(schema_patient.emergencyContacts.patientId, user_id)
   });
