@@ -8,6 +8,7 @@ export default function Navbar() {
     <header className="flex gap-4">
       {session ? (
         <>
+        <Link href={'/dashboard'}>Dashboard</Link>
         </>
       ) : (
         <>
