@@ -20,20 +20,21 @@ import { redirect } from "next/navigation";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { UserRolesInterface } from "~/server/db/type";
 import { role } from "~/server/db/type"
+import { useSession } from "next-auth/react";
 
 const formSchema = z.object({
-  role: z.string(role)
+  role: z.enum([ role.admin, role.doctor ])
 });
 
-
-
 export default function RoleForm() {
-  const [data, setData] = useState({ loading: true, content: null })
+  const { data: session } = useSession(); // Get session data (user info)
 
   const handleRoleSubmit = async () => {
+    if (!session) return
+
     const params: UserRolesInterface = {
-      userId: ,
-      userRole: "doctor/patient"
+      userId: session.user.id,
+      userRole: "doctor/patient" // can u pass in params from form here
     };
   
     try {
@@ -44,10 +45,8 @@ export default function RoleForm() {
       });
   
       const result = await response.json();
-      setData({ loading: false, content: result });
     } catch (error) {
       console.error('Error:', error);
-      setData({ loading: false, content: null });
     }
   };
   const form = useForm<z.infer<typeof formSchema>>({

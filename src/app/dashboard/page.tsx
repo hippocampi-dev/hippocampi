@@ -1,10 +1,6 @@
-// dif view for user if patient or doctor --> create components for each
+'use client'
 
 import { redirect } from "next/navigation";
-
-// ignore /account and /checkout, both are for payment
-
-("use client");
 
 import { useEffect, useState } from "react";
 import DoctorDashboard from "~/components/doctor-dashboard/page";
@@ -37,7 +33,7 @@ export default function Dashboard() {
 
   if (userRole === "") return <main>Loading...</main>;
 
-  if (userRole === role.patient) return <></>;
+  if (userRole === role.patient) return <PatientDashboard />;
 
-  if (userRole === role.doctor) return <></>;
+  if (userRole === role.doctor) return <DoctorDashboard />;
 }

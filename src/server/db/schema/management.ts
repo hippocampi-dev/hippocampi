@@ -9,7 +9,7 @@ import {
 import { users } from "./auth";
 import { patients } from "./patient";
 import { doctors } from "./doctor";
-import { timestamps } from "./util";
+import { timestamps } from "./utils";
 import { createTable } from "./schema";
 
 // User Roles

@@ -11,7 +11,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { createTable } from "./schema";
 import { users } from "./auth";
-import { timestamps } from './util'
+import { timestamps } from './utils'
 
 // Enums for fixed-value fields
 export const genderEnum = pgEnum("gender", [

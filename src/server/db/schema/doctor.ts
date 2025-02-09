@@ -9,7 +9,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { users } from "./auth";
-import { timestamps } from "./util";
+import { timestamps } from "./utils";
 import { createTable } from "./schema";
 
 // Doctors
