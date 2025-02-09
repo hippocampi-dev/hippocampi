@@ -12,6 +12,13 @@ export type UserIdInterface = typeof users.id.dataType;
 // Users
 export type UserInterface = typeof users.$inferInsert;
 
+// Role types (strings)
+export enum role {
+  patient = "patient",
+  doctor = "doctor",
+  admin = "admin"
+}
+
 // User Roles
 export type UserRolesInterface = typeof userRoles.$inferInsert;
 
