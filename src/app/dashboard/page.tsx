@@ -2,8 +2,9 @@
 
 // ignore /account and /checkout, both are for payment
 
-'use client'
+"use client";
 
+import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { role } from "~/server/db/type";
 
@@ -13,32 +14,27 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/db/management/user-role/get', {
-          method: 'GET',
+        const response = await fetch("/api/db/management/user-role/get", {
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-        
-        const result: string = await response.json()
+            "Content-Type": "application/json",
+          },
+        });
+
+        const result: string = await response.json();
         setUserRole(result);
       } catch (error) {
-        console.error('Error fetching data:', error)
+        console.error("Error fetching data:", error);
       }
-    }
+    };
 
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
-  if (userRole === "") return (
-    <main>Loading...</main>
-  )
+  if (userRole === "") redirect("/select-role");
+  //todo tomorrow - if user role exists, but the user does not have the data associated with their role, redirect them to the respective survey (to travis, this
+  //is so users don't get screwed if they accidentally leave mid setup process
+  if (userRole === role.patient) return <></>;
 
-  if (userRole === role.patient) return (
-    <></>
-  )
-
-  if (userRole === role.doctor) return (
-    <></>
-  )
+  if (userRole === role.doctor) return <></>;
 }
