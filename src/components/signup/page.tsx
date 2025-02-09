@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import {
@@ -18,25 +18,45 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { redirect } from "next/navigation";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { UserRolesInterface } from "~/server/db/type";
+import { role } from "~/server/db/type"
 
 const formSchema = z.object({
-  role: z.enum(["doctor", "patient"], {
-    required_error: "You must select a role",
-  }),
+  role: z.string(role)
 });
 
-function setRole(values: z.infer<typeof formSchema>) {
-  console.log(values);
-}
+
 
 export default function RoleForm() {
+  const [data, setData] = useState({ loading: true, content: null })
+
+  const handleRoleSubmit = async () => {
+    const params: UserRolesInterface = {
+      userId: ,
+      userRole: "doctor/patient"
+    };
+  
+    try {
+      const response = await fetch('/api/db/management/user-role/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(params)
+      });
+  
+      const result = await response.json();
+      setData({ loading: false, content: result });
+    } catch (error) {
+      console.error('Error:', error);
+      setData({ loading: false, content: null });
+    }
+  };
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(setRole)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(handleRoleSubmit)} className="space-y-8">
         <FormField
           control={form.control}
           name="role"
