@@ -1,7 +1,10 @@
+// dif view for user if patient or doctor --> create components for each
+
+// ignore /account and /checkout, both are for payment
+
 'use client'
 
 import { redirect } from "next/navigation";
-
 import { useEffect, useState } from "react";
 import DoctorDashboard from "~/components/doctor-dashboard/page";
 import Loading from "~/components/loading/page";
@@ -31,9 +34,10 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
-  if (userRole === "") return <main>Loading...</main>;
+  if (userRole === "") redirect("/select-role");
+  //todo tomorrow - if user role exists, but the user does not have the data associated with their role, redirect them to the respective survey (to travis, this
+  //is so users don't get screwed if they accidentally leave mid setup process
+  if (userRole === role.patient) return <></>;
 
-  if (userRole === role.patient) return <PatientDashboard />;
-
-  if (userRole === role.doctor) return <DoctorDashboard />;
+  if (userRole === role.doctor) return <></>;
 }
