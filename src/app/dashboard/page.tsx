@@ -7,6 +7,9 @@ import { redirect } from "next/navigation";
 ("use client");
 
 import { useEffect, useState } from "react";
+import DoctorDashboard from "~/components/doctor-dashboard/page";
+import Loading from "~/components/loading/page";
+import PatientDashboard from "~/components/patient-dashboard/page";
 import { role } from "~/server/db/type";
 
 export default function Dashboard() {

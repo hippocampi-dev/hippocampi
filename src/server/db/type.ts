@@ -20,12 +20,18 @@ export type UserIdInterface = typeof users.id.dataType;
 // Users
 export type UserInterface = typeof users.$inferInsert;
 
+// User Roles
+export type UserRolesInterface = typeof userRoles.$inferInsert;
+
 // Role types (strings)
 export enum role {
   patient = "patient",
   doctor = "doctor",
   admin = "admin",
 }
+
+// Doctors
+export type DoctorsInterface = typeof doctors.$inferInsert;
 
 // Doctor Credentials
 export type DoctorCredentialsInterface = typeof doctorCredentials.$inferInsert;
@@ -47,8 +53,7 @@ export type ScheduledMeetingsIdInterface = typeof scheduledMeetings.id.dataType;
 export type UserLoginsInterface = typeof userLogins.$inferInsert;
 
 // Emergency Contacts
-export type PatientEmergencyContactsInterface =
-  typeof emergencyContacts.$inferInsert;
+export type PatientEmergencyContactsInterface = typeof emergencyContacts.$inferInsert;
 
 // Medications
 export type PatientMedicationsInterface = typeof medications.$inferInsert;
