@@ -27,12 +27,6 @@ export enum role {
   admin = "admin",
 }
 
-// User Roles
-export type UserRolesInterface = typeof userRoles.$inferInsert;
-
-// Doctors
-export type DoctorsInterface = typeof doctors.$inferInsert;
-
 // Doctor Credentials
 export type DoctorCredentialsInterface = typeof doctorCredentials.$inferInsert;
 
