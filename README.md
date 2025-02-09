@@ -19,6 +19,7 @@ These endpoints retrieve existing data from the system.
 | `/api/db/patient/health-info/diagnoses/get` | Retrieve patient diagnoses | PatientDiagnosesInterface[] |
 | `/api/db/patient/health-info/emergency-contacts/get` | Retrieve patient emergency contacts | PatientEmergencyContactsInterface[] |
 | `/api/db/patient/health-info/medications/get` | Retrieve patient medications | PatientMedicationsInterface[] |
+| `/api/db/patient/health-info/treatments/get` | Retrieve patient treatments | PatientTreatmentsInterface[] |
 | `/api/db/doctor/get` | Retrieve doctor profile information | DoctorsInterface |
 | `/api/db/doctor/credentials/get` | Retrieve doctor credentials | DoctorCredentialsInterface |
 | `/api/db/management/user-role/get` | Retrieve user role (patient or doctor) | UserRolesInterface |
@@ -32,21 +33,25 @@ These endpoints create new or update existing entries in the system.
 | Endpoint | Description | Request Body | Response Type |
 | --- | --- | --- | --- |
 | `/api/db/patient/add` | Add new patient | PatientsInterface | PatientsInterface |
-| `/api/db/patient/set` | Update patient | UserIdInterface, PatientsInterface | PatientsInterface |
+| `/api/db/patient/set` | Update patient | PatientsInterface | PatientsInterface |
 | `/api/db/patient/health-info/allergies/add` | Add new patient allergies | PatientAllergiesInterface | PatientAllergiesInterface |
-| `/api/db/patient/health-info/allergies/set` | Update patient allergies | UserIdInterface, PatientAllergiesInterface | PatientAllergiesInterface |
+| `/api/db/patient/health-info/allergies/set` | Update patient allergies | PatientAllergiesInterface | PatientAllergiesInterface |
 | `/api/db/patient/health-info/cognitive-symptoms/add` | Add new patient cognitive symptom | PatientCognitiveSymptomsInterface | PatientCognitiveSymptomsInterface |
-| `/api/db/patient/health-info/cognitive-symptoms/set` | Update patient cognitive symptom | UserIdInterface, PatientCognitiveSymptomsInterface | PatientCognitiveSymptomsInterface |
+| `/api/db/patient/health-info/cognitive-symptoms/set` | Update patient cognitive symptom | PatientCognitiveSymptomsInterface | PatientCognitiveSymptomsInterface |
 | `/api/db/patient/health-info/diagnoses/add` | Add new patient diagnosis | PatientDiagnosesInterface | PatientDiagnosesInterface |
-| `/api/db/patient/health-info/diagnoses/set` | Update patient cognitive symptoms | UserIdInterface, PatientDiagnosesInterface | PatientDiagnosesInterface |PatientCognitiveSymptomsInterface | PatientCognitiveSymptomsInterface |
+| `/api/db/patient/health-info/diagnoses/set` | Update patient cognitive symptoms | PatientDiagnosesInterface | PatientDiagnosesInterface |PatientCognitiveSymptomsInterface | PatientCognitiveSymptomsInterface |
 | `/api/db/patient/health-info/emergency-contacts/add` | Add new patient emergency contact | PatientEmergencyContactsInterface | PatientEmergencyContactsInterface |
-| `/api/db/patient/health-info/emergency-contacts/set` | Update patient emergency contact | UserIdInterface, PatientEmergencyContactsInterface | PatientEmergencyContactsInterface |
+| `/api/db/patient/health-info/emergency-contacts/set` | Update patient emergency contact | PatientEmergencyContactsInterface | PatientEmergencyContactsInterface |
 | `/api/db/patient/health-info/medications/add` | Add new patient medication | PatientMedicationsInterface | PatientMedicationsInterface |
-| `/api/db/patient/health-info/medications/set` | Update patient medication | UserIdInterface, PatientMedicationsInterface | PatientMedicationsInterface |
+| `/api/db/patient/health-info/medications/set` | Update patient medication | PatientMedicationsInterface | PatientMedicationsInterface |
+| `/api/db/patient/health-info/treatments/add` | Add new patient treatment | PatientTreatmentsInterface | PatientTreatmentsInterface |
+| `/api/db/patient/health-info/treatments/set` | Update patient treatment | PatientTreatmentsInterface | PatientTreatmentsInterface |serIdInterface, PatientMedicationsInterface | PatientMedicationsInterface |
+| `/api/db/patient/health-info/caregivers/add` | Add new patient caregiver | PatientCaregiversInterface | PatientCaregiversInterface |
+| `/api/db/patient/health-info/caregivers/set` | Update patient caregiver | PatientCaregiversInterface | PatientCaregiversInterface |
 | `/api/db/doctor/add` | Add new doctor profile | DoctorsInterface | DoctorsInterface |
-| `/api/db/doctor/set` | Update doctor profile | UserIdInterface, DoctorsInterface | DoctorsInterface |
+| `/api/db/doctor/set` | Update doctor profile | DoctorsInterface | DoctorsInterface |
 | `/api/db/doctor/credentials/add` | Add new doctor credential | DoctorCredentialsInterface | DoctorCredentialsInterface |
-| `/api/db/doctor/credentials/set` | Update doctor credential | UserIdInterface, DoctorCredentialsInterface | DoctorCredentialsInterface |
+| `/api/db/doctor/credentials/set` | Update doctor credential | DoctorCredentialsInterface | DoctorCredentialsInterface |
 | `/api/db/management/user-role/add` | Add user role | UserRolesInterface | UserRolesInterface |
 | `/api/db/management/scheduled-meetings/add` | Add scheduled meeting | ScheduledMeetingsInterface | ScheduledMeetingsInterface |
 | `/api/db/management/scheduled-meetings/cancel` | Cancel scheduled meeting | ScheduledMeetingsIdInterface | ScheduledMeetingsInterface |

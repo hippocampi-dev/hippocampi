@@ -5,7 +5,7 @@ import * as schema_doctor from './schema/doctor';
 import * as schema_management from './schema/management';
 import * as schema_patient from './schema/patient';
 import { eq } from 'drizzle-orm';
-import { DoctorCredentialsInterface, DoctorsInterface, PatientAllergiesInterface, PatientCognitiveSymptomsInterface, PatientDiagnosesInterface, PatientDoctorManagementInterface, PatientEmergencyContactsInterface, PatientHealthInformationInterface, PatientMedicationsInterface, PatientsInterface, ScheduledMeetingsIdInterface, ScheduledMeetingsInterface, UserIdInterface, UserRolesInterface } from './type';
+import { DoctorCredentialsInterface, DoctorsInterface, PatientAllergiesInterface, PatientCaregiversInterface, PatientCognitiveSymptomsInterface, PatientDiagnosesInterface, PatientDoctorManagementInterface, PatientEmergencyContactsInterface, PatientHealthInformationInterface, PatientMedicationsInterface, PatientsInterface, PatientTreatmentsInterface, ScheduledMeetingsIdInterface, ScheduledMeetingsInterface, UserIdInterface, UserRolesInterface } from './type';
 import { db } from '.';
 
 // add user role
@@ -243,7 +243,7 @@ export const addMedications = async (medication: PatientMedicationsInterface) =>
     .returning();
 }
 
-// set Medication
+// set medication
 export const setMedications = async (user_id: UserIdInterface, medication: PatientMedicationsInterface) => {
   return db.update(schema_patient.medications)
     .set(medication)
@@ -255,6 +255,52 @@ export const setMedications = async (user_id: UserIdInterface, medication: Patie
 export const getMedications = async (user_id: UserIdInterface) => {
   return db.query.medications.findMany({
     where: eq(schema_patient.medications.patientId, user_id)
+  });
+}
+
+// add treatments
+export const addTreatments = async (treatment: PatientTreatmentsInterface) => {
+  return db.insert(schema_patient.treatments)
+    .values(treatment)
+    .onConflictDoNothing()
+    .returning();
+}
+
+// set treatments
+export const setTreatments = async (user_id: UserIdInterface, treatment: PatientTreatmentsInterface) => {
+  return db.update(schema_patient.treatments)
+    .set(treatment)
+    .where(eq(schema_patient.medications.patientId, user_id))
+    .returning();
+}
+
+// get treatments
+export const getTreatments = async (user_id: UserIdInterface) => {
+  return db.query.medications.findMany({
+    where: eq(schema_patient.treatments.patientId, user_id)
+  });
+}
+
+// add caregivers
+export const addCaregivers = async (caregiver: PatientCaregiversInterface) => {
+  return db.insert(schema_patient.caregivers)
+    .values(caregiver)
+    .onConflictDoNothing()
+    .returning();
+}
+
+// set caregivers
+export const setCaregivers = async (user_id: UserIdInterface, caregiver: PatientCaregiversInterface) => {
+  return db.update(schema_patient.caregivers)
+    .set(caregiver)
+    .where(eq(schema_patient.medications.patientId, user_id))
+    .returning();
+}
+
+// get caregivers
+export const getCaregivers = async (user_id: UserIdInterface) => {
+  return db.query.medications.findMany({
+    where: eq(schema_patient.caregivers.patientId, user_id)
   });
 }
 

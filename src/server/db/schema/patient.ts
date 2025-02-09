@@ -40,28 +40,38 @@ export const medicationFrequencyEnum = pgEnum("frequency", [
   "prn"
 ]);
 
-
-
 // Patients
 export const patients = createTable('patients', {
-  patientId: varchar("patientId", { length: 255 })
+  patientId: varchar("patient_id", { length: 255 })
     .notNull()
     .primaryKey()
     .references(() => users.id, {onDelete: 'cascade'}),
-  first_name: varchar('first_name').notNull(),
-  last_name: varchar('last_name').notNull(),
+  firstName: varchar('first_name').notNull(),
+  lastName: varchar('last_name').notNull(),
   middle_initial: varchar('middle_initial'),
-  date_of_birth: date("date", { mode: "date" }).notNull(),
+  dateOfBirth: date("date_of_birth", { mode: "date" }).notNull(),
   gender: genderEnum("gender").notNull(),
-  primary_language: varchar('primary_language').notNull(),
-  phone_number: varchar('phone_number').notNull(),
+  primaryLanguage: varchar('primary_language').notNull(),
+  phoneNumber: varchar('phone_number').notNull(),
   email: varchar("email", { length: 255 })
     .notNull()
-    .references(() => users.email, {onDelete: 'cascade'}),
-  street_address: text('street_address').notNull(),
+    .unique(),
+  streetAddress: text('street_address').notNull(),
   city: varchar('city').notNull(),
   state: varchar('state').notNull(),
-  zip_code: varchar('zip_code').notNull(),
+  zipCode: varchar('zip_code').notNull(),
+  ...timestamps
+})
+
+// Caregiver Info
+export const caregivers = createTable('caregivers', {
+  patientId: varchar('patient_id', { length: 255 })
+    .notNull()
+    .primaryKey()
+    .references(() => users.id, {onDelete: 'cascade'}),
+  firstName: varchar('first_name').notNull(),
+  lastName: varchar('last_name').notNull(),
+  patientRelation: varchar('patient_relation').notNull(),
   ...timestamps
 })
 
@@ -71,29 +81,44 @@ export const emergencyContacts = createTable('emergency_contacts', {
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  patientId: varchar("doctorId", { length: 255 }).
+  patientId: varchar("patient_id", { length: 255 }).
     references(() => patients.patientId, {onDelete: 'cascade'})
     .notNull(),
   name: varchar('name').notNull(),
   relationship: relationshipEnum("relationship").notNull(),
-  phone_number: varchar('phone_number').notNull(),
+  phoneNumber: varchar('phone_number').notNull(),
   ...timestamps
 })
 
-// Medications
+// Treatments
+export const treatments = createTable('treatments', {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  patientId: varchar("patient_id", { length: 255 }).
+    references(() => patients.patientId, {onDelete: 'cascade'})
+    .notNull(),
+  treatmentName: varchar('treatment_name').notNull(),
+  startDate: date("start_date", { mode: "date" }).notNull(),
+  endDate: date("end_date", { mode: "date" }),
+  ...timestamps
+})
+
+// Medications 
 export const medications = createTable('medications', {
   id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  patientId: varchar("doctorId", { length: 255 }).
+  patientId: varchar("patient_id", { length: 255 }).
     references(() => patients.patientId, {onDelete: 'cascade'})
     .notNull(),
-  medication_name: varchar('medication_name').notNull(),
+  medicationName: varchar('medication_name').notNull(),
   dosage: text('dosage').notNull(),
   frequency: medicationFrequencyEnum("frequency").notNull(),
-  start_date: date("start_date", { mode: "date" }).notNull(),
-  end_date: date("end_date", { mode: "date" }).notNull(),
+  startDate: date("start_date", { mode: "date" }).notNull(),
+  endDate: date("end_date", { mode: "date" }),
   ...timestamps
 })
 
@@ -103,12 +128,12 @@ export const allergies = createTable('allergies', {
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  patientId: varchar("doctorId", { length: 255 }).
+  patientId: varchar("patient_id", { length: 255 }).
     references(() => patients.patientId, {onDelete: 'cascade'})
     .notNull(),
   allergen: varchar('allergen').notNull(),
-  reaction_description: text('reaction_description'),
-  severity_level: varchar('severity_level'),
+  reactionDescription: text('reaction_description'),
+  severityLevel: varchar('severity_level'),
   ...timestamps
 })
 
@@ -118,11 +143,11 @@ export const diagnoses = createTable('diagnoses', {
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  patientId: varchar("doctorId", { length: 255 }).
+  patientId: varchar("patient_id", { length: 255 }).
     references(() => patients.patientId, {onDelete: 'cascade'})
     .notNull(),
-  condition_name: varchar('condition_name').notNull(),
-  diagnosis_date: date("diagnosis_date", { mode: "date" }).notNull(),
+  conditionName: varchar('condition_name').notNull(),
+  diagnosisDate: date("diagnosis_date", { mode: "date" }).notNull(),
   status: varchar('status'),
   ...timestamps
 })
@@ -133,12 +158,12 @@ export const cognitiveSymptoms = createTable('cognitive_symptoms', {
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  patientId: varchar("doctorId", { length: 255 }).
+  patientId: varchar("patient_id", { length: 255 }).
     references(() => patients.patientId, {onDelete: 'cascade'})
     .notNull(),
-  symptom_type: varchar('symptom_type').notNull(),
-  onset_date: date("onset_date", { mode: "date" }).defaultNow(),
-  severity_level: numeric('severity_level'),
+  symptomGype: varchar('symptom_type').notNull(),
+  onsetDate: date("onset_date", { mode: "date" }).defaultNow(),
+  severityLevel: numeric('severity_level'),
   notes: text('notes'),
   ...timestamps
 })

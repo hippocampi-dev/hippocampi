@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm";
 import { accounts, sessions, userLogins, users } from "./auth";
 import { doctors, doctorCredentials } from "./doctor";
-import { allergies, cognitiveSymptoms, diagnoses, emergencyContacts, medications, patients } from "./patient";
+import { allergies, caregivers, cognitiveSymptoms, diagnoses, emergencyContacts, medications, patients, treatments } from "./patient";
 import { patientDoctorManagement, scheduledMeetings, userRoles } from "./management";
 
 
@@ -77,7 +77,9 @@ export const patientsRelations = relations(patients, ({ one, many }) => ({
   allergies: many(allergies),
   diagnoses: many(diagnoses),
   cognitive_symptoms: many(cognitiveSymptoms),
-  medications: many(medications)
+  medications: many(medications),
+  treatments: many(treatments),
+  caregivers: many(caregivers)
 }));
 
 export const emergencyContactsRelations = relations(emergencyContacts, ({ one }) => ({
@@ -101,6 +103,13 @@ export const allergiesRelations = relations(allergies, ({ one }) => ({
   })
 }));
 
+export const treatmentsRelations = relations(treatments, ({ one }) => ({
+  patient: one(patients, {
+    fields: [treatments.patientId],
+    references: [patients.patientId]
+  })
+}));
+
 export const diagnosesRelations = relations(diagnoses, ({ one }) => ({
   patient: one(patients, {
     fields: [diagnoses.patientId],
@@ -111,6 +120,13 @@ export const diagnosesRelations = relations(diagnoses, ({ one }) => ({
 export const cognitiveSymptomsRelations = relations(cognitiveSymptoms, ({ one }) => ({
   patient: one(patients, {
     fields: [cognitiveSymptoms.patientId],
+    references: [patients.patientId]
+  })
+}));
+
+export const caregiversRelations = relations(caregivers, ({ one }) => ({
+  patient: one(patients, {
+    fields: [caregivers.patientId],
     references: [patients.patientId]
   })
 }));

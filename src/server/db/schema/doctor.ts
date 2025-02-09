@@ -20,15 +20,15 @@ export const doctors = createTable(
       .notNull()
       .primaryKey()
       .references(() => users.id, {onDelete: 'cascade'}),
-    first_name: varchar('first_name').notNull(),
-    last_name: varchar('last_name').notNull(),
+    firstName: varchar('first_name').notNull(),
+    lastName: varchar('last_name').notNull(),
     email: varchar("email", { length: 255 })
       .notNull()
-      .references(() => users.email, {onDelete: 'cascade'}),
+      .unique(),
     location: text("location")
       .notNull(),
     specialization: varchar("specialization"),
-    ratings: varchar("ratings", { length:20 }).notNull(),
+    ratings: varchar("ratings", { length:20 }),
     ...timestamps
   }
 )

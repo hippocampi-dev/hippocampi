@@ -7,11 +7,13 @@ import {
 } from "./schema/management";
 import {
   allergies,
+  caregiverInfo,
   cognitiveSymptoms,
   diagnoses,
   emergencyContacts,
   medications,
   patients,
+  treatments,
 } from "./schema/patient";
 
 // User ID
@@ -33,11 +35,19 @@ export enum role {
 // Doctors
 export type DoctorsInterface = typeof doctors.$inferInsert;
 
+// Specialization
+export enum specialization {
+  Oncology = "Oncology"
+}
+
 // Doctor Credentials
 export type DoctorCredentialsInterface = typeof doctorCredentials.$inferInsert;
 
 // Patients
 export type PatientsInterface = typeof patients.$inferInsert;
+
+// Caregivers
+export type PatientCaregiversInterface = typeof caregiverInfo.$inferInsert;
 
 // Patient-Doctor Management
 export type PatientDoctorManagementInterface =
@@ -63,6 +73,9 @@ export type PatientAllergiesInterface = typeof allergies.$inferInsert;
 
 // Diagnoses
 export type PatientDiagnosesInterface = typeof diagnoses.$inferInsert;
+
+// Treatments
+export type PatientTreatmentsInterface = typeof treatments.$inferInsert;
 
 // Cognitive Symptoms
 export type PatientCognitiveSymptomsInterface =

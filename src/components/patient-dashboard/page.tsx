@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { PatientsInterface } from "~/server/db/type";
+import Loading from "../loading/page";
 
 export default function PatientDashboard() {
-  const [patient, setPatient] = useState<PatientsInterface>();
+  const [patient, setPatient] = useState<PatientsInterface | undefined>();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,6 +27,11 @@ export default function PatientDashboard() {
 
     fetchData();
   }, [])
+
+  if (!patient) {
+    return <Loading />
+  }
+
   return (
     <main>{JSON.stringify(patient)}</main>
   )

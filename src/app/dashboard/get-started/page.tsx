@@ -1,17 +1,12 @@
-// dif view for user if patient or doctor --> create components for each
+"use client";
 
-// ignore /account and /checkout, both are for payment
-
-'use client'
-
-import { redirect } from "next/navigation";
+import DoctorForm from "~/components/doctor-form/page";
 import { useEffect, useState } from "react";
-import DoctorDashboard from "~/components/doctor-dashboard/page";
 import Loading from "~/components/loading/page";
 import PatientDashboard from "~/components/patient-dashboard/page";
 import { role } from "~/server/db/type";
 
-export default function Dashboard() {
+export default function NewUserForm() {
   const [userRole, setUserRole] = useState("");
 
   useEffect(() => {
@@ -37,12 +32,14 @@ export default function Dashboard() {
   if (userRole === "") return (
     <Loading />
   )
-  //todo tomorrow - if user role exists, but the user does not have the data associated with their role, redirect them to the respective survey (to travis, this is so users don't get screwed if they accidentally leave mid setup process)
+
   if (userRole === role.patient) return (
     <PatientDashboard />
   )
 
   if (userRole === role.doctor) return (
-    <DoctorDashboard />
-  )
+    <main className="container mx-auto py-10">
+      <DoctorForm />
+    </main>
+  );
 }

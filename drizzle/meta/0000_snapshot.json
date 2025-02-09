@@ -1,5 +1,5 @@
 {
-  "id": "6df122ff-43f8-46a8-87df-87ee11275812",
+  "id": "b3e80816-884c-46c8-8f1e-e2dd36757d77",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -407,12 +407,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "specialization": {
-          "name": "specialization",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -439,19 +433,6 @@
           ],
           "columnsTo": [
             "doctorId"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "hippocampi_doctor_credentials_specialization_hippocampi_doctors_specialization_fk": {
-          "name": "hippocampi_doctor_credentials_specialization_hippocampi_doctors_specialization_fk",
-          "tableFrom": "hippocampi_doctor_credentials",
-          "tableTo": "hippocampi_doctors",
-          "columnsFrom": [
-            "specialization"
-          ],
-          "columnsTo": [
-            "specialization"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -504,7 +485,7 @@
           "name": "ratings",
           "type": "varchar(20)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -535,23 +516,18 @@
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
-        },
-        "hippocampi_doctors_email_hippocampi_users_email_fk": {
-          "name": "hippocampi_doctors_email_hippocampi_users_email_fk",
-          "tableFrom": "hippocampi_doctors",
-          "tableTo": "hippocampi_users",
-          "columnsFrom": [
-            "email"
-          ],
-          "columnsTo": [
-            "email"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "hippocampi_doctors_email_unique": {
+          "name": "hippocampi_doctors_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      }
     },
     "public.hippocampi_patient_doctor_management": {
       "name": "hippocampi_patient_doctor_management",
@@ -1286,23 +1262,18 @@
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
-        },
-        "hippocampi_patients_email_hippocampi_users_email_fk": {
-          "name": "hippocampi_patients_email_hippocampi_users_email_fk",
-          "tableFrom": "hippocampi_patients",
-          "tableTo": "hippocampi_users",
-          "columnsFrom": [
-            "email"
-          ],
-          "columnsTo": [
-            "email"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "hippocampi_patients_email_unique": {
+          "name": "hippocampi_patients_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      }
     }
   },
   "enums": {

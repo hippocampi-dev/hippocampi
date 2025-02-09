@@ -73,7 +73,6 @@ CREATE TABLE IF NOT EXISTS "hippocampi_doctor_credentials" (
 	"medical_school" varchar(255) NOT NULL,
 	"residency" varchar(255) NOT NULL,
 	"approach" text NOT NULL,
-	"specialization" varchar(255) NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
@@ -85,9 +84,10 @@ CREATE TABLE IF NOT EXISTS "hippocampi_doctors" (
 	"email" varchar(255) NOT NULL,
 	"location" text NOT NULL,
 	"specialization" varchar,
-	"ratings" varchar(20) NOT NULL,
+	"ratings" varchar(20),
 	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "hippocampi_doctors_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "hippocampi_patient_doctor_management" (
@@ -185,7 +185,8 @@ CREATE TABLE IF NOT EXISTS "hippocampi_patients" (
 	"state" varchar NOT NULL,
 	"zip_code" varchar NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "hippocampi_patients_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
 DO $$ BEGIN
@@ -219,19 +220,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "hippocampi_doctor_credentials" ADD CONSTRAINT "hippocampi_doctor_credentials_specialization_hippocampi_doctors_specialization_fk" FOREIGN KEY ("specialization") REFERENCES "public"."hippocampi_doctors"("specialization") ON DELETE cascade ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  ALTER TABLE "hippocampi_doctors" ADD CONSTRAINT "hippocampi_doctors_doctorId_hippocampi_users_id_fk" FOREIGN KEY ("doctorId") REFERENCES "public"."hippocampi_users"("id") ON DELETE cascade ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "hippocampi_doctors" ADD CONSTRAINT "hippocampi_doctors_email_hippocampi_users_email_fk" FOREIGN KEY ("email") REFERENCES "public"."hippocampi_users"("email") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -298,12 +287,6 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "hippocampi_patients" ADD CONSTRAINT "hippocampi_patients_patientId_hippocampi_users_id_fk" FOREIGN KEY ("patientId") REFERENCES "public"."hippocampi_users"("id") ON DELETE cascade ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "hippocampi_patients" ADD CONSTRAINT "hippocampi_patients_email_hippocampi_users_email_fk" FOREIGN KEY ("email") REFERENCES "public"."hippocampi_users"("email") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
