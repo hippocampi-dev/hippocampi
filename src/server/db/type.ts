@@ -1,10 +1,24 @@
-import { 
-  users,
-  userLogins,
-} from "./schema/auth";
+import { users, userLogins } from "./schema/auth";
 import { doctorCredentials, doctors } from "./schema/doctor";
-import { patientDoctorManagement, scheduledMeetings, userRoles } from "./schema/management";
-import { allergies, cognitiveSymptoms, diagnoses, emergencyContacts, medications, patients } from "./schema/patient";
+import {
+  patientDoctorManagement,
+  scheduledMeetings,
+  userRoles,
+} from "./schema/management";
+import {
+  allergies,
+  cognitiveSymptoms,
+  diagnoses,
+  emergencyContacts,
+  medications,
+  patients,
+} from "./schema/patient";
+
+export enum role {
+  patient = "patient",
+  doctor = "doctor",
+  admin = "admin",
+}
 
 // User ID
 export type UserIdInterface = typeof users.id.dataType;
@@ -25,7 +39,8 @@ export type DoctorCredentialsInterface = typeof doctorCredentials.$inferInsert;
 export type PatientsInterface = typeof patients.$inferInsert;
 
 // Patient-Doctor Management
-export type PatientDoctorManagementInterface = typeof patientDoctorManagement.$inferInsert;
+export type PatientDoctorManagementInterface =
+  typeof patientDoctorManagement.$inferInsert;
 
 // Scheduled Meetings
 export type ScheduledMeetingsInterface = typeof scheduledMeetings.$inferInsert;
@@ -37,7 +52,8 @@ export type ScheduledMeetingsIdInterface = typeof scheduledMeetings.id.dataType;
 export type UserLoginsInterface = typeof userLogins.$inferInsert;
 
 // Emergency Contacts
-export type PatientEmergencyContactsInterface = typeof emergencyContacts.$inferInsert;
+export type PatientEmergencyContactsInterface =
+  typeof emergencyContacts.$inferInsert;
 
 // Medications
 export type PatientMedicationsInterface = typeof medications.$inferInsert;
@@ -49,13 +65,14 @@ export type PatientAllergiesInterface = typeof allergies.$inferInsert;
 export type PatientDiagnosesInterface = typeof diagnoses.$inferInsert;
 
 // Cognitive Symptoms
-export type PatientCognitiveSymptomsInterface = typeof cognitiveSymptoms.$inferInsert;
+export type PatientCognitiveSymptomsInterface =
+  typeof cognitiveSymptoms.$inferInsert;
 
 // Patient Information
 export interface PatientHealthInformationInterface {
-  allergies: PatientAllergiesInterface[],
-  cognitiveSymptoms: PatientCognitiveSymptomsInterface[],
-  dianoses: PatientDiagnosesInterface[],
-  emergencyContacts: PatientEmergencyContactsInterface[],
-  medications: PatientMedicationsInterface[],
+  allergies: PatientAllergiesInterface[];
+  cognitiveSymptoms: PatientCognitiveSymptomsInterface[];
+  dianoses: PatientDiagnosesInterface[];
+  emergencyContacts: PatientEmergencyContactsInterface[];
+  medications: PatientMedicationsInterface[];
 }
