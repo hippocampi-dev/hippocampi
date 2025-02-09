@@ -11,16 +11,12 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/db/user/get', {
+        const response = await fetch('/api/db/management/user-role/get', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
           }
         })
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
-        }
         
         const result = await response.json()
         setData({

@@ -27,7 +27,7 @@ These endpoints retrieve existing data from the system.
 | `/api/db/management/scheduled-meetings/get` | Retrieve scheduled meetings | ScheduledMeetingsInterface[] |
 
 #### POST Routes
-These endpoints create new entries in the system.
+These endpoints create new or update existing entries in the system.
 
 | Endpoint | Description | Request Body | Response Type |
 | --- | --- | --- | --- |
