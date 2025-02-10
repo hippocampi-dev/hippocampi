@@ -282,27 +282,27 @@ export const getTreatments = async (user_id: UserIdInterface) => {
 }
 
 // add caregivers
-export const addCaregivers = async (caregiver: PatientCaregiversInterface) => {
-  return db.insert(schema_patient.caregivers)
-    .values(caregiver)
-    .onConflictDoNothing()
-    .returning();
-}
+// export const addCaregivers = async (caregiver: PatientCaregiversInterface) => {
+//   return db.insert(schema_patient.caregivers)
+//     .values(caregiver)
+//     .onConflictDoNothing()
+//     .returning();
+// }
 
-// set caregivers
-export const setCaregivers = async (user_id: UserIdInterface, caregiver: PatientCaregiversInterface) => {
-  return db.update(schema_patient.caregivers)
-    .set(caregiver)
-    .where(eq(schema_patient.medications.patientId, user_id))
-    .returning();
-}
+// // set caregivers
+// export const setCaregivers = async (user_id: UserIdInterface, caregiver: PatientCaregiversInterface) => {
+//   return db.update(schema_patient.caregivers)
+//     .set(caregiver)
+//     .where(eq(schema_patient.medications.patientId, user_id))
+//     .returning();
+// }
 
-// get caregivers
-export const getCaregivers = async (user_id: UserIdInterface) => {
-  return db.query.medications.findMany({
-    where: eq(schema_patient.caregivers.patientId, user_id)
-  });
-}
+// // get caregivers
+// export const getCaregivers = async (user_id: UserIdInterface) => {
+//   return db.query.medications.findMany({
+//     where: eq(schema_patient.caregivers.patientId, user_id)
+//   });
+// }
 
 // get patient health information
 export const getPatientHealthInformation = async (user_id: UserIdInterface) => {

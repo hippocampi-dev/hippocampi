@@ -64,16 +64,16 @@ export const patients = createTable('patients', {
 })
 
 // Caregiver Info
-export const caregivers = createTable('caregivers', {
-  patientId: varchar('patient_id', { length: 255 })
-    .notNull()
-    .primaryKey()
-    .references(() => users.id, {onDelete: 'cascade'}),
-  firstName: varchar('first_name').notNull(),
-  lastName: varchar('last_name').notNull(),
-  patientRelation: varchar('patient_relation').notNull(),
-  ...timestamps
-})
+// export const caregivers = createTable('caregivers', {
+//   patientId: varchar('patient_id', { length: 255 })
+//     .notNull()
+//     .primaryKey()
+//     .references(() => users.id, {onDelete: 'cascade'}),
+//   firstName: varchar('first_name').notNull(),
+//   lastName: varchar('last_name').notNull(),
+//   relationship: varchar('relationship').notNull(),
+//   ...timestamps
+// })
 
 // Emergency Contacts
 export const emergencyContacts = createTable('emergency_contacts', {
@@ -84,7 +84,8 @@ export const emergencyContacts = createTable('emergency_contacts', {
   patientId: varchar("patient_id", { length: 255 }).
     references(() => patients.patientId, {onDelete: 'cascade'})
     .notNull(),
-  name: varchar('name').notNull(),
+  firstName: varchar('first_name').notNull(),
+  lastName: varchar('last_name').notNull(),
   relationship: relationshipEnum("relationship").notNull(),
   phoneNumber: varchar('phone_number').notNull(),
   ...timestamps
@@ -161,9 +162,9 @@ export const cognitiveSymptoms = createTable('cognitive_symptoms', {
   patientId: varchar("patient_id", { length: 255 }).
     references(() => patients.patientId, {onDelete: 'cascade'})
     .notNull(),
-  symptomGype: varchar('symptom_type').notNull(),
+  symptomType: varchar('symptom_type').notNull(),
   onsetDate: date("onset_date", { mode: "date" }).defaultNow(),
-  severityLevel: numeric('severity_level'),
+  severityLevel: varchar ('severity_level'),
   notes: text('notes'),
   ...timestamps
 })

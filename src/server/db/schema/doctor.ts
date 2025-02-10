@@ -16,7 +16,7 @@ import { createTable } from "./schema";
 export const doctors = createTable(
   "doctors",
   {
-    doctorId: varchar("doctorId", { length: 255 })
+    doctorId: varchar("doctor_id", { length: 255 })
       .notNull()
       .primaryKey()
       .references(() => users.id, {onDelete: 'cascade'}),
@@ -37,7 +37,7 @@ export const doctors = createTable(
 export const doctorCredentials = createTable(
   "doctor_credentials",
   {
-    doctorId: varchar("doctorId", { length: 255 })
+    doctorId: varchar("doctor_id", { length: 255 })
       .primaryKey()
       .notNull()
       .references(() => doctors.doctorId, {onDelete: 'cascade'}),

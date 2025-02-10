@@ -11,6 +11,7 @@ import {
 import { type AdapterAccount } from "next-auth/adapters";
 import { patients } from "./patient";
 import { createTable } from "./schema";
+import { timestamps } from "./utils";
 
 // Users
 export const users = createTable("users", {
@@ -25,6 +26,7 @@ export const users = createTable("users", {
     withTimezone: true,
   }).default(sql`CURRENT_TIMESTAMP`),
   image: varchar("image", { length: 255 }),
+  ...timestamps
 });
 
 // Accounts
@@ -48,6 +50,7 @@ export const accounts = createTable(
     scope: varchar("scope", { length: 255 }),
     id_token: text("id_token"),
     session_state: varchar("session_state", { length: 255 }),
+    ...timestamps
   },
   (account) => ({
     compoundKey: primaryKey({
