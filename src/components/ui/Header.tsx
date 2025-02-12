@@ -1,8 +1,15 @@
 "use client"
 import Link from "next/link"
 import { motion } from "framer-motion"
+import { useSession } from "next-auth/react"
 
 export function Header() {
+  const {data: session} = useSession();
+
+  if (session) {
+    return null;
+  }
+
   return (
     <header className="bg-white shadow-md">
       <nav className="container mx-auto px-6 py-3">

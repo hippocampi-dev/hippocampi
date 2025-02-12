@@ -17,6 +17,7 @@ export default function Dashboard() {
         }
 
         const data = await response.json();
+        console.log(data);
         const role = data.response.userRole;
         
         if (role === 'doctor') {

@@ -9,19 +9,20 @@ import {
 } from "~/components/ui/sidebar"
 import Link from "next/link"
 import { signOut } from "next-auth/react"
-
+import { useContext } from "react"
+import { DoctorDashboardContext } from "~/app/context/DoctorDashboardContext"
 export function DoctorDashboardSidebar() {
+  const context = useContext(DoctorDashboardContext);
   const handleSignOut = () => {
     signOut({
       redirect: true,
       redirectTo: '/'
     });
   }
-
   return (
     <Sidebar>
       <SidebarHeader>
-        <h2 className="text-xl font-bold px-4 py-2">Dr. Smith</h2>
+        <h2 className="text-xl font-bold px-4 py-2">{context ? `Dr ${context.doctor?.lastName}`: ''}</h2>
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>
@@ -35,9 +36,9 @@ export function DoctorDashboardSidebar() {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href="/dashboard/doctor/calendar">
+              <Link href="/dashboard/doctor/appointments">
                 <Calendar className="w-4 h-4 mr-2" />
-                <span>Calendar</span>
+                <span>Appointments</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -72,4 +73,3 @@ export function DoctorDashboardSidebar() {
     </Sidebar>
   )
 }
-

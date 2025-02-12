@@ -12,7 +12,7 @@ export default function PatientsPage() {
   const context = useContext(DoctorDashboardContext);
 
   useEffect(() => {
-    console.log(context?.data);
+    // console.log(context?.data);
   }, [context])
 
   if (!context) {
