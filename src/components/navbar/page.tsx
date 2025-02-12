@@ -8,6 +8,8 @@ export default function Navbar() {
     <header className="flex gap-4">
       {session ? (
         <>
+        <Link href={'/dashboard'}>Dashboard</Link>
+        <button onClick={() => signOut()}>Sign out</button>
         </>
       ) : (
         <>

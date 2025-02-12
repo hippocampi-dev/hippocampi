@@ -10,14 +10,8 @@ import {
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 import { patients } from "./patient";
-
-/**
- * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
- * database instance for multiple projects.
- *
- * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
- */
-export const createTable = pgTableCreator((name) => `hippocampi_${name}`);
+import { createTable } from "./schema";
+import { timestamps } from "./utils";
 
 // Users
 export const users = createTable("users", {
@@ -32,6 +26,7 @@ export const users = createTable("users", {
     withTimezone: true,
   }).default(sql`CURRENT_TIMESTAMP`),
   image: varchar("image", { length: 255 }),
+  ...timestamps
 });
 
 // Accounts
@@ -55,6 +50,7 @@ export const accounts = createTable(
     scope: varchar("scope", { length: 255 }),
     id_token: text("id_token"),
     session_state: varchar("session_state", { length: 255 }),
+    ...timestamps
   },
   (account) => ({
     compoundKey: primaryKey({
