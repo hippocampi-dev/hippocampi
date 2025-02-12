@@ -1,37 +1,27 @@
-// app/layout.tsx
 import "~/styles/globals.css"
-import { Inter } from "next/font/google";
-import Header from "~/components/ui/Header";
-import Footer from "~/components/ui/Footer";
-import { Metadata } from "next";
+import { Inter } from "next/font/google"
+import { Header } from "~/components/ui/Header"
+import type React from "react" // Added import for React
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"] })
 
-export const metadata: Metadata = {
-  title: "Hippocampi | Telehealth MSO for Chemo Brain",
-  description:
-    "Digital care platform for chemo brain treatment and support. Personalized cognitive care for cancer survivors.",
-  openGraph: {
-    title: "Hippocampi",
-    description:
-      "Revolutionizing Cancer Recovery with personalized cognitive care powered by AI.",
-    url: "https://hippocampi.com",
-    images: ["/images/background-hero.jpg"],
-  },
-};
+export const metadata = {
+  title: "Hippocampi - Digital Care Platform for Chemo Brain Treatment",
+  description: "Connecting cancer patients experiencing chemo brain with specialized care teams.",
+}
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en">
       <body className={inter.className}>
         <Header />
         <main>{children}</main>
-        <Footer />
       </body>
     </html>
-  );
+  )
 }
+

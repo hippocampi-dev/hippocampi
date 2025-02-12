@@ -1,9 +1,26 @@
-/* styles/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Custom styles */
+:root {
+  --primary-blue: #2563eb;
+  --secondary-blue: #1e40af;
+  --accent-color: #f59e0b;
+}
+
 body {
-  @apply bg-gray-100 text-gray-800;
+  @apply bg-gray-50 text-gray-900;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply text-gray-900;
+}
+
+a {
+  @apply text-blue-600 hover:text-blue-800;
 }
