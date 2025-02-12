@@ -35,9 +35,9 @@ export function DoctorDashboardSidebar() {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href="/dashboard/doctor/appointments">
+              <Link href="/dashboard/doctor/calendar">
                 <Calendar className="w-4 h-4 mr-2" />
-                <span>Appointments</span>
+                <span>Calendar</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

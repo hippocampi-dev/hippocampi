@@ -23,7 +23,7 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
   const router = useRouter()
   const context = useContext(DoctorDashboardContext);
   const { data: session } = useSession();
-  const [notes, setNotes] = useState<string>(context ? context.data?.patientDict![id]?.management?.notes! : "");
+  const [notes, setNotes] = useState<string>(context ? context.data?.patientDict![id]?.management?.notes! : '');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   if (!context) {
@@ -89,14 +89,21 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
     }
   }
 
-  const handleScheduleAppointment = async (appointment: { appointmentDate: Date, reason: string, notes: string }) => {
+  const handleScheduleAppointment = async (
+    appointment: {
+      patientId: string,
+      date: Date,
+      reason: string,
+      notes: string
+    }
+  ) => {
     // In a real application, you'd send this appointment to your backend
-    console.log("New appointment scheduled:", appointment.appointmentDate.toLocaleString());
+    console.log("New appointment scheduled:", appointment.date.toLocaleString());
 
     const body: AppointmentsInterface = {
       doctorId: session?.user.id!,
       patientId: id,
-      scheduledAt: appointment.appointmentDate,
+      scheduledAt: appointment.date,
       reason: appointment.reason,
       notes: appointment.notes
     }
@@ -149,7 +156,7 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
           </DialogTrigger>
           <DialogContent>
             <AppointmentForm
-              patientName={`${selectPatient()?.firstName} ${selectPatient()?.lastName}`}
+              patientId={selectPatient()?.patientId}
               onSchedule={handleScheduleAppointment}
               onCancel={handleCancelAppointment}
             />
