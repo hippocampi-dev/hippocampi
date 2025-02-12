@@ -3,8 +3,6 @@ import { SessionProvider } from "next-auth/react";
 
 export default function SelectRole() {
   return (
-    <SessionProvider>
       <SelectRolePage />
-    </SessionProvider>
   );
 }

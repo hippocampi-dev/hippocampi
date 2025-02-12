@@ -30,6 +30,14 @@ export enum role {
   admin = "admin",
 }
 
+export enum gender {
+  "male",
+  "female",
+  "non_binary",
+  "other",
+  "prefer_not_to_say"
+};
+
 // Doctors
 export type DoctorsInterface = typeof doctors.$inferInsert;
 
