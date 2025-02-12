@@ -1,8 +1,8 @@
 import { relations } from "drizzle-orm";
 import { accounts, sessions, userLogins, users } from "./auth";
 import { doctors, doctorCredentials } from "./doctor";
-import { allergies, cognitiveSymptoms, diagnoses, emergencyContacts, medications, patients } from "./patient";
-import { patientDoctorManagement, scheduledMeetings, userRoles } from "./management";
+import { allergies, cognitiveSymptoms, diagnoses, emergencyContacts, medicalHistory, medications, patients, treatments } from "./patient";
+import { patientDoctorManagement, appointments, userRoles } from "./management";
 
 
 export const usersRelations = relations(users, ({ one, many }) => ({
@@ -54,13 +54,13 @@ export const patientDoctorManagementRelations = relations(patientDoctorManagemen
   }),
 }));
 
-export const scheduledMeetingsRelations = relations(scheduledMeetings, ({ one }) => ({
+export const appointmentsRelations = relations(appointments, ({ one }) => ({
   doctor: one(doctors, {
-    fields: [scheduledMeetings.doctorId],
+    fields: [appointments.doctorId],
     references: [doctors.doctorId]
   }),
   patient: one(patients, {
-    fields: [scheduledMeetings.patientId],
+    fields: [appointments.patientId],
     references: [patients.patientId]
   }),
 }));
@@ -72,12 +72,15 @@ export const patientsRelations = relations(patients, ({ one, many }) => ({
   }),
   user_logins: one(userLogins),
   patient_doctor_management: many(patientDoctorManagement),
-  scheduled_meetings: many(scheduledMeetings),
+  scheduled_meetings: many(appointments),
   emergency_contacts: many(emergencyContacts),
   allergies: many(allergies),
   diagnoses: many(diagnoses),
   cognitive_symptoms: many(cognitiveSymptoms),
-  medications: many(medications)
+  medications: many(medications),
+  treatments: many(treatments),
+  medicalHistory: many(medicalHistory)
+  // caregivers: many(caregivers)
 }));
 
 export const emergencyContactsRelations = relations(emergencyContacts, ({ one }) => ({
@@ -101,6 +104,13 @@ export const allergiesRelations = relations(allergies, ({ one }) => ({
   })
 }));
 
+export const treatmentsRelations = relations(treatments, ({ one }) => ({
+  patient: one(patients, {
+    fields: [treatments.patientId],
+    references: [patients.patientId]
+  })
+}));
+
 export const diagnosesRelations = relations(diagnoses, ({ one }) => ({
   patient: one(patients, {
     fields: [diagnoses.patientId],
@@ -115,13 +125,27 @@ export const cognitiveSymptomsRelations = relations(cognitiveSymptoms, ({ one })
   })
 }));
 
+export const medicalHistoryRelations = relations(medicalHistory, ({ one }) => ({
+  patient: one(patients, {
+    fields: [medicalHistory.patientId],
+    references: [patients.patientId]
+  })
+}));
+
+// export const caregiversRelations = relations(caregivers, ({ one }) => ({
+//   patient: one(patients, {
+//     fields: [caregivers.patientId],
+//     references: [patients.patientId]
+//   })
+// }));
+
 export const doctorsRelations = relations(doctors, ({ one, many }) => ({
   user: one(users, { 
     fields: [doctors.doctorId], 
     references: [users.id],
   }),
   patient_doctor_management: many(patientDoctorManagement),
-  scheduled_meetings: many(scheduledMeetings),
+  scheduled_meetings: many(appointments),
   doctor_credentials: one(doctorCredentials)
 }));
 

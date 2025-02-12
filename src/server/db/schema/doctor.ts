@@ -16,19 +16,19 @@ import { createTable } from "./schema";
 export const doctors = createTable(
   "doctors",
   {
-    doctorId: varchar("doctorId", { length: 255 })
+    doctorId: varchar("doctor_id", { length: 255 })
       .notNull()
       .primaryKey()
       .references(() => users.id, {onDelete: 'cascade'}),
-    first_name: varchar('first_name').notNull(),
-    last_name: varchar('last_name').notNull(),
+    firstName: varchar('first_name').notNull(),
+    lastName: varchar('last_name').notNull(),
     email: varchar("email", { length: 255 })
       .notNull()
-      .references(() => users.email, {onDelete: 'cascade'}),
+      .unique(),
     location: text("location")
       .notNull(),
     specialization: varchar("specialization"),
-    ratings: varchar("ratings", { length:20 }).notNull(),
+    ratings: varchar("ratings", { length:20 }),
     ...timestamps
   }
 )
@@ -37,7 +37,7 @@ export const doctors = createTable(
 export const doctorCredentials = createTable(
   "doctor_credentials",
   {
-    doctorId: varchar("doctorId", { length: 255 })
+    doctorId: varchar("doctor_id", { length: 255 })
       .primaryKey()
       .notNull()
       .references(() => doctors.doctorId, {onDelete: 'cascade'}),

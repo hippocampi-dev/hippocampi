@@ -1,12 +1,12 @@
-import { cancelScheduledMeeting } from "~/server/db/queries";
-import { ScheduledMeetingsIdInterface } from "~/server/db/type";
+import { addMedicalHistory } from "~/server/db/queries";
+import { PatientMedicalHistoryInterface } from "~/server/db/type";
 
-// pass in ScheduledMeetingsIdInterface json
+// pass in PatientTreatmentsInteface json
 export const POST = async (request: Request) => {
-  const body: ScheduledMeetingsIdInterface = await request.json();
-
+  const body: PatientMedicalHistoryInterface = await request.json();
+  
   try {
-    const response = await cancelScheduledMeeting(body);
+    const response = await addMedicalHistory(body);
 
     if (!response) {
       return Response.json("Error");

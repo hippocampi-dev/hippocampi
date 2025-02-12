@@ -2,7 +2,7 @@ import { users, userLogins } from "./schema/auth";
 import { doctorCredentials, doctors } from "./schema/doctor";
 import {
   patientDoctorManagement,
-  scheduledMeetings,
+  appointments,
   userRoles,
 } from "./schema/management";
 import {
@@ -10,8 +10,10 @@ import {
   cognitiveSymptoms,
   diagnoses,
   emergencyContacts,
+  medicalHistory,
   medications,
   patients,
+  treatments,
 } from "./schema/patient";
 
 // User ID
@@ -41,21 +43,29 @@ export enum gender {
 // Doctors
 export type DoctorsInterface = typeof doctors.$inferInsert;
 
+// Specialization
+export enum specialization {
+  Oncology = "Oncology"
+}
+
 // Doctor Credentials
 export type DoctorCredentialsInterface = typeof doctorCredentials.$inferInsert;
 
 // Patients
 export type PatientsInterface = typeof patients.$inferInsert;
 
+// Caregivers
+// export type PatientCaregiversInterface = typeof caregiverInfo.$inferInsert;
+
 // Patient-Doctor Management
 export type PatientDoctorManagementInterface =
   typeof patientDoctorManagement.$inferInsert;
 
 // Scheduled Meetings
-export type ScheduledMeetingsInterface = typeof scheduledMeetings.$inferInsert;
+export type AppointmentsInterface = typeof appointments.$inferInsert;
 
 // Scheduled Meetings Id
-export type ScheduledMeetingsIdInterface = typeof scheduledMeetings.id.dataType;
+export type AppointmentsIdInterface = typeof appointments.id.dataType;
 
 // User Logins
 export type UserLoginsInterface = typeof userLogins.$inferInsert;
@@ -72,15 +82,23 @@ export type PatientAllergiesInterface = typeof allergies.$inferInsert;
 // Diagnoses
 export type PatientDiagnosesInterface = typeof diagnoses.$inferInsert;
 
+// Treatments
+export type PatientTreatmentsInterface = typeof treatments.$inferInsert;
+
+// Medical History
+export type PatientMedicalHistoryInterface = typeof medicalHistory.$inferInsert;
+
 // Cognitive Symptoms
 export type PatientCognitiveSymptomsInterface =
   typeof cognitiveSymptoms.$inferInsert;
 
 // Patient Information
 export interface PatientHealthInformationInterface {
+  medicalHistory: PatientMedicalHistoryInterface
   allergies: PatientAllergiesInterface[];
   cognitiveSymptoms: PatientCognitiveSymptomsInterface[];
   dianoses: PatientDiagnosesInterface[];
   emergencyContacts: PatientEmergencyContactsInterface[];
   medications: PatientMedicationsInterface[];
+  treatments: PatientTreatmentsInterface[];
 }
