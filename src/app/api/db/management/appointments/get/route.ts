@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCaregivers } from "~/server/db/queries";
+import { getAppointments } from "~/server/db/queries";
 import { getUserId } from "~/utilities/get-user";
 
 export const GET = async () => {
@@ -7,12 +7,12 @@ export const GET = async () => {
     const userId = await getUserId() as "string";;
 
     if (userId) {
-      const response = await getCaregivers(userId);
+      const response = await getAppointments(userId);
 
       return NextResponse.json({ response })
     }
 
-    return null;
+    return undefined;
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Unknown error' },

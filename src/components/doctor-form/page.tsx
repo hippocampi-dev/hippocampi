@@ -56,7 +56,8 @@ export default function DoctorForm() {
       firstName: values.firstName,
       lastName: values.lastName,
       email: values.email,
-      location: values.location
+      location: values.location,
+      specialization: values.specialization
     }
 
     const credentials: DoctorCredentialsInterface = {
@@ -100,6 +101,7 @@ export default function DoctorForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true)
+    console.log('submitting');
 
     // api call
     await makeApiCall(values).then(redirect('/dashboard'));
@@ -171,7 +173,7 @@ export default function DoctorForm() {
                 </FormItem>
               )}
             />
-            {/* <FormField
+            <FormField
               control={form.control}
               name="specialization"
               render={({ field }) => (
@@ -195,7 +197,7 @@ export default function DoctorForm() {
                   <FormMessage />
                 </FormItem>
               )}
-            /> */}
+            />
             <FormField
               control={form.control}
               name="degree"

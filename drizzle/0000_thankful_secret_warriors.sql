@@ -1,5 +1,5 @@
 DO $$ BEGIN
- CREATE TYPE "public"."status" AS ENUM('scheduled', 'canceled', 'completed');
+ CREATE TYPE "public"."status" AS ENUM('Scheduled', 'Canceled', 'Completed');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -94,21 +94,23 @@ CREATE TABLE IF NOT EXISTS "hippocampi_doctors" (
 	CONSTRAINT "hippocampi_doctors_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "hippocampi_patient_doctor_management" (
-	"id" varchar(255) PRIMARY KEY NOT NULL,
-	"doctor_id" varchar(255) NOT NULL,
-	"patient_id" varchar(255) NOT NULL,
-	"status" varchar(255) NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "hippocampi_scheduled_meetings" (
+CREATE TABLE IF NOT EXISTS "hippocampi_appointments" (
 	"id" varchar(255) PRIMARY KEY NOT NULL,
 	"doctor_id" varchar(255) NOT NULL,
 	"patient_id" varchar(255) NOT NULL,
 	"scheduled_at" timestamp (0) with time zone NOT NULL,
-	"status" "status" DEFAULT 'scheduled' NOT NULL,
+	"reason" text,
+	"notes" text,
+	"status" "status" DEFAULT 'Scheduled' NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "hippocampi_patient_doctor_management" (
+	"id" varchar(255) PRIMARY KEY NOT NULL,
+	"doctor_id" varchar(255) NOT NULL,
+	"patient_id" varchar(255) NOT NULL,
+	"last_visit" date NOT NULL,
 	"notes" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
@@ -147,7 +149,8 @@ CREATE TABLE IF NOT EXISTS "hippocampi_diagnoses" (
 	"patient_id" varchar(255) NOT NULL,
 	"condition_name" varchar NOT NULL,
 	"diagnosis_date" date NOT NULL,
-	"status" varchar,
+	"self_reported" boolean DEFAULT false,
+	"notes" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
@@ -159,6 +162,16 @@ CREATE TABLE IF NOT EXISTS "hippocampi_emergency_contacts" (
 	"last_name" varchar NOT NULL,
 	"relationship" "relationship" NOT NULL,
 	"phone_number" varchar NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "hippocampi_medical_history" (
+	"id" varchar(255) PRIMARY KEY NOT NULL,
+	"patient_id" varchar(255) NOT NULL,
+	"existing_diagnoses" text DEFAULT 'n/a',
+	"family_history_of_neurological_disorders" text DEFAULT 'n/a',
+	"history_of_chemotherapy_or_radiation_therapy" text DEFAULT 'n/a',
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
@@ -180,7 +193,9 @@ CREATE TABLE IF NOT EXISTS "hippocampi_patients" (
 	"first_name" varchar NOT NULL,
 	"last_name" varchar NOT NULL,
 	"middle_initial" varchar,
+	"condition" varchar NOT NULL,
 	"date_of_birth" date NOT NULL,
+	"age" integer NOT NULL,
 	"gender" "gender" NOT NULL,
 	"primary_language" varchar NOT NULL,
 	"phone_number" varchar NOT NULL,
@@ -200,6 +215,7 @@ CREATE TABLE IF NOT EXISTS "hippocampi_treatments" (
 	"treatment_name" varchar NOT NULL,
 	"start_date" date NOT NULL,
 	"end_date" date,
+	"notes" varchar,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
@@ -241,6 +257,18 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ ALTER TABLE "hippocampi_appointments" ADD CONSTRAINT "hippocampi_appointments_doctor_id_hippocampi_doctors_doctor_id_fk" FOREIGN KEY ("doctor_id") REFERENCES "public"."hippocampi_doctors"("doctor_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "hippocampi_appointments" ADD CONSTRAINT "hippocampi_appointments_patient_id_hippocampi_patients_patient_id_fk" FOREIGN KEY ("patient_id") REFERENCES "public"."hippocampi_patients"("patient_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  ALTER TABLE "hippocampi_patient_doctor_management" ADD CONSTRAINT "hippocampi_patient_doctor_management_doctor_id_hippocampi_doctors_doctor_id_fk" FOREIGN KEY ("doctor_id") REFERENCES "public"."hippocampi_doctors"("doctor_id") ON DELETE cascade ON UPDATE cascade;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -248,18 +276,6 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "hippocampi_patient_doctor_management" ADD CONSTRAINT "hippocampi_patient_doctor_management_patient_id_hippocampi_patients_patient_id_fk" FOREIGN KEY ("patient_id") REFERENCES "public"."hippocampi_patients"("patient_id") ON DELETE cascade ON UPDATE cascade;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "hippocampi_scheduled_meetings" ADD CONSTRAINT "hippocampi_scheduled_meetings_doctor_id_hippocampi_doctors_doctor_id_fk" FOREIGN KEY ("doctor_id") REFERENCES "public"."hippocampi_doctors"("doctor_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "hippocampi_scheduled_meetings" ADD CONSTRAINT "hippocampi_scheduled_meetings_patient_id_hippocampi_patients_patient_id_fk" FOREIGN KEY ("patient_id") REFERENCES "public"."hippocampi_patients"("patient_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -295,6 +311,12 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ ALTER TABLE "hippocampi_medical_history" ADD CONSTRAINT "hippocampi_medical_history_patient_id_hippocampi_patients_patient_id_fk" FOREIGN KEY ("patient_id") REFERENCES "public"."hippocampi_patients"("patient_id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  ALTER TABLE "hippocampi_medications" ADD CONSTRAINT "hippocampi_medications_patient_id_hippocampi_patients_patient_id_fk" FOREIGN KEY ("patient_id") REFERENCES "public"."hippocampi_patients"("patient_id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -317,6 +339,6 @@ CREATE INDEX IF NOT EXISTS "session_user_id_idx" ON "hippocampi_sessions" USING 
 CREATE INDEX IF NOT EXISTS "user_logins_user_idx" ON "hippocampi_user_logins" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "user_logins_action_idx" ON "hippocampi_user_logins" USING btree ("action");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "user_logins_patient_idx" ON "hippocampi_user_logins" USING btree ("affected_patient_id");--> statement-breakpoint
-CREATE INDEX IF NOT EXISTS "meeting_doctor_idx" ON "hippocampi_scheduled_meetings" USING btree ("doctor_id");--> statement-breakpoint
-CREATE INDEX IF NOT EXISTS "meeting_patient_idx" ON "hippocampi_scheduled_meetings" USING btree ("patient_id");--> statement-breakpoint
-CREATE INDEX IF NOT EXISTS "meeting_date_idx" ON "hippocampi_scheduled_meetings" USING btree ("scheduled_at");
+CREATE INDEX IF NOT EXISTS "meeting_doctor_idx" ON "hippocampi_appointments" USING btree ("doctor_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "meeting_patient_idx" ON "hippocampi_appointments" USING btree ("patient_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "meeting_date_idx" ON "hippocampi_appointments" USING btree ("scheduled_at");

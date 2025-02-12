@@ -8,11 +8,13 @@ export const GET = async () => {
 
     if (userId) {
       const response = await getUserRole(userId);
+      // console.log(response);
 
       return NextResponse.json({ response })
     }
-
-    return null;
+    else {
+      return undefined;
+    }
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Unknown error' },

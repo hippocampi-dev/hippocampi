@@ -5,7 +5,7 @@ import * as schema_doctor from './schema/doctor';
 import * as schema_management from './schema/management';
 import * as schema_patient from './schema/patient';
 import { eq } from 'drizzle-orm';
-import { DoctorCredentialsInterface, DoctorsInterface, PatientAllergiesInterface, PatientCaregiversInterface, PatientCognitiveSymptomsInterface, PatientDiagnosesInterface, PatientDoctorManagementInterface, PatientEmergencyContactsInterface, PatientHealthInformationInterface, PatientMedicationsInterface, PatientsInterface, PatientTreatmentsInterface, ScheduledMeetingsIdInterface, ScheduledMeetingsInterface, UserIdInterface, UserRolesInterface } from './type';
+import { DoctorCredentialsInterface, DoctorsInterface, PatientAllergiesInterface, PatientCognitiveSymptomsInterface, PatientDiagnosesInterface, PatientDoctorManagementInterface, PatientEmergencyContactsInterface, PatientHealthInformationInterface, PatientMedicationsInterface, PatientsInterface, PatientTreatmentsInterface, AppointmentsIdInterface, AppointmentsInterface, UserIdInterface, UserRolesInterface, PatientMedicalHistoryInterface } from './type';
 import { db } from '.';
 
 // add user role
@@ -121,25 +121,25 @@ export const getPatientDoctorManagement = async (user_id: UserIdInterface) => {
 }
 
 // add scheduled meeting
-export const addScheduledMeeting = async (meeting: ScheduledMeetingsInterface) => {
-  return db.insert(schema_management.scheduledMeetings)
+export const addAppointment = async (meeting: AppointmentsInterface) => {
+  return db.insert(schema_management.appointments)
     .values(meeting)
     .onConflictDoNothing()
     .returning();
 }
 
 // cancel meeting
-export const cancelScheduledMeeting = async (meeting_id: ScheduledMeetingsIdInterface) => {
-  return db.update(schema_management.scheduledMeetings)
-    .set({ status: "canceled" })
-    .where(eq(schema_management.scheduledMeetings.id, meeting_id))
+export const cancelAppointment = async (meeting_id: AppointmentsIdInterface) => {
+  return db.update(schema_management.appointments)
+    .set({ status: "Canceled" })
+    .where(eq(schema_management.appointments.id, meeting_id))
     .returning();
 }
 
 // get scheduled meeting
-export const getScheduledMeeting = async (user_id: UserIdInterface) => {
-  return db.query.scheduledMeetings.findMany({
-    where: (eq(schema_management.scheduledMeetings.patientId, user_id))
+export const getAppointments = async (user_id: UserIdInterface) => {
+  return db.query.appointments.findMany({
+    where: (eq(schema_management.appointments.patientId, user_id))
   })
 }
 
@@ -281,28 +281,28 @@ export const getTreatments = async (user_id: UserIdInterface) => {
   });
 }
 
-// add caregivers
-// export const addCaregivers = async (caregiver: PatientCaregiversInterface) => {
-//   return db.insert(schema_patient.caregivers)
-//     .values(caregiver)
-//     .onConflictDoNothing()
-//     .returning();
-// }
+// add treatments
+export const addMedicalHistory = async (medicalHistory: PatientMedicalHistoryInterface) => {
+  return db.insert(schema_patient.medicalHistory)
+    .values(medicalHistory)
+    .onConflictDoNothing()
+    .returning();
+}
 
-// // set caregivers
-// export const setCaregivers = async (user_id: UserIdInterface, caregiver: PatientCaregiversInterface) => {
-//   return db.update(schema_patient.caregivers)
-//     .set(caregiver)
-//     .where(eq(schema_patient.medications.patientId, user_id))
-//     .returning();
-// }
+// set treatments
+export const setMedicalHistory = async (user_id: UserIdInterface, medicalHistory: PatientMedicalHistoryInterface) => {
+  return db.update(schema_patient.medicalHistory)
+    .set(medicalHistory)
+    .where(eq(schema_patient.medications.patientId, user_id))
+    .returning();
+}
 
-// // get caregivers
-// export const getCaregivers = async (user_id: UserIdInterface) => {
-//   return db.query.medications.findMany({
-//     where: eq(schema_patient.caregivers.patientId, user_id)
-//   });
-// }
+// get treatments
+export const getMedicalHistory = async (user_id: UserIdInterface) => {
+  return db.query.medicalHistory.findFirst({
+    where: eq(schema_patient.medicalHistory.patientId, user_id)
+  });
+}
 
 // get patient health information
 export const getPatientHealthInformation = async (user_id: UserIdInterface) => {
@@ -321,15 +321,23 @@ export const getPatientHealthInformation = async (user_id: UserIdInterface) => {
   const _medications = await db.query.medications.findMany({
     where: eq(schema_patient.medications.patientId, user_id)
   });
+  const _treatments = await db.query.treatments.findMany({
+    where: eq(schema_patient.treatments.patientId, user_id)
+  });
+  const _medicalHistory = await db.query.medicalHistory.findFirst({
+    where: eq(schema_patient.medicalHistory.patientId, user_id)
+  });
 1
-  if (!_allergies || !_cognitiveSymptoms || !_diagnoses || !_emergencyContacts || !_medications) return null;
+  if (!_allergies || !_cognitiveSymptoms || !_diagnoses || !_emergencyContacts || !_medications || !_treatments || !_medicalHistory) return null;
 
   const patientHealthInformation: PatientHealthInformationInterface = {
+    medicalHistory: _medicalHistory,
     allergies: _allergies,
     cognitiveSymptoms: _cognitiveSymptoms,
     dianoses: _diagnoses,
     emergencyContacts: _emergencyContacts,
-    medications: _medications
+    medications: _medications,
+    treatments: _treatments
   }
 
   return patientHealthInformation;

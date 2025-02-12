@@ -1,43 +1,39 @@
 'use client'
 
-import { useEffect, useState } from "react";
-import { DoctorsInterface } from "~/server/db/type";
 import Loading from "../loading/page";
-import { redirect } from "next/navigation";
+import Error from "../error/page";
+import { AppointmentList } from "./appointment-list";
+import { PatientList } from "./patient-list";
+import { useContext } from "react";
+import { DoctorDashboardContext } from "~/app/context/DoctorDashboardContext";
 
 export default function DoctorDashboard() {
-  const [doctor, setDoctor] = useState<DoctorsInterface | undefined>();
+  const context = useContext(DoctorDashboardContext);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('/api/db/Doctor/get', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-        
-        const result: DoctorsInterface = await response.json();
-
-        if (!result) {
-          redirect('dashboard/get-started');
-        }
-
-        setDoctor(result);
-      } catch (error) {
-        console.error('Error fetching data:', error)
-      }
-    }
-
-    fetchData();
-  }, [])
-
-  if (!doctor) {
+  if (!context) {
     return <Loading />
   }
 
+  if (context.isLoading) {
+    return <Loading />
+  }
+
+  if (context.error) {
+    return <Error />
+  }
+
   return (
-    <main>{JSON.stringify(doctor)}</main>
+    <div className="p-6 space-y-6">
+      <h1 className="text-3xl font-bold">Dashboard</h1>
+      <div className="grid gap-6 md:grid-cols-2">
+        <AppointmentList
+          appointments={context.data?.appointments!}
+        />
+        {/* <PatientList
+          patients={context.data?.patients!}
+          patientDict={context.data?.patientDict!}
+        /> */}
+      </div>
+    </div>
   )
 }

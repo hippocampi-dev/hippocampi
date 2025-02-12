@@ -4,7 +4,7 @@ import DoctorForm from "~/components/doctor-form/page";
 import { useEffect, useState } from "react";
 import Loading from "~/components/loading/page";
 import PatientDashboard from "~/components/patient-dashboard/page";
-import { role } from "~/server/db/type";
+import { role, UserRolesInterface } from "~/server/db/type";
 
 export default function NewUserForm() {
   const [userRole, setUserRole] = useState("");
@@ -12,15 +12,16 @@ export default function NewUserForm() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/db/management/user-role/get", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        const result: string = await response.json();
-        setUserRole(result);
+        const response = await fetch("/api/db/management/user-role/get");
+    
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData?.error || 'An error occurred');
+        }
+    
+        const data = await response.json();
+        
+        setUserRole(data.response.userRole);
       } catch (error) {
         console.error("Error fetching data:", error);
       }

@@ -1,10 +1,10 @@
-import { setCaregivers } from "~/server/db/queries";
-import { PatientCaregiversInterface } from "~/server/db/type";
+import { setMedicalHistory } from "~/server/db/queries";
+import { PatientMedicalHistoryInterface } from "~/server/db/type";
 import { getUserId } from "~/utilities/get-user";
 
-// pass in PatientCaregiversInterface json
+// pass in PatientTreatmentsInterface json
 export const POST = async (request: Request) => {
-  const body: PatientCaregiversInterface = await request.json();
+  const body: PatientMedicalHistoryInterface = await request.json();
   
   try {
     const userId = await getUserId() as "string";
@@ -13,7 +13,7 @@ export const POST = async (request: Request) => {
       return Response.json("Error");
     }
 
-    const response = await setCaregivers(userId, body)
+    const response = await setMedicalHistory(userId, body)
 
     if (!response) {
       return Response.json("Error");

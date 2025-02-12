@@ -12,7 +12,7 @@ export const GET = async () => {
       return NextResponse.json({ response })
     }
 
-    return null;
+    return undefined;
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Unknown error' },

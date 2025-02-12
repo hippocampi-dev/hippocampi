@@ -1,5 +1,6 @@
 import { relations, sql } from "drizzle-orm";
 import {
+  boolean,
   date,
   integer,
   numeric,
@@ -49,7 +50,9 @@ export const patients = createTable('patients', {
   firstName: varchar('first_name').notNull(),
   lastName: varchar('last_name').notNull(),
   middle_initial: varchar('middle_initial'),
+  condition: varchar("condition").notNull(),
   dateOfBirth: date("date_of_birth", { mode: "date" }).notNull(),
+  age: integer("age").notNull(),
   gender: genderEnum("gender").notNull(),
   primaryLanguage: varchar('primary_language').notNull(),
   phoneNumber: varchar('phone_number').notNull(),
@@ -103,6 +106,7 @@ export const treatments = createTable('treatments', {
   treatmentName: varchar('treatment_name').notNull(),
   startDate: date("start_date", { mode: "date" }).notNull(),
   endDate: date("end_date", { mode: "date" }),
+  notes: varchar("notes"),
   ...timestamps
 })
 
@@ -138,6 +142,26 @@ export const allergies = createTable('allergies', {
   ...timestamps
 })
 
+// Medical History
+export const medicalHistory = createTable("medical_history", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  patientId: varchar("patient_id", { length: 255 }).
+    references(() => patients.patientId, {onDelete: 'cascade'})
+    .notNull(),
+  existingDiagnoses: text("existing_diagnoses").default("n/a"),
+  familyHistoryOfNeurologicalDisorders: text("family_history_of_neurological_disorders").default("n/a"),
+  historyOfChemotherapyOrRadiationTherapy: text("history_of_chemotherapy_or_radiation_therapy").default("n/a"),
+  ...timestamps
+})
+
+// export const diagnosesStatusEnum = pgEnum("status", [
+//   "Ongoing",
+//   "Complete"
+// ]);
+
 // Diagnoses
 export const diagnoses = createTable('diagnoses', {
   id: varchar("id", { length: 255 })
@@ -149,7 +173,9 @@ export const diagnoses = createTable('diagnoses', {
     .notNull(),
   conditionName: varchar('condition_name').notNull(),
   diagnosisDate: date("diagnosis_date", { mode: "date" }).notNull(),
-  status: varchar('status'),
+  selfReported: boolean("self_reported").default(false),
+  // status: diagnosesStatusEnum("status").default('Ongoing'),
+  notes: text('notes'),
   ...timestamps
 })
 
