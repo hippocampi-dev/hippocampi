@@ -104,7 +104,7 @@ export default function DoctorForm() {
     console.log('submitting');
 
     // api call
-    await makeApiCall(values).then(redirect('/dashboard'));
+    await makeApiCall(values).then(redirect('/dashboard/doctor'));
 
     setIsSubmitting(false)
     form.reset()
