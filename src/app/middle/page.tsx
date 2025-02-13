@@ -1,5 +1,6 @@
 
 "use client";
+import { ConsoleLogWriter } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import Loading from "~/components/loading/page";
@@ -10,7 +11,7 @@ export default function Middle() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/db/management/user-role/get");
+        const response = await fetch("/api/db/management/user-role/has");
 
         const result = await response.json();
         setData({
@@ -28,8 +29,7 @@ export default function Middle() {
 
     fetchData();
   }, []);
-
+  console.log(data.content)
   if (data.loading) return <Loading />
-  if (data.content) redirect("/dashboard");
-  if (!data.content) redirect("/select-role");
+  if (data.content && data.content.response === false) redirect("/select-role");
 }

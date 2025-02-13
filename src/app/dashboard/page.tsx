@@ -2,8 +2,10 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Loading from "~/components/loading/page";
+import { useCheckUserRole } from "../hooks/useCheckUserRole";
 
 export default function Dashboard() {
+  useCheckUserRole();
   const router = useRouter();
 
   useEffect(() => {
