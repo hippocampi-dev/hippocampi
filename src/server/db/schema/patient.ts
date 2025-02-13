@@ -50,7 +50,7 @@ export const patients = createTable('patients', {
   firstName: varchar('first_name').notNull(),
   lastName: varchar('last_name').notNull(),
   middle_initial: varchar('middle_initial'),
-  condition: varchar("condition").notNull(),
+  condition: varchar("condition"),
   dateOfBirth: date("date_of_birth", { mode: "date" }).notNull(),
   age: integer("age").notNull(),
   gender: genderEnum("gender").notNull(),

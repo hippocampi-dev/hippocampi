@@ -1,6 +1,8 @@
 import {
   date,
+  decimal,
   index,
+  numeric,
   pgEnum,
   primaryKey,
   text,
@@ -12,6 +14,7 @@ import { patients } from "./patient";
 import { doctors } from "./doctor";
 import { timestamps } from "./utils";
 import { createTable } from "./schema";
+import { z } from "zod";
 
 // User Roles
 export const userRoles = createTable(
@@ -47,7 +50,7 @@ export const patientDoctorManagement = createTable(
   }
 )
 
-// Scheduled meetings
+// appointments
 export const appointmentStatusEnum = pgEnum("status", [
   "Scheduled",
   "Canceled",
@@ -80,3 +83,50 @@ export const appointments = createTable(
     dateIdx: index("meeting_date_idx").on(meeting.scheduledAt),
   })
 );
+
+export const subscriptionStatusEnum = pgEnum('status', [
+  'subscribed',
+  'unsubscribed'
+]);
+
+// Payment
+export const doctorSubcriptions = createTable('doctor_subscriptions', {
+  doctorId: varchar("doctor_id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .references(() => doctors.doctorId),
+  subscriptionId: varchar('subscription_id', { length: 255 }).notNull(),
+  status: subscriptionStatusEnum('status').default('unsubscribed').notNull(),
+  startDate: timestamp('start_date', {mode: 'date'}).notNull(),
+  cancelDate: timestamp('end_date', {mode: 'date'}),
+  currentPeriodStart: timestamp('current_period_start', {mode: 'date'}).notNull(),
+  currentPeriodEnd: timestamp('current_period_end', {mode: 'date'}).notNull(),
+});
+
+// patient invoices
+const invoiceStatusEnum = pgEnum('status', [
+  'unpaid',
+  'paid'
+]);
+
+export const invoices = createTable('invoices', {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  stripeCustomerId: varchar('stripe_customer_id', { length: 255 }),
+  stripeInvoiceId: varchar('stripe_invoice_id', { length: 255 }),
+  appointmentId: varchar('appointment_id', { length: 255 })
+    .notNull()
+    .references(() => appointments.id),
+  patientId: varchar('patient_id', { length: 255 })
+    .notNull()
+    .references(() => patients.patientId),
+  doctorId: varchar('doctor_id', { length: 255 })
+    .notNull()
+    .references(() => doctors.doctorId),
+  amount: numeric('amount', { precision: 2 }),
+  status: invoiceStatusEnum('status')
+    .notNull()
+    .default('unpaid')
+});
