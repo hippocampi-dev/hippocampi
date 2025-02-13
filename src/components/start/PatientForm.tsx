@@ -9,10 +9,7 @@ import MedicalInfoForm from "./MedicalInfoForm"
 
 
 export default function PatientForm() {
-  const [step, setStep] = useState(1)
-
-  const nextStep = () => setStep(step + 1)
-  const prevStep = () => setStep(step - 1)
+  const [step, setStep] = useState(1);
 
   return (
     <Card className="w-full max-w-4xl shadow-lg">
@@ -38,12 +35,12 @@ export default function PatientForm() {
         </AnimatePresence>
         <div className="flex justify-between mt-6">
           {step > 1 && (
-            <Button onClick={prevStep} variant="outline">
+            <Button onClick={() => setStep(step - 1)} variant="outline">
               Previous
             </Button>
           )}
           {step < 2 ? (
-            <Button onClick={nextStep} className="ml-auto">
+            <Button onClick={() => setStep(step + 1)} className="ml-auto">
               Next
             </Button>
           ) : (
