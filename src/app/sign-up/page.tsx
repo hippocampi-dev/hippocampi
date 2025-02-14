@@ -7,7 +7,7 @@ export default function SignUp() {
   return (
     <main>
       <button onClick={() => signIn("google", {
-        callbackUrl: `${window.location.origin}/middle` // redirect to /dashboard after login
+        callbackUrl: `${window.location.origin}/dashboard` // redirect to /dashboard after login
       })}>Sign up</button>
     </main>
   )

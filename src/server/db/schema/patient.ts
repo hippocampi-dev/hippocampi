@@ -18,7 +18,6 @@ import { timestamps } from './utils'
 export const genderEnum = pgEnum("gender", [
   "male",
   "female",
-  "non_binary",
   "other",
   "prefer_not_to_say"
 ]);

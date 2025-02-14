@@ -1,24 +1,30 @@
-// components/start/PersonalInfoForm.tsx
 "use client";
 
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 type PersonalInfoFormProps = {
   data: {
-    first_name: string;
-    last_name: string;
+    firstName: string;
+    lastName: string;
     middle_initial: string;
-    date_of_birth: string;
+    condition: string;
+    dateOfBirth: Date;
     gender: "male" | "female" | "other" | "prefer_not_to_say";
-    primary_language: string;
-    phone_number: string;
+    primaryLanguage: string;
+    phoneNumber: string;
     email: string;
-    street_address?: string;
+    streetAddress?: string;
     city?: string;
     state?: string;
-    zip_code?: string;
+    zipCode?: string;
   };
   onChange: (data: PersonalInfoFormProps["data"]) => void;
 };
@@ -29,22 +35,22 @@ export default function PersonalInfoForm({ data, onChange }: PersonalInfoFormPro
       <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="first_name">First Name</Label>
+          <Label htmlFor="firstName">First Name</Label>
           <Input
-            id="first_name"
+            id="firstName"
             placeholder="Enter your first name"
-            value={data.first_name}
-            onChange={(e) => onChange({ ...data, first_name: e.target.value })}
+            value={data.firstName}
+            onChange={(e) => onChange({ ...data, firstName: e.target.value })}
             required
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="last_name">Last Name</Label>
+          <Label htmlFor="lastName">Last Name</Label>
           <Input
-            id="last_name"
+            id="lastName"
             placeholder="Enter your last name"
-            value={data.last_name}
-            onChange={(e) => onChange({ ...data, last_name: e.target.value })}
+            value={data.lastName}
+            onChange={(e) => onChange({ ...data, lastName: e.target.value })}
             required
           />
         </div>
@@ -59,12 +65,22 @@ export default function PersonalInfoForm({ data, onChange }: PersonalInfoFormPro
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="date_of_birth">Date of Birth</Label>
+          <Label htmlFor="condition">Condition</Label>
           <Input
-            id="date_of_birth"
+            id="condition"
+            placeholder="Enter your condition"
+            value={data.condition}
+            onChange={(e) => onChange({ ...data, condition: e.target.value })}
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="dateOfBirth">Date of Birth</Label>
+          <Input
+            id="dateOfBirth"
             type="date"
-            value={data.date_of_birth}
-            onChange={(e) => onChange({ ...data, date_of_birth: e.target.value })}
+            value={data.dateOfBirth}
+            onChange={(e) => onChange({ ...data, dateOfBirth: e.target.value })}
             required
           />
         </div>
@@ -88,22 +104,22 @@ export default function PersonalInfoForm({ data, onChange }: PersonalInfoFormPro
           </Select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="primary_language">Primary Language</Label>
+          <Label htmlFor="primaryLanguage">Primary Language</Label>
           <Input
-            id="primary_language"
+            id="primaryLanguage"
             placeholder="Enter your primary language"
-            value={data.primary_language}
-            onChange={(e) => onChange({ ...data, primary_language: e.target.value })}
+            value={data.primaryLanguage}
+            onChange={(e) => onChange({ ...data, primaryLanguage: e.target.value })}
             required
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="phone_number">Phone Number</Label>
+          <Label htmlFor="phoneNumber">Phone Number</Label>
           <Input
-            id="phone_number"
+            id="phoneNumber"
             placeholder="Enter your phone number"
-            value={data.phone_number}
-            onChange={(e) => onChange({ ...data, phone_number: e.target.value })}
+            value={data.phoneNumber}
+            onChange={(e) => onChange({ ...data, phoneNumber: e.target.value })}
             required
           />
         </div>
@@ -120,12 +136,12 @@ export default function PersonalInfoForm({ data, onChange }: PersonalInfoFormPro
         </div>
       </div>
       <div className="space-y-4 mt-4">
-        <Label htmlFor="street_address">Street Address</Label>
+        <Label htmlFor="streetAddress">Street Address</Label>
         <Input
-          id="street_address"
+          id="streetAddress"
           placeholder="Enter your street address"
-          value={data.street_address || ""}
-          onChange={(e) => onChange({ ...data, street_address: e.target.value })}
+          value={data.streetAddress || ""}
+          onChange={(e) => onChange({ ...data, streetAddress: e.target.value })}
           required
         />
       </div>
@@ -151,12 +167,12 @@ export default function PersonalInfoForm({ data, onChange }: PersonalInfoFormPro
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="zip_code">ZIP Code</Label>
+          <Label htmlFor="zipCode">ZIP Code</Label>
           <Input
-            id="zip_code"
+            id="zipCode"
             placeholder="Enter your ZIP code"
-            value={data.zip_code || ""}
-            onChange={(e) => onChange({ ...data, zip_code: e.target.value })}
+            value={data.zipCode || ""}
+            onChange={(e) => onChange({ ...data, zipCode: e.target.value })}
             required
           />
         </div>

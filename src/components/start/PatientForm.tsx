@@ -7,21 +7,25 @@ import { Button } from "../ui/button";
 import PersonalInfoForm from "./PersonalInfoForm";
 import MedicalInfoForm from "./MedicalInfoForm";
 import { z } from "zod";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { PatientsInterface } from "~/server/db/type";
 
 // Zod schema for step 1 – Personal Information
 const personalInfoSchema = z.object({
-  first_name: z.string().min(1, "First name is required"),
-  last_name: z.string().min(1, "Last name is required"),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
   middle_initial: z.string().max(1).optional(),
-  date_of_birth: z.string().nonempty("Date of birth is required"),
+  condition: z.string().nonempty("Condition is required"),
+  dateOfBirth: z.date({required_error: "Date of birth is required"}),
   gender: z.enum(["male", "female", "other", "prefer_not_to_say"]),
-  primary_language: z.string().min(1, "Primary language is required"),
-  phone_number: z.string().min(1, "Phone number is required"),
+  primaryLanguage: z.string().min(1, "Primary language is required"),
+  phoneNumber: z.string().min(1, "Phone number is required"),
   email: z.string().email("Invalid email"),
-  street_address: z.string().min(1, "Street address is required"),
+  streetAddress: z.string().min(1, "Street address is required"),
   city: z.string().min(1, "City is required"),
   state: z.string().min(1, "State is required"),
-  zip_code: z.string().min(1, "ZIP code is required"),
+  zipCode: z.string().min(1, "ZIP code is required"),
 });
 
 // Zod schema for step 2 – Medical Information
@@ -49,20 +53,23 @@ export type PersonalInfo = z.infer<typeof personalInfoSchema>;
 export type MedicalInfo = z.infer<typeof medicalInfoSchema>;
 
 export default function PatientForm() {
+  const { data: session } = useSession();
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
-    first_name: "",
-    last_name: "",
+    firstName: "",
+    lastName: "",
     middle_initial: "",
-    date_of_birth: "",
+    condition: "",
+    dateOfBirth: new Date(),
     gender: "male",
-    primary_language: "",
-    phone_number: "",
+    primaryLanguage: "",
+    phoneNumber: "",
     email: "",
-    street_address: "",
+    streetAddress: "",
     city: "",
     state: "",
-    zip_code: "",
+    zipCode: "",
   });
   const [medicalInfo, setMedicalInfo] = useState<MedicalInfo>({
     medications: [],
@@ -83,28 +90,109 @@ export default function PatientForm() {
     setStep(2);
   };
 
-  // Validate medical info on submit and then POST the data
-  const handleSubmit = async () => {
-    const result = medicalInfoSchema.safeParse(medicalInfo);
-    if (!result.success) {
+  // Validate both personal and medical info on submit and then POST the data
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const basicParse = personalInfoSchema.safeParse(personalInfo);
+    if (!basicParse.success) {
+      setError("Please fill out all required personal information correctly.");
+      return;
+    }
+    const medParse = medicalInfoSchema.safeParse(medicalInfo);
+    if (!medParse.success) {
       setError("Please check your medical information entries.");
       return;
     }
     setError(null);
-    const payload = { ...personalInfo, ...medicalInfo, role: "patient" };
+    if (!session) {
+      console.error("Session is null");
+      return;
+    }
+
+    // Convert dateOfBirth string to Date and calculate age
+    const parsedDOB = new Date(basicParse.data.dateOfBirth);
+    let calculatedAge = new Date().getFullYear() - parsedDOB.getFullYear();
+    const monthDiff = new Date().getMonth() - parsedDOB.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && new Date().getDate() < parsedDOB.getDate())) {
+      calculatedAge--;
+    }
+
+    // Create the patient object ensuring proper types
+    const patient: PatientsInterface = {
+      patientId: session.user.id,
+      age: calculatedAge,
+      firstName: basicParse.data.firstName,
+      lastName: basicParse.data.lastName,
+      middle_initial: basicParse.data.middle_initial,
+      condition: basicParse.data.condition,
+      dateOfBirth: parsedDOB,
+      gender: basicParse.data.gender,
+      primaryLanguage: basicParse.data.primaryLanguage,
+      phoneNumber: basicParse.data.phoneNumber,
+      email: basicParse.data.email,
+      streetAddress: basicParse.data.streetAddress,
+      city: basicParse.data.city,
+      state: basicParse.data.state,
+      zipCode: basicParse.data.zipCode,
+      // Include any additional properties required by PatientsInterface if needed
+    };
+
     try {
-      const res = await fetch("/api/patients/signup", {
+      // 1. Post basic patient info
+      const patientRes = await fetch("/api/db/patient/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(patient),
       });
-      if (!res.ok) {
-        throw new Error("Signup failed");
+      if (!patientRes.ok) throw new Error("Failed to add patient basic info");
+      const patientData = await patientRes.json();
+      const patientId = patientData.patientId; // assume API returns the new patient's id
+  
+      // 2. Post allergies if provided
+      if (medicalInfo.allergies && medicalInfo.allergies.length > 0) {
+        const allergyRes = await fetch("/api/db/health-info/allergies/add", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ patientId, allergies: medicalInfo.allergies }),
+        });
+        if (!allergyRes.ok) throw new Error("Failed to add allergies");
       }
-      console.log("Signup successful!");
-      // Optionally, redirect the user here (e.g., using next/navigation)
-    } catch (err: any) {
-      setError(err.message || "Signup failed.");
+  
+      // 3. Post cognitive symptoms if provided
+      if (medicalInfo.cognitive_symptoms) {
+        const cogRes = await fetch("/api/db/health-info/cognitive-symptoms/add", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ patientId, cognitive_symptoms: medicalInfo.cognitive_symptoms }),
+        });
+        if (!cogRes.ok) throw new Error("Failed to add cognitive symptoms");
+      }
+  
+      // 4. Post diagnoses if provided
+      if (medicalInfo.diagnoses) {
+        const diagRes = await fetch("/api/db/health-info/diagnoses/add", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ patientId, diagnoses: medicalInfo.diagnoses }),
+        });
+        if (!diagRes.ok) throw new Error("Failed to add diagnoses");
+      }
+  
+      // 5. Post medications if provided
+      if (medicalInfo.medications && medicalInfo.medications.length > 0) {
+        const medsRes = await fetch("/api/db/health-info/medications/add", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ patientId, medications: medicalInfo.medications }),
+        });
+        if (!medsRes.ok) throw new Error("Failed to add medications");
+      }
+  
+      // If all posts succeed, redirect to dashboard or show a success message.
+      router.push("/dashboard");
+    } catch (error: any) {
+      setError(error.message || "Signup failed.");
     }
   };
 

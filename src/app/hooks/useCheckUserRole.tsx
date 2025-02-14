@@ -23,6 +23,7 @@ export function useCheckUserRole() {
   useEffect(() => {
     (async () => {
       const userRole = await fetchUserRole();
+      
       if (userRole && userRole.response === false) {
         router.push("/select-role");
       }

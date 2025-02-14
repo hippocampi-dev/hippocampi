@@ -3,6 +3,7 @@ import { DoctorsInterface } from "~/server/db/type";
 
 // pass in DoctorsInteface json
 export const POST = async (request: Request) => {
+  
   const body: DoctorsInterface = await request.json();
   
   try {

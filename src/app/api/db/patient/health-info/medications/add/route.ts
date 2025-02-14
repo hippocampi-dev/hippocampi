@@ -1,10 +1,19 @@
+import { convertDateStringToDate } from "~/lib/utils";
 import { addMedications } from "~/server/db/queries";
 import { PatientMedicationsInterface } from "~/server/db/type";
 
 // pass in PatientMedicationsInteface json
 export const POST = async (request: Request) => {
-  const body: PatientMedicationsInterface = await request.json();
-  
+  const rawBody = await request.json();
+    
+    // Convert the dateOfBirth string to a Date object
+    const startDate = convertDateStringToDate(rawBody.startDate);
+    const endDate = convertDateStringToDate(rawBody.endDate);
+    const body: PatientMedicationsInterface = {
+      ...rawBody,
+      startDate,
+      endDate // now a Date object
+    };
   try {
     const response = await addMedications(body);
 
