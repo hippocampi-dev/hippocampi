@@ -16,7 +16,7 @@ type PersonalInfoFormProps = {
     lastName: string;
     middle_initial: string;
     condition: string;
-    dateOfBirth: Date;
+    dateOfBirth: string;
     gender: "male" | "female" | "other" | "prefer_not_to_say";
     primaryLanguage: string;
     phoneNumber: string;

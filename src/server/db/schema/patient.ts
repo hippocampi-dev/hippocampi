@@ -103,7 +103,7 @@ export const treatments = createTable('treatments', {
     references(() => patients.patientId, {onDelete: 'cascade'})
     .notNull(),
   treatmentName: varchar('treatment_name').notNull(),
-  startDate: date("start_date", { mode: "date" }).notNull(),
+  start_date: date("start_date", { mode: "date" }).notNull(),
   endDate: date("end_date", { mode: "date" }),
   notes: varchar("notes"),
   ...timestamps
@@ -121,7 +121,7 @@ export const medications = createTable('medications', {
   medicationName: varchar('medication_name').notNull(),
   dosage: text('dosage').notNull(),
   frequency: medicationFrequencyEnum("frequency").notNull(),
-  startDate: date("start_date", { mode: "date" }).notNull(),
+  startDate: date("start_date", { mode: "date" }),
   endDate: date("end_date", { mode: "date" }),
   ...timestamps
 })

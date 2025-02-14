@@ -3,21 +3,28 @@ import { PatientAllergiesInterface } from "~/server/db/type";
 
 // pass in PatientAllergiesInteface json
 export const POST = async (request: Request) => {
-  const body: PatientAllergiesInterface = await request.json();
-  
+  let body: PatientAllergiesInterface;
+  try {
+    body = await request.json();
+  } catch (err) {
+    console.error("Failed to parse JSON:", err);
+    return new Response(JSON.stringify({ error: "Invalid JSON input" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+  console.log(body);
   try {
     const response = await addAllergies(body);
-
     if (!response) {
-      return Response.json("Error");
+      return new Response(JSON.stringify("Error"), {
+        headers: { "Content-Type": "application/json" },
+      });
     }
-
     return new Response(JSON.stringify(response), {
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    return Response.json({ error }, { status: 500 });
+    return new Response(JSON.stringify({ error }), { status: 500 });
   }
 };

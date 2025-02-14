@@ -17,7 +17,7 @@ const personalInfoSchema = z.object({
   lastName: z.string().min(1, "Last name is required"),
   middle_initial: z.string().max(1).optional(),
   condition: z.string().nonempty("Condition is required"),
-  dateOfBirth: z.date({required_error: "Date of birth is required"}),
+  dateOfBirth: z.string().nonempty("Date of birth is required"),
   gender: z.enum(["male", "female", "other", "prefer_not_to_say"]),
   primaryLanguage: z.string().min(1, "Primary language is required"),
   phoneNumber: z.string().min(1, "Phone number is required"),
@@ -28,12 +28,28 @@ const personalInfoSchema = z.object({
   zipCode: z.string().min(1, "ZIP code is required"),
 });
 
+// Zod schema for diagnosis
+const diagnosisSchema = z.object({
+  conditionName: z.string().min(1, "Condition name is required"),
+  diagnosisDate: z.string().optional(),
+  selfReported: z.boolean().default(false),
+  notes: z.string().optional(),
+});
+
+// Zod schema for cognitive symptoms
+const cognitiveSymptomSchema = z.object({
+  symptomType: z.string().min(1, "Symptom type is required"),
+  onsetDate: z.string().optional(),
+  severityLevel: z.enum(["mild", "moderate", "severe"]).optional(),
+  notes: z.string().optional(),
+});
+
 // Zod schema for step 2 – Medical Information
 const medicationSchema = z.object({
   medication_name: z.string().min(1, "Medication name is required"),
   dosage: z.string().min(1, "Dosage is required"),
   frequency: z.enum(["daily", "weekly", "monthly", "as_needed"]),
-  start_date: z.string().nonempty("Start date is required"),
+  start_date: z.string().optional(),
   end_date: z.string().optional(),
 });
 const allergySchema = z.object({
@@ -44,8 +60,8 @@ const allergySchema = z.object({
 const medicalInfoSchema = z.object({
   medications: z.array(medicationSchema).optional(),
   allergies: z.array(allergySchema).optional(),
-  diagnoses: z.string().optional(),
-  cognitive_symptoms: z.string().optional(),
+  diagnosis: diagnosisSchema.optional(),
+  cognitiveSymptoms: cognitiveSymptomSchema.optional(),
 });
 
 // TypeScript types inferred from the schemas
@@ -61,7 +77,7 @@ export default function PatientForm() {
     lastName: "",
     middle_initial: "",
     condition: "",
-    dateOfBirth: new Date(),
+    dateOfBirth: "",
     gender: "male",
     primaryLanguage: "",
     phoneNumber: "",
@@ -74,8 +90,8 @@ export default function PatientForm() {
   const [medicalInfo, setMedicalInfo] = useState<MedicalInfo>({
     medications: [],
     allergies: [],
-    diagnoses: "",
-    cognitive_symptoms: "",
+    diagnosis: undefined,
+    cognitiveSymptoms: undefined,
   });
   const [error, setError] = useState<string | null>(null);
 
@@ -101,7 +117,7 @@ export default function PatientForm() {
     }
     const medParse = medicalInfoSchema.safeParse(medicalInfo);
     if (!medParse.success) {
-      setError("Please check your medical information entries.");
+      setError("Please check medical information entries.");
       return;
     }
     setError(null);
@@ -110,7 +126,7 @@ export default function PatientForm() {
       return;
     }
 
-    // Convert dateOfBirth string to Date and calculate age
+    // Convert dateOfBirth to Date and calculate age
     const parsedDOB = new Date(basicParse.data.dateOfBirth);
     let calculatedAge = new Date().getFullYear() - parsedDOB.getFullYear();
     const monthDiff = new Date().getMonth() - parsedDOB.getMonth();
@@ -135,7 +151,62 @@ export default function PatientForm() {
       city: basicParse.data.city,
       state: basicParse.data.state,
       zipCode: basicParse.data.zipCode,
-      // Include any additional properties required by PatientsInterface if needed
+    };
+
+    // Transform allergies: expected fields: patientId, allergen, reaction, severity
+    const transformAllergies = (
+      patientId: string,
+      allergies: NonNullable<MedicalInfo["allergies"]>
+    ) => {
+      return allergies.map(({ allergen, reaction, severity }) => ({
+        patientId: session.user.id,
+        allergen,
+        reaction,
+        severity,
+      }));
+    };
+
+    // Transform diagnosis: expected fields: patientId, conditionName, diagnosisDate, selfReported, notes
+    const transformDiagnosis = (
+      patientId: string,
+      diagnosis: NonNullable<MedicalInfo["diagnosis"]>
+    ) => {
+      return {
+        patientId: session.user.id,
+        conditionName: diagnosis.conditionName,
+        diagnosisDate: diagnosis.diagnosisDate ? new Date(diagnosis.diagnosisDate) : null,
+        selfReported: diagnosis.selfReported,
+        notes: diagnosis.notes,
+      };
+    };
+
+    // Transform cognitive symptoms: expected fields: patientId, symptomType, onsetDate, severityLevel, notes
+    const transformCognitiveSymptoms = (
+      patientId: string,
+      cognitiveSymptoms: NonNullable<MedicalInfo["cognitiveSymptoms"]>
+    ) => {
+      return {
+        patientId: session.user.id,
+        symptomType: cognitiveSymptoms.symptomType,
+        onsetDate: cognitiveSymptoms.onsetDate ? new Date(cognitiveSymptoms.onsetDate) : null,
+        severityLevel: cognitiveSymptoms.severityLevel,
+        notes: cognitiveSymptoms.notes,
+      };
+    };
+
+    // Transform medications: expected fields: patientId, medication_name, dosage, frequency, start_date, end_date
+    const transformMedications = (
+      patientId: string,
+      medications: NonNullable<MedicalInfo["medications"]>
+    ) => {
+      return medications.map((med) => ({
+        patientId: session.user.id,
+        medicationName: med.medication_name,
+        dosage: med.dosage,
+        frequency: med.frequency,
+        startDate: med.start_date ? new Date(med.start_date) : null,
+        endDate: med.end_date ? new Date(med.end_date) : null,
+      }));
     };
 
     try {
@@ -151,45 +222,45 @@ export default function PatientForm() {
   
       // 2. Post allergies if provided
       if (medicalInfo.allergies && medicalInfo.allergies.length > 0) {
-        const allergyRes = await fetch("/api/db/health-info/allergies/add", {
+        const allergyRes = await fetch("/api/db/patient/health-info/allergies/add", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ patientId, allergies: medicalInfo.allergies }),
+          body: JSON.stringify(transformAllergies(patientId, medicalInfo.allergies)),
         });
         if (!allergyRes.ok) throw new Error("Failed to add allergies");
       }
   
       // 3. Post cognitive symptoms if provided
-      if (medicalInfo.cognitive_symptoms) {
-        const cogRes = await fetch("/api/db/health-info/cognitive-symptoms/add", {
+      if (medicalInfo.cognitiveSymptoms) {
+        const cogRes = await fetch("/api/db/patient/health-info/cognitive-symptoms/add", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ patientId, cognitive_symptoms: medicalInfo.cognitive_symptoms }),
+          body: JSON.stringify(transformCognitiveSymptoms(patientId, medicalInfo.cognitiveSymptoms)),
         });
         if (!cogRes.ok) throw new Error("Failed to add cognitive symptoms");
       }
   
-      // 4. Post diagnoses if provided
-      if (medicalInfo.diagnoses) {
-        const diagRes = await fetch("/api/db/health-info/diagnoses/add", {
+      // 4. Post diagnosis if provided
+      if (medicalInfo.diagnosis) {
+        const diagRes = await fetch("/api/db/patient/health-info/diagnoses/add", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ patientId, diagnoses: medicalInfo.diagnoses }),
+          body: JSON.stringify(transformDiagnosis(patientId, medicalInfo.diagnosis)),
         });
-        if (!diagRes.ok) throw new Error("Failed to add diagnoses");
+        if (!diagRes.ok) throw new Error("Failed to add diagnosis");
       }
   
       // 5. Post medications if provided
       if (medicalInfo.medications && medicalInfo.medications.length > 0) {
-        const medsRes = await fetch("/api/db/health-info/medications/add", {
+        const medsRes = await fetch("/api/db/patient/health-info/medications/add", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ patientId, medications: medicalInfo.medications }),
+          body: JSON.stringify(transformMedications(patientId, medicalInfo.medications)),
         });
         if (!medsRes.ok) throw new Error("Failed to add medications");
       }
   
-      // If all posts succeed, redirect to dashboard or show a success message.
+      // Redirect on success.
       router.push("/dashboard");
     } catch (error: any) {
       setError(error.message || "Signup failed.");

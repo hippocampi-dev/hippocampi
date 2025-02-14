@@ -21,11 +21,25 @@ export type Allergy = {
   severity: "mild" | "moderate" | "severe";
 };
 
+export type Diagnosis = {
+  conditionName: string;
+  diagnosisDate: string;
+  selfReported: boolean;
+  notes?: string;
+};
+
+export type CognitiveSymptom = {
+  symptomType: string;
+  onsetDate: string;
+  severityLevel?: "mild" | "moderate" | "severe";
+  notes?: string;
+};
+
 export type MedicalInfo = {
   medications: Medication[];
   allergies: Allergy[];
-  diagnoses: string;
-  cognitive_symptoms: string;
+  diagnosis?: Diagnosis;
+  cognitiveSymptoms?: CognitiveSymptom;
 };
 
 type MedicalInfoFormProps = {
@@ -34,6 +48,7 @@ type MedicalInfoFormProps = {
 };
 
 export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps) {
+  // Handlers for medications
   const handleAddMedication = () => {
     onChange({
       ...data,
@@ -50,6 +65,7 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
     onChange({ ...data, medications: meds });
   };
 
+  // Handlers for allergies
   const handleAddAllergy = () => {
     onChange({
       ...data,
@@ -70,6 +86,7 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
     <div className="space-y-6">
       <h2 className="text-xl font-semibold mb-4">Medical Information</h2>
       
+      {/* Medications Section */}
       <div>
         <h3 className="text-lg font-semibold mb-2">Current Medications</h3>
         {data.medications.map((med, i) => (
@@ -157,6 +174,7 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
         <Button onClick={handleAddMedication}>Add Medication</Button>
       </div>
 
+      {/* Allergies Section */}
       <div>
         <h3 className="text-lg font-semibold mb-2">Allergies</h3>
         {data.allergies.map((allergy, i) => (
@@ -217,29 +235,160 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
         <Button onClick={handleAddAllergy}>Add Allergy</Button>
       </div>
 
+      {/* Diagnoses Section */}
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold">Diagnoses</h3>
-        <div className="space-y-2">
-          <Label htmlFor="diagnoses">Current Diagnoses</Label>
-          <Textarea
-            id="diagnoses"
-            placeholder="List your current diagnoses"
-            value={data.diagnoses}
-            onChange={(e) => onChange({ ...data, diagnoses: e.target.value })}
-          />
+        <h3 className="text-lg font-semibold">Diagnosis</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="conditionName">Condition Name</Label>
+            <Input
+              id="conditionName"
+              placeholder="Enter condition name"
+              value={data.diagnosis?.conditionName || ""}
+              onChange={(e) =>
+                onChange({
+                  ...data,
+                  diagnosis: { 
+                    ...data.diagnosis, 
+                    conditionName: e.target.value 
+                  },
+                })
+              }
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="diagnosisDate">Diagnosis Date</Label>
+            <Input
+              id="diagnosisDate"
+              type="date"
+              value={data.diagnosis?.diagnosisDate || ""}
+              onChange={(e) =>
+                onChange({
+                  ...data,
+                  diagnosis: { 
+                    ...data.diagnosis, 
+                    diagnosisDate: e.target.value 
+                  },
+                })
+              }
+            />
+          </div>
+          <div className="flex items-center space-x-2">
+            <Label htmlFor="selfReported">Self Reported?</Label>
+            <input
+              id="selfReported"
+              type="checkbox"
+              checked={data.diagnosis?.selfReported || false}
+              onChange={(e) =>
+                onChange({
+                  ...data,
+                  diagnosis: { 
+                    ...data.diagnosis, 
+                    selfReported: e.target.checked 
+                  },
+                })
+              }
+            />
+          </div>
+          <div className="space-y-2 md:col-span-2">
+            <Label htmlFor="diagnosisNotes">Diagnosis Notes</Label>
+            <Textarea
+              id="diagnosisNotes"
+              placeholder="Additional notes about your diagnosis"
+              value={data.diagnosis?.notes || ""}
+              onChange={(e) =>
+                onChange({
+                  ...data,
+                  diagnosis: { 
+                    ...data.diagnosis, 
+                    notes: e.target.value 
+                  },
+                })
+              }
+            />
+          </div>
         </div>
       </div>
 
+      {/* Cognitive Symptoms Section */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">Cognitive Symptoms</h3>
-        <div className="space-y-2">
-          <Label htmlFor="cognitive_symptoms">Cognitive Symptoms</Label>
-          <Textarea
-            id="cognitive_symptoms"
-            placeholder="Describe your cognitive symptoms"
-            value={data.cognitive_symptoms}
-            onChange={(e) => onChange({ ...data, cognitive_symptoms: e.target.value })}
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="symptomType">Symptom Type</Label>
+            <Input
+              id="symptomType"
+              placeholder="Enter symptom type"
+              value={data.cognitiveSymptoms?.symptomType || ""}
+              onChange={(e) =>
+                onChange({
+                  ...data,
+                  cognitiveSymptoms: {
+                    ...data.cognitiveSymptoms,
+                    symptomType: e.target.value,
+                  },
+                })
+              }
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="onsetDate">Onset Date</Label>
+            <Input
+              id="onsetDate"
+              type="date"
+              value={data.cognitiveSymptoms?.onsetDate || ""}
+              onChange={(e) =>
+                onChange({
+                  ...data,
+                  cognitiveSymptoms: {
+                    ...data.cognitiveSymptoms,
+                    onsetDate: e.target.value,
+                  },
+                })
+              }
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="severityLevel">Severity Level</Label>
+            <Select
+              value={data.cognitiveSymptoms?.severityLevel || ""}
+              onValueChange={(value) =>
+                onChange({
+                  ...data,
+                  cognitiveSymptoms: {
+                    ...data.cognitiveSymptoms,
+                    severityLevel: value as "mild" | "moderate" | "severe",
+                  },
+                })
+              }
+            >
+              <SelectTrigger id="severityLevel">
+                <SelectValue placeholder="Select severity" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="mild">Mild</SelectItem>
+                <SelectItem value="moderate">Moderate</SelectItem>
+                <SelectItem value="severe">Severe</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2 md:col-span-2">
+            <Label htmlFor="cognitiveNotes">Additional Notes</Label>
+            <Textarea
+              id="cognitiveNotes"
+              placeholder="Enter additional details about your cognitive symptoms"
+              value={data.cognitiveSymptoms?.notes || ""}
+              onChange={(e) =>
+                onChange({
+                  ...data,
+                  cognitiveSymptoms: {
+                    ...data.cognitiveSymptoms,
+                    notes: e.target.value,
+                  },
+                })
+              }
+            />
+          </div>
         </div>
       </div>
     </div>

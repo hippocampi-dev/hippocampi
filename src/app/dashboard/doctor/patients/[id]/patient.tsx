@@ -260,7 +260,7 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
                   </p>
                   <p className="text-sm text-muted-foreground">{"Dosage:" + item.dosage}</p>
                   <p className="text-sm text-muted-foreground">{"Frequency:" + item.frequency}</p>
-                  <p className="text-sm text-muted-foreground">{`${item.startDate.toDateString()}-${item.endDate?.toDateString()}`}</p>
+                  <p className="text-sm text-muted-foreground">{`${item.start_date.toDateString()}-${item.endDate?.toDateString()}`}</p>
                 </li>
               ))}
             </ul>
@@ -282,7 +282,7 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
                     {item.treatmentName}
                   </p>
                   <p className="text-sm text-muted-foreground">{item.notes}</p>
-                  <p className="text-sm text-muted-foreground">{`${item.startDate.toDateString()}-${item.endDate?.toDateString()}`}</p>
+                  <p className="text-sm text-muted-foreground">{`${item.start_date.toDateString()}-${item.endDate?.toDateString()}`}</p>
                 </li>
               ))}
             </ul>
