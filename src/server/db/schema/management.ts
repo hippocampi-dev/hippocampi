@@ -44,7 +44,7 @@ export const patientDoctorManagement = createTable(
     patientId: varchar("patient_id", { length: 255 })
       .notNull()
       .references(() => patients.patientId, {onDelete: "cascade", onUpdate: "cascade"}),
-    lastVisit: date("last_visit").notNull(),
+    lastVisit: date("last_visit"),
     notes: text("notes"),
     ...timestamps
   }

@@ -8,7 +8,7 @@ export const GET = async () => {
 
     if (userId) {
       const response = await getPatientDoctorManagement(userId);
-
+      console.log(response)
       return NextResponse.json({ response })
     }
 

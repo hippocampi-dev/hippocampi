@@ -80,6 +80,10 @@ export const getDoctor = async (user_id: UserIdInterface) => {
   });
 }
 
+export const getAllDoctors = async () => {
+  return db.query.doctors.findMany();
+};
+
 // add doctor credentials
 export const addDoctorCredentials = async (doctorCredentials: DoctorCredentialsInterface) => {
   return db.insert(schema_doctor.doctorCredentials)
