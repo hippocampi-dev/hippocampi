@@ -16,7 +16,7 @@ export default function Middle() {
         const result = await response.json();
         setData({
           loading: false,
-          content: result,
+          content: result.response,
         });
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -29,7 +29,9 @@ export default function Middle() {
 
     fetchData();
   }, []);
-  console.log(data.content)
   if (data.loading) return <Loading />
-  if (data.content && data.content.response === false) redirect("/select-role");
+  if (!data.content) redirect("/select-role");
+  else {
+    redirect('/dashboard')
+  }
 }

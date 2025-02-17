@@ -5,10 +5,11 @@ import { redirect } from 'next/navigation';
 import { createContext, useEffect, useState } from 'react';
 import { DoctorDashboardSidebar } from '~/components/doctor-dashboard/dashboard-sidebar';
 import { SidebarProvider } from '~/components/ui/sidebar';
-import { PatientDoctorManagementInterface, PatientHealthInformationInterface, PatientsInterface, AppointmentsInterface, UserIdInterface, DoctorsInterface, role } from '~/server/db/type';
+import { PatientDoctorManagementInterface, PatientHealthInformationInterface, PatientsInterface, AppointmentsInterface, UserIdInterface, DoctorsInterface, role, DoctorSubscriptionsInterface } from '~/server/db/type';
 
 // Define the context type
 interface DoctorDashboardData {
+  isSubscribed?: Boolean
   patients?: PatientsInterface[]
   patientDict?: PatientDict
   management?: PatientDoctorManagementInterface[]
@@ -131,11 +132,15 @@ export function DoctorDashboardProvider({ children }: DoctorDashboardProviderPro
   useEffect(() => {
     const onStart = async () => {
       const isValid = await validateUser();
-      if (isValid) {
-        fetchPatientData();
+      const subscription = await fetchSubscription();
+      if (!isValid) { // if not doctor --> redirect to patient dashboard
+        redirect('/dashboard/patient');
+      }
+      else if (!subscription!.isSubscribed!) { // not subscribed --> redirect to subscriptions page
+        redirect(subscription?.url!);
       }
       else {
-        redirect('/dashboard/patient');
+        fetchPatientData();
       }
     }
 
@@ -271,4 +276,37 @@ export const fetchHealthInfo = async () => {
   }
 
   return patientDictKey;
+}
+
+// fetch subscription
+export const fetchSubscription = async () => {
+  try {
+    const response = await fetch('/api/db/doctor/subscription/get');
+    
+    const result = await response.json();
+
+    const data: DoctorSubscriptionsInterface = result.response;
+
+    if (data.status === 'subscribed') { // subscribed
+      return {
+        isSubscribed: true,
+        url: null
+      }
+    }
+    if (data.stripeCustomerId) { // canceled subscription
+      return {
+        isSubscribed: false,
+        url: '/dashboard/doctor/account'
+      }
+    }
+    else {
+      return {
+        isSubscribed: false,
+        url: '/checkout/subscription'
+      }
+    }
+  } catch (error) {
+    console.log('Failed to subscription');
+    return undefined;
+  }
 }

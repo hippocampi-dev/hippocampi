@@ -1,4 +1,4 @@
-import { Home, Calendar, Users, Settings, LogOut } from "lucide-react"
+import { Home, Calendar, Users, Settings, LogOut, User, Receipt } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -34,19 +34,35 @@ export function DoctorDashboardSidebar() {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          <SidebarMenuItem>
+          {/* <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href="/dashboard/doctor/appointments">
                 <Calendar className="w-4 h-4 mr-2" />
                 <span>Appointments</span>
               </Link>
             </SidebarMenuButton>
-          </SidebarMenuItem>
+          </SidebarMenuItem> */}
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href="/dashboard/doctor/patients">
                 <Users className="w-4 h-4 mr-2" />
                 <span>Patients</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Link href="/dashboard/doctor/billing">
+                <Receipt className="w-4 h-4 mr-2" />
+                <span>Billing</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Link href="/dashboard/doctor/account">
+                <User className="w-4 h-4 mr-2" />
+                <span>Account</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

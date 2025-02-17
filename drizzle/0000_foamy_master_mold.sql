@@ -1,5 +1,5 @@
 DO $$ BEGIN
- CREATE TYPE "public"."status" AS ENUM('Scheduled', 'Canceled', 'Completed');
+ CREATE TYPE "public"."status" AS ENUM('subscribed', 'unsubscribed');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -89,6 +89,7 @@ CREATE TABLE IF NOT EXISTS "hippocampi_doctors" (
 	"location" text NOT NULL,
 	"specialization" varchar,
 	"ratings" varchar(20),
+	"bio" text NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "hippocampi_doctors_email_unique" UNIQUE("email")
@@ -102,6 +103,30 @@ CREATE TABLE IF NOT EXISTS "hippocampi_appointments" (
 	"reason" text,
 	"notes" text,
 	"status" "status" DEFAULT 'Scheduled' NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "hippocampi_doctor_subscriptions" (
+	"doctor_id" varchar(255) PRIMARY KEY NOT NULL,
+	"stripe_customer_id" varchar(255),
+	"subscription_id" varchar(255),
+	"status" "status" DEFAULT 'unsubscribed' NOT NULL,
+	"start_date" timestamp,
+	"end_date" timestamp,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "hippocampi_invoices" (
+	"id" varchar(255) PRIMARY KEY NOT NULL,
+	"stripe_customer_id" varchar(255),
+	"stripe_invoice_id" varchar(255),
+	"status" "status" NOT NULL,
+	"appointment_id" varchar(255) NOT NULL,
+	"patient_id" varchar(255) NOT NULL,
+	"doctor_id" varchar(255) NOT NULL,
+	"amount" numeric(2),
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
@@ -193,7 +218,7 @@ CREATE TABLE IF NOT EXISTS "hippocampi_patients" (
 	"first_name" varchar NOT NULL,
 	"last_name" varchar NOT NULL,
 	"middle_initial" varchar,
-	"condition" varchar NOT NULL,
+	"condition" varchar,
 	"date_of_birth" date NOT NULL,
 	"age" integer NOT NULL,
 	"gender" "gender" NOT NULL,
@@ -269,13 +294,37 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "hippocampi_patient_doctor_management" ADD CONSTRAINT "hippocampi_patient_doctor_management_doctor_id_hippocampi_doctors_doctor_id_fk" FOREIGN KEY ("doctor_id") REFERENCES "public"."hippocampi_doctors"("doctor_id") ON DELETE cascade ON UPDATE cascade;
+ ALTER TABLE "hippocampi_doctor_subscriptions" ADD CONSTRAINT "hippocampi_doctor_subscriptions_doctor_id_hippocampi_doctors_doctor_id_fk" FOREIGN KEY ("doctor_id") REFERENCES "public"."hippocampi_doctors"("doctor_id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "hippocampi_patient_doctor_management" ADD CONSTRAINT "hippocampi_patient_doctor_management_patient_id_hippocampi_patients_patient_id_fk" FOREIGN KEY ("patient_id") REFERENCES "public"."hippocampi_patients"("patient_id") ON DELETE cascade ON UPDATE cascade;
+ ALTER TABLE "hippocampi_invoices" ADD CONSTRAINT "hippocampi_invoices_appointment_id_hippocampi_appointments_id_fk" FOREIGN KEY ("appointment_id") REFERENCES "public"."hippocampi_appointments"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "hippocampi_invoices" ADD CONSTRAINT "hippocampi_invoices_patient_id_hippocampi_patients_patient_id_fk" FOREIGN KEY ("patient_id") REFERENCES "public"."hippocampi_patients"("patient_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "hippocampi_invoices" ADD CONSTRAINT "hippocampi_invoices_doctor_id_hippocampi_doctors_doctor_id_fk" FOREIGN KEY ("doctor_id") REFERENCES "public"."hippocampi_doctors"("doctor_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "hippocampi_patient_doctor_management" ADD CONSTRAINT "hippocampi_patient_doctor_management_doctor_id_hippocampi_doctors_doctor_id_fk" FOREIGN KEY ("doctor_id") REFERENCES "public"."hippocampi_doctors"("doctor_id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "hippocampi_patient_doctor_management" ADD CONSTRAINT "hippocampi_patient_doctor_management_patient_id_hippocampi_patients_patient_id_fk" FOREIGN KEY ("patient_id") REFERENCES "public"."hippocampi_patients"("patient_id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

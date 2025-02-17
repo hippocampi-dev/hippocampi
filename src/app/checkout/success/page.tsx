@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import Loading from '~/components/loading/page';
 
 export default function SuccessPage() {
   const [status, setStatus] = useState('loading');
@@ -37,7 +38,7 @@ export default function SuccessPage() {
   }
 
   if (status === 'loading') {
-    return <div>Loading...</div>;
+    return <Loading />
   }
 
   if (status === 'failed') {

@@ -40,10 +40,10 @@ export const patientDoctorManagement = createTable(
       .$defaultFn(() => crypto.randomUUID()),
     doctorId: varchar("doctor_id", { length: 255 })
       .notNull()
-      .references(() => doctors.doctorId, {onDelete: "cascade", onUpdate: "cascade"}),
+      .references(() => doctors.doctorId, {onDelete: "cascade"}),
     patientId: varchar("patient_id", { length: 255 })
       .notNull()
-      .references(() => patients.patientId, {onDelete: "cascade", onUpdate: "cascade"}),
+      .references(() => patients.patientId, {onDelete: "cascade"}),
     lastVisit: date("last_visit"),
     notes: text("notes"),
     ...timestamps
@@ -94,13 +94,13 @@ export const doctorSubcriptions = createTable('doctor_subscriptions', {
   doctorId: varchar("doctor_id", { length: 255 })
     .notNull()
     .primaryKey()
-    .references(() => doctors.doctorId),
-  subscriptionId: varchar('subscription_id', { length: 255 }).notNull(),
+    .references(() => doctors.doctorId, {onDelete: "cascade"}),
+  stripeCustomerId: varchar('stripe_customer_id', { length: 255 }),
+  subscriptionId: varchar('subscription_id', { length: 255 }),
   status: subscriptionStatusEnum('status').default('unsubscribed').notNull(),
-  startDate: timestamp('start_date', {mode: 'date'}).notNull(),
+  startDate: timestamp('start_date', {mode: 'date'}),
   cancelDate: timestamp('end_date', {mode: 'date'}),
-  currentPeriodStart: timestamp('current_period_start', {mode: 'date'}).notNull(),
-  currentPeriodEnd: timestamp('current_period_end', {mode: 'date'}).notNull(),
+  ...timestamps
 });
 
 // patient invoices
@@ -116,6 +116,7 @@ export const invoices = createTable('invoices', {
     .$defaultFn(() => crypto.randomUUID()),
   stripeCustomerId: varchar('stripe_customer_id', { length: 255 }),
   stripeInvoiceId: varchar('stripe_invoice_id', { length: 255 }),
+  status: invoiceStatusEnum('status').notNull(),
   appointmentId: varchar('appointment_id', { length: 255 })
     .notNull()
     .references(() => appointments.id),
@@ -126,7 +127,5 @@ export const invoices = createTable('invoices', {
     .notNull()
     .references(() => doctors.doctorId),
   amount: numeric('amount', { precision: 2 }),
-  status: invoiceStatusEnum('status')
-    .notNull()
-    .default('unpaid')
+  ...timestamps
 });

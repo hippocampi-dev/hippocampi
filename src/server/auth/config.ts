@@ -69,5 +69,8 @@ export const authConfig = {
       },
     }),
   },
+  session: {
+    maxAge: 24 * 60 * 60, // in seconds, 1 day limit
+  },
   secret: process.env.SECRET, // Required for security
 } satisfies NextAuthConfig;

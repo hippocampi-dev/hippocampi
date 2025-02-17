@@ -10,7 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "~/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select"
 import { Textarea } from "~/components/ui/textarea"
-import { DoctorCredentialsInterface, DoctorsInterface } from "~/server/db/type"
+import { DoctorCredentialsInterface, DoctorsInterface, DoctorSubscriptionsInterface } from "~/server/db/type"
 import { useSession } from "next-auth/react"
 import { redirect } from "next/navigation"
 
@@ -24,7 +24,24 @@ const formSchema = z.object({
   medicalSchool: z.string().min(2, { message: "Medical school must be at least 2 characters." }),
   residency: z.string().min(2, { message: "Residency must be at least 2 characters." }),
   medicalApproach: z.string().min(10, { message: "Medical approach must be at least 10 characters." }),
+  bio: z.string().min(50, { message: 'Bio must be at least 50 characters' }).max(500, {
+    message: "Bio must not exceed 500 characters.",
+  }),
 })
+
+export const specializations = [
+  "General Practice",
+  "Internal Medicine",
+  "Pediatrics",
+  "Obstetrics and Gynecology",
+  "Surgery",
+  "Psychiatry",
+  "Dermatology",
+  "Cardiology",
+  "Neurology",
+  "Oncology",
+  "Other",
+] as const
 
 export default function DoctorForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -42,6 +59,7 @@ export default function DoctorForm() {
       medicalSchool: "",
       residency: "",
       medicalApproach: "",
+      bio: ""
     },
   })
   
@@ -57,7 +75,8 @@ export default function DoctorForm() {
       lastName: values.lastName,
       email: values.email,
       location: values.location,
-      specialization: values.specialization
+      specialization: values.specialization,
+      bio: values.bio
     }
 
     const credentials: DoctorCredentialsInterface = {
@@ -66,6 +85,10 @@ export default function DoctorForm() {
       medicalSchool: values.medicalSchool,
       residency: values.residency,
       approach: values.medicalApproach
+    }
+
+    const subscription: DoctorSubscriptionsInterface = {
+      doctorId: session.user.id
     }
 
     // doctor
@@ -80,7 +103,7 @@ export default function DoctorForm() {
       
       const result = await response.json();
     } catch (error) {
-      console.error('Error fetching data:', error)
+      console.error('Error adding doctor:', error)
     }
 
     // credentials
@@ -95,7 +118,22 @@ export default function DoctorForm() {
       
       const result = await response.json();
     } catch (error) {
-      console.error('Error fetching data:', error)
+      console.error('Error adding doctor credentials:', error)
+    }
+    
+    // set up subscriptions in db
+    try {
+      const response = await fetch('/api/db/doctor/subscription/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(subscription)
+      })
+      
+      const result = await response.json();
+    } catch (error) {
+      console.error('Error setting up subscription:', error)
     }
   }
 
@@ -185,14 +223,13 @@ export default function DoctorForm() {
                         <SelectValue placeholder="Select a specialization" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
-                      <SelectItem value="cardiology">Cardiology</SelectItem>
-                      <SelectItem value="dermatology">Dermatology</SelectItem>
-                      <SelectItem value="neurology">Neurology</SelectItem>
-                      <SelectItem value="oncology">Oncology</SelectItem>
-                      <SelectItem value="pediatrics">Pediatrics</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
+                      <SelectContent>
+                        {specializations.map((specialization) => (
+                          <SelectItem key={specialization} value={specialization}>
+                            {specialization}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
                   </Select>
                   <FormMessage />
                 </FormItem>
@@ -246,6 +283,23 @@ export default function DoctorForm() {
                   <FormControl>
                     <Textarea
                       placeholder="Briefly describe your medical approach and philosophy..."
+                      className="resize-none"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="bio"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bio</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Briefly describe a little bit about yourself"
                       className="resize-none"
                       {...field}
                     />

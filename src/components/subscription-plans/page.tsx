@@ -18,15 +18,19 @@ interface Plan {
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
-const features = ["Feature 1", "Feature 2", "Feature 3", "Feature 4"];
+const features = [
+  "Full support on administrative tasks",
+  "Steady stream of new patients",
+  "Competitive reinburstment rates",
+];
 
 export default function SubscriptionPlans() {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false)
   const [plans, setPlans] = useState<Plan[]>([]);
 
   useEffect(() => {
     // Fetch subscription plans from your API
-    fetch('/api/subscription-plans')
+    fetch('/api/stripe/subscription-plans')
       .then(res => res.json())
       .then(data => setPlans(data));
   }, []);
@@ -51,8 +55,6 @@ export default function SubscriptionPlans() {
       }
     } catch (error) {
       console.error('Subscription failed:', error);
-    } finally {
-      setLoading(true);
     }
   };
 
@@ -61,12 +63,18 @@ export default function SubscriptionPlans() {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="w-full">
       {plans.map((plan) => (
-        <Card key={plan.id}>
+        <Card key={plan.id} className="w-full">
           <CardHeader>
-            <CardTitle>{plan.name}</CardTitle>
-            <CardDescription>${plan.price}/month</CardDescription>
+            <CardTitle className="text-xl">
+              {plan.name}
+            </CardTitle>
+            <CardDescription>
+              <span className="text-6xl">
+                ${plan.price}
+              </span> / month
+              </CardDescription>
           </CardHeader>
           <CardContent>
             <ul className="list-disc list-inside space-y-2">

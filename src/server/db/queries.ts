@@ -5,7 +5,7 @@ import * as schema_doctor from './schema/doctor';
 import * as schema_management from './schema/management';
 import * as schema_patient from './schema/patient';
 import { eq } from 'drizzle-orm';
-import { DoctorCredentialsInterface, DoctorsInterface, PatientAllergiesInterface, PatientCognitiveSymptomsInterface, PatientDiagnosesInterface, PatientDoctorManagementInterface, PatientEmergencyContactsInterface, PatientHealthInformationInterface, PatientMedicationsInterface, PatientsInterface, PatientTreatmentsInterface, AppointmentsIdInterface, AppointmentsInterface, UserIdInterface, UserRolesInterface, PatientMedicalHistoryInterface } from './type';
+import { DoctorCredentialsInterface, DoctorsInterface, PatientAllergiesInterface, PatientCognitiveSymptomsInterface, PatientDiagnosesInterface, PatientDoctorManagementInterface, PatientEmergencyContactsInterface, PatientHealthInformationInterface, PatientMedicationsInterface, PatientsInterface, PatientTreatmentsInterface, AppointmentsIdInterface, AppointmentsInterface, UserIdInterface, UserRolesInterface, PatientMedicalHistoryInterface, DoctorSubscriptionsInterface } from './type';
 import { db } from '.';
 
 // add user role
@@ -345,4 +345,41 @@ export const getPatientHealthInformation = async (user_id: UserIdInterface) => {
   }
 
   return patientHealthInformation;
+}
+
+// add doctor subscription
+export const addDoctorSubscription = async (subscription: DoctorSubscriptionsInterface) => {
+  return db.insert(schema_management.doctorSubcriptions)
+    .values(subscription)
+    .onConflictDoNothing()
+    .returning();
+}
+
+// set doctor subscription
+export const setDoctorSubscription = async (user_id: UserIdInterface, subscription: DoctorSubscriptionsInterface) => {
+  return db.update(schema_management.doctorSubcriptions)
+    .set(subscription)
+    .where(eq(schema_management.doctorSubcriptions.doctorId, user_id))
+    .returning();
+}
+
+// get doctor subscription
+export const getDoctorSubscription = async (user_id: UserIdInterface, stripe_customer_id?: string) => {
+  if (stripe_customer_id) {
+    return db.query.doctorSubcriptions.findFirst({
+      where: eq(schema_management.doctorSubcriptions.stripeCustomerId, stripe_customer_id)
+    });
+  }
+  return db.query.doctorSubcriptions.findFirst({
+    where: eq(schema_management.doctorSubcriptions.doctorId, user_id)
+  });
+}
+
+// verify if doctor is subscribed
+export const isDoctorSubscribed = async (user_id: UserIdInterface) => {
+  const subscription = await db.query.doctorSubcriptions.findFirst({
+    where: eq(schema_management.doctorSubcriptions.doctorId, user_id)
+  })
+  
+  return subscription!.status === 'subscribed'; // return true / false
 }

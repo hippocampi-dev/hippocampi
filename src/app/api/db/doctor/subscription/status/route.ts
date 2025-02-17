@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { hasUserRole } from "~/server/db/queries";
+import { isDoctorSubscribed } from "~/server/db/queries";
 import { getUserId } from "~/utilities/get-user";
 
 export const GET = async () => {
@@ -7,7 +7,7 @@ export const GET = async () => {
     const userId = await getUserId() as "string";;
 
     if (userId) {
-      const response = await hasUserRole(userId);
+      const response = await isDoctorSubscribed(userId);
 
       return NextResponse.json({ response })
     }
