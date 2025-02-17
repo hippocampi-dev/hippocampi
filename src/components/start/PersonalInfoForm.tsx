@@ -25,6 +25,8 @@ type PersonalInfoFormProps = {
     city?: string;
     state?: string;
     zipCode?: string;
+    termsOfService: boolean;
+    hipaaCompliance: boolean;
   };
   onChange: (data: PersonalInfoFormProps["data"]) => void;
 };
@@ -175,6 +177,34 @@ export default function PersonalInfoForm({ data, onChange }: PersonalInfoFormPro
             onChange={(e) => onChange({ ...data, zipCode: e.target.value })}
             required
           />
+        </div>
+      </div>
+
+      {/* New Section for Terms of Service & HIPAA Compliance */}
+      <div className="mt-6 space-y-4">
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            id="termsOfService"
+            checked={data.termsOfService}
+            onChange={(e) => onChange({ ...data, termsOfService: e.target.checked })}
+            className="mr-2"
+          />
+          <Label htmlFor="termsOfService">
+            I agree to the <a href="/terms" className="text-blue-500 underline" target="_blank" rel="noopener noreferrer">Terms of Service</a>
+          </Label>
+        </div>
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            id="hipaaCompliance"
+            checked={data.hipaaCompliance}
+            onChange={(e) => onChange({ ...data, hipaaCompliance: e.target.checked })}
+            className="mr-2"
+          />
+          <Label htmlFor="hipaaCompliance">
+            I confirm that I have read and agree to the HIPAA compliance policy.
+          </Label>
         </div>
       </div>
     </div>

@@ -268,7 +268,7 @@ export const fetchHealthInfo = async () => {
   const patientDictKey: PatientHealthInformationInterface = {
     allergies: allergies,
     cognitiveSymptoms: cognitiveSymptoms,
-    dianoses: dianoses,
+    diagnoses: dianoses,
     emergencyContacts: emergencyContacts,
     medications: medications,
     treatments: treatments,

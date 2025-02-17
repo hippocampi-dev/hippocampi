@@ -7,13 +7,15 @@ export const POST = async (request: Request) => {
   try {
     const rawBody = await request.json();
     console.log("Raw medications data:", rawBody);
+    const patientId = rawBody.patientId;
     // Iterate through each medication and convert date strings.
-    const medications: PatientMedicationsInterface = rawBody.map((med: any) => {
+    const medications: PatientMedicationsInterface = rawBody.medications.map((med: any) => {
       const {start_date, end_date, ...rest } = med;
       return {
+        patientId,
         ...rest,
-        startDate: med.startDate ? convertDateStringToDate(med.startDate) : null,
-        endDate: med.endDate ? convertDateStringToDate(med.endDate):null,
+        startDate: med.start_date ? convertDateStringToDate(med.start_date) : null,
+        endDate: med.end_date ? convertDateStringToDate(med.end_date):null,
       }
     });
     console.log(medications)

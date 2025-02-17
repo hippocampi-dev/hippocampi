@@ -62,6 +62,7 @@ export const patients = createTable('patients', {
   city: varchar('city').notNull(),
   state: varchar('state').notNull(),
   zipCode: varchar('zip_code').notNull(),
+  hipaaCompliance: boolean('hipaa_compliance').notNull(),
   ...timestamps
 })
 

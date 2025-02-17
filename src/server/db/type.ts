@@ -98,7 +98,7 @@ export interface PatientHealthInformationInterface {
   medicalHistory: PatientMedicalHistoryInterface
   allergies: PatientAllergiesInterface[];
   cognitiveSymptoms: PatientCognitiveSymptomsInterface[];
-  dianoses: PatientDiagnosesInterface[];
+  diagnoses: PatientDiagnosesInterface[];
   emergencyContacts: PatientEmergencyContactsInterface[];
   medications: PatientMedicationsInterface[];
   treatments: PatientTreatmentsInterface[];

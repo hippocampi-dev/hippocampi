@@ -11,53 +11,102 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { PatientsInterface } from "~/server/db/type";
 
+// Helper function to format Zod errors
+const formatZodErrors = (issues: z.ZodIssue[]): string =>
+  issues.map(issue => `${issue.path.join(".")}: ${issue.message}`).join("\n");
+
 // Zod schema for step 1 – Personal Information
-const personalInfoSchema = z.object({
+const validatePastDate = (val: string) => {
+  const d = new Date(val);
+  const today = new Date();
+  return d <= today;
+};
+
+export const personalInfoSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   middle_initial: z.string().max(1).optional(),
   condition: z.string().nonempty("Condition is required"),
-  dateOfBirth: z.string().nonempty("Date of birth is required"),
+  dateOfBirth: z
+    .string()
+    .nonempty("Date of birth is required")
+    .refine(
+      (val) => {
+        const date = new Date(val);
+        if (isNaN(date.getTime())) return false;
+        if (!validatePastDate(val)) return false;
+        const today = new Date();
+        let age = today.getFullYear() - date.getFullYear();
+        const m = today.getMonth() - date.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < date.getDate())) {
+          age--;
+        }
+        return age >= 18 && age <= 130;
+      },
+      { message: "You must be older than 18 and your birth date cannot be in the future" }
+    ),
   gender: z.enum(["male", "female", "other", "prefer_not_to_say"]),
   primaryLanguage: z.string().min(1, "Primary language is required"),
-  phoneNumber: z.string().min(1, "Phone number is required"),
+  phoneNumber: z.string().regex(/^\d{10,15}$/, "Invalid phone number"),
   email: z.string().email("Invalid email"),
   streetAddress: z.string().min(1, "Street address is required"),
   city: z.string().min(1, "City is required"),
   state: z.string().min(1, "State is required"),
-  zipCode: z.string().min(1, "ZIP code is required"),
+  zipCode: z.string().min(1, "ZIP code is required").max(10, "ZIP code must be at most 10 characters"),
+  termsOfService: z.boolean().refine(val => val, { message: "You must agree to the Terms of Service" }),
+  hipaaCompliance: z.boolean().refine(val => val, { message: "You must confirm HIPAA compliance" }),
 });
 
 // Zod schema for diagnosis
-const diagnosisSchema = z.object({
+export const diagnosisSchema = z.object({
   conditionName: z.string().min(1, "Condition name is required"),
-  diagnosisDate: z.string().optional(),
+  diagnosisDate: z
+    .string()
+    .optional()
+    .refine(
+      (val) => !val || validatePastDate(val),
+      { message: "Diagnosis date cannot be in the future" }
+    ),
   selfReported: z.boolean().default(false),
   notes: z.string().optional(),
 });
 
 // Zod schema for cognitive symptoms
-const cognitiveSymptomSchema = z.object({
+export const cognitiveSymptomSchema = z.object({
   symptomType: z.string().min(1, "Symptom type is required"),
-  onsetDate: z.string().optional(),
+  onsetDate: z
+    .string()
+    .optional()
+    .refine(
+      (val) => !val || validatePastDate(val),
+      { message: "Onset date cannot be in the future" }
+    ),
   severityLevel: z.enum(["mild", "moderate", "severe"]).optional(),
   notes: z.string().optional(),
 });
 
 // Zod schema for step 2 – Medical Information
-const medicationSchema = z.object({
-  medication_name: z.string().min(1, "Medication name is required"),
+export const medicationSchema = z.object({
+  medicationName: z.string().min(1, "Medication name is required"),
   dosage: z.string().min(1, "Dosage is required"),
   frequency: z.enum(["daily", "weekly", "monthly", "as_needed"]),
-  start_date: z.string().optional(),
-  end_date: z.string().optional(),
+  start_date: z
+    .string()
+    .optional()
+    .refine(
+      (val) => !val || validatePastDate(val),
+      { message: "Start date cannot be in the future" }
+    ),
+  end_date: z
+    .string()
+    .optional(),
 });
-const allergySchema = z.object({
+export const allergySchema = z.object({
   allergen: z.string().min(1, "Allergen is required"),
   reaction: z.string().optional(),
   severity: z.enum(["mild", "moderate", "severe"]),
 });
-const medicalInfoSchema = z.object({
+export const medicalInfoSchema = z.object({
   medications: z.array(medicationSchema).optional(),
   allergies: z.array(allergySchema).optional(),
   diagnosis: diagnosisSchema.optional(),
@@ -86,6 +135,8 @@ export default function PatientForm() {
     city: "",
     state: "",
     zipCode: "",
+    termsOfService: false,
+    hipaaCompliance: false
   });
   const [medicalInfo, setMedicalInfo] = useState<MedicalInfo>({
     medications: [],
@@ -95,29 +146,29 @@ export default function PatientForm() {
   });
   const [error, setError] = useState<string | null>(null);
 
-  // Validate personal info on next
+  // Validate personal info on Next
   const handleNext = () => {
     const result = personalInfoSchema.safeParse(personalInfo);
     if (!result.success) {
-      setError("Please fill out all required personal information correctly.");
+      setError(formatZodErrors(result.error.errors));
       return;
     }
     setError(null);
     setStep(2);
   };
 
-  // Validate both personal and medical info on submit and then POST the data
+  // Validate both personal and medical info on Submit, then post the data
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const basicParse = personalInfoSchema.safeParse(personalInfo);
     if (!basicParse.success) {
-      setError("Please fill out all required personal information correctly.");
+      setError(formatZodErrors(basicParse.error.errors));
       return;
     }
     const medParse = medicalInfoSchema.safeParse(medicalInfo);
     if (!medParse.success) {
-      setError("Please check medical information entries.");
+      setError(formatZodErrors(medParse.error.errors));
       return;
     }
     setError(null);
@@ -151,62 +202,7 @@ export default function PatientForm() {
       city: basicParse.data.city,
       state: basicParse.data.state,
       zipCode: basicParse.data.zipCode,
-    };
-
-    // Transform allergies: expected fields: patientId, allergen, reaction, severity
-    const transformAllergies = (
-      patientId: string,
-      allergies: NonNullable<MedicalInfo["allergies"]>
-    ) => {
-      return allergies.map(({ allergen, reaction, severity }) => ({
-        patientId: session.user.id,
-        allergen,
-        reaction,
-        severity,
-      }));
-    };
-
-    // Transform diagnosis: expected fields: patientId, conditionName, diagnosisDate, selfReported, notes
-    const transformDiagnosis = (
-      patientId: string,
-      diagnosis: NonNullable<MedicalInfo["diagnosis"]>
-    ) => {
-      return {
-        patientId: session.user.id,
-        conditionName: diagnosis.conditionName,
-        diagnosisDate: diagnosis.diagnosisDate ? new Date(diagnosis.diagnosisDate) : null,
-        selfReported: diagnosis.selfReported,
-        notes: diagnosis.notes,
-      };
-    };
-
-    // Transform cognitive symptoms: expected fields: patientId, symptomType, onsetDate, severityLevel, notes
-    const transformCognitiveSymptoms = (
-      patientId: string,
-      cognitiveSymptoms: NonNullable<MedicalInfo["cognitiveSymptoms"]>
-    ) => {
-      return {
-        patientId: session.user.id,
-        symptomType: cognitiveSymptoms.symptomType,
-        onsetDate: cognitiveSymptoms.onsetDate ? new Date(cognitiveSymptoms.onsetDate) : null,
-        severityLevel: cognitiveSymptoms.severityLevel,
-        notes: cognitiveSymptoms.notes,
-      };
-    };
-
-    // Transform medications: expected fields: patientId, medication_name, dosage, frequency, start_date, end_date
-    const transformMedications = (
-      patientId: string,
-      medications: NonNullable<MedicalInfo["medications"]>
-    ) => {
-      return medications.map((med) => ({
-        patientId: session.user.id,
-        medicationName: med.medication_name,
-        dosage: med.dosage,
-        frequency: med.frequency,
-        startDate: med.start_date ? new Date(med.start_date) : null,
-        endDate: med.end_date ? new Date(med.end_date) : null,
-      }));
+      hipaaCompliance: basicParse.data.hipaaCompliance,
     };
 
     try {
@@ -217,15 +213,15 @@ export default function PatientForm() {
         body: JSON.stringify(patient),
       });
       if (!patientRes.ok) throw new Error("Failed to add patient basic info");
-      const patientData = await patientRes.json();
-      const patientId = patientData.patientId; // assume API returns the new patient's id
+      
+      const patientId = session.user.id; // assume API returns the new patient's id
   
       // 2. Post allergies if provided
       if (medicalInfo.allergies && medicalInfo.allergies.length > 0) {
         const allergyRes = await fetch("/api/db/patient/health-info/allergies/add", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(transformAllergies(patientId, medicalInfo.allergies)),
+          body: JSON.stringify({ patientId, allergies: medicalInfo.allergies }),
         });
         if (!allergyRes.ok) throw new Error("Failed to add allergies");
       }
@@ -235,7 +231,7 @@ export default function PatientForm() {
         const cogRes = await fetch("/api/db/patient/health-info/cognitive-symptoms/add", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(transformCognitiveSymptoms(patientId, medicalInfo.cognitiveSymptoms)),
+          body: JSON.stringify({ patientId, cognitiveSymptoms: medicalInfo.cognitiveSymptoms }),
         });
         if (!cogRes.ok) throw new Error("Failed to add cognitive symptoms");
       }
@@ -245,22 +241,22 @@ export default function PatientForm() {
         const diagRes = await fetch("/api/db/patient/health-info/diagnoses/add", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(transformDiagnosis(patientId, medicalInfo.diagnosis)),
+          body: JSON.stringify({ patientId, diagnosis: medicalInfo.diagnosis }),
         });
         if (!diagRes.ok) throw new Error("Failed to add diagnosis");
       }
   
       // 5. Post medications if provided
       if (medicalInfo.medications && medicalInfo.medications.length > 0) {
+        console.log(patientId)
         const medsRes = await fetch("/api/db/patient/health-info/medications/add", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(transformMedications(patientId, medicalInfo.medications)),
+          body: JSON.stringify({ patientId, medications: medicalInfo.medications }),
         });
         if (!medsRes.ok) throw new Error("Failed to add medications");
       }
   
-      // Redirect on success.
       router.push("/dashboard");
     } catch (error: any) {
       setError(error.message || "Signup failed.");
@@ -295,7 +291,7 @@ export default function PatientForm() {
             )}
           </motion.div>
         </AnimatePresence>
-        {error && <p className="mt-4 text-center text-red-500">{error}</p>}
+        {error && <p className="mt-4 text-center text-red-500 whitespace-pre-wrap">{error}</p>}
         <div className="flex justify-between mt-6">
           {step > 1 && (
             <Button onClick={() => setStep(step - 1)} variant="outline">

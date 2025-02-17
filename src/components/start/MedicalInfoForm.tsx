@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Button } from "../ui/button";
 
 export type Medication = {
-  medication_name: string;
+  medicationName: string;
   dosage: string;
   frequency: "daily" | "weekly" | "monthly" | "as_needed";
   start_date: string;
@@ -54,7 +54,7 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
       ...data,
       medications: [
         ...data.medications,
-        { medication_name: "", dosage: "", frequency: "daily", start_date: "", end_date: "" },
+        { medicationName: "", dosage: "", frequency: "daily", start_date: "", end_date: "" },
       ],
     });
   };
@@ -92,14 +92,14 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
         {data.medications.map((med, i) => (
           <div key={i} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div className="space-y-2">
-              <Label htmlFor={`medication_name_${i}`}>Medication Name</Label>
+              <Label htmlFor={`medicationName_${i}`}>Medication Name</Label>
               <Input
-                id={`medication_name_${i}`}
+                id={`medicationName_${i}`}
                 placeholder="Enter medication name"
-                value={med.medication_name}
+                value={med.medicationName}
                 onChange={(e) => {
                   const meds = [...data.medications];
-                  meds[i].medication_name = e.target.value;
+                  meds[i].medicationName = e.target.value;
                   onChange({ ...data, medications: meds });
                 }}
               />
@@ -126,7 +126,7 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                   meds[i].frequency = value as Medication["frequency"];
                   onChange({ ...data, medications: meds });
                 }}
-              >
+              >   
                 <SelectTrigger id={`frequency_${i}`}>
                   <SelectValue placeholder="Select frequency" />
                 </SelectTrigger>

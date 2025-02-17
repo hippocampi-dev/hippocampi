@@ -331,14 +331,12 @@ export const getPatientHealthInformation = async (user_id: UserIdInterface) => {
   const _medicalHistory = await db.query.medicalHistory.findFirst({
     where: eq(schema_patient.medicalHistory.patientId, user_id)
   });
-1
-  if (!_allergies || !_cognitiveSymptoms || !_diagnoses || !_emergencyContacts || !_medications || !_treatments || !_medicalHistory) return null;
 
   const patientHealthInformation: PatientHealthInformationInterface = {
-    medicalHistory: _medicalHistory,
+    medicalHistory: _medicalHistory as PatientMedicalHistoryInterface,
     allergies: _allergies,
     cognitiveSymptoms: _cognitiveSymptoms,
-    dianoses: _diagnoses,
+    diagnoses: _diagnoses,
     emergencyContacts: _emergencyContacts,
     medications: _medications,
     treatments: _treatments
