@@ -8,7 +8,7 @@ import { Button } from '~/components/ui/button';
 
 export default async function DashboardHome() {
   // Assume session is already handled in the layout (or fetched here via your method)
-  const session = { user: { name: "John Doe" } }; // replace with actual session logic
+  const session = { user: data.user.name }; // replace with actual session logic
 
   return (
     <div>
