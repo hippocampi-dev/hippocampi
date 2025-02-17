@@ -7,10 +7,9 @@ import { string } from "zod";
 import Loading from "~/components/loading/page";
 
 export default function SignOut({
-  children, className = ""
+  children
 }: {
   children: React.ReactNode,
-  className?: string;
 }) {
-  return (<button className={`w-full text-left ${className}`} onClick={async () => {await signOut(); redirect("/")}}> {children} </button>)
+  return (<button className={`w-full text-left`} onClick={async () => {await signOut(); redirect("/")}}> {children} </button>)
 }

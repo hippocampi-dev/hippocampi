@@ -26,7 +26,6 @@ export default function DashboardLayout({
 }) {
   // For a server component you might fetch session differently.
   // For demonstration, we'll assume the session is available client-side.
-  const {data: session} = useSession();
 
   return (
     <SidebarProvider>

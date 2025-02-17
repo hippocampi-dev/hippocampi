@@ -1,3 +1,4 @@
+
 // app/dashboard/page.tsx
 import * as React from 'react';
 import TitleCard from '~/components/patient-dashboard/TitleCard';
@@ -5,10 +6,16 @@ import PatientNotifications from '~/components/patient-dashboard/PatientNotifica
 import HealthcareProviders from '~/components/patient-dashboard/HealthcareProviders';
 import { Bell, Calendar, ChevronDown, FileText, Home, LogOut, User, UserCircle, Video } from 'lucide-react';
 import { Button } from '~/components/ui/button';
+import { useSession } from 'next-auth/react';
+import { redirect } from 'next/navigation';
+import { auth } from '~/server/auth';
 
 export default async function DashboardHome() {
+  const session = await auth()
   // Assume session is already handled in the layout (or fetched here via your method)
-  const session = { user: data.user.name }; // replace with actual session logic
+  if (!session) {
+    redirect("/sign-in")
+  }
 
   return (
     <div>
