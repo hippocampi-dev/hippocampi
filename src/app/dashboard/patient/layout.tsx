@@ -16,8 +16,8 @@ import {
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '~/components/ui/dropdown-menu';
 import { Bell, Calendar, ChevronDown, FileText, Home, LogOut, User, UserCircle, Video } from 'lucide-react';
 import Link from 'next/link';
-import SignOut from '~/app/sign-out/page';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
+import { redirect } from 'next/navigation';
 
 export default function DashboardLayout({
   children,
@@ -75,12 +75,12 @@ export default function DashboardLayout({
                   </DropdownMenuItem>
                 </Link>
                 <DropdownMenuSeparator />
-                <SignOut>
+                <button className={`w-full text-left`} onClick={async () => {await signOut({redirect: true, redirectTo: "/"}); redirect("/")}}>
                   <DropdownMenuItem>
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Sign Out</span>
                   </DropdownMenuItem>
-                </SignOut>
+                  </button>
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarFooter>
