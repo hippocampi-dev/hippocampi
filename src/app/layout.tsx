@@ -5,7 +5,7 @@ import { type Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
-  title: "Nextjs Boilerplate",
+  title: "HippoCampi",
   description: "Nextjs boilerplate with NextAuth, Drizzle, Postgres, and Stripe",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };

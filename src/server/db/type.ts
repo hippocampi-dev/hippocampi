@@ -1,11 +1,96 @@
-// type interface for db tables
+import { users, userLogins } from "./schema/auth";
+import { doctorCredentials, doctors } from "./schema/doctor";
+import {
+  patientDoctorManagement,
+  appointments,
+  userRoles,
+} from "./schema/management";
+import {
+  allergies,
+  cognitiveSymptoms,
+  diagnoses,
+  emergencyContacts,
+  medicalHistory,
+  medications,
+  patients,
+  treatments,
+} from "./schema/patient";
 
-import { doctors, patients, userRoles, users } from "./schema";
+// User ID
+export type UserIdInterface = typeof users.id.dataType;
 
-export type UsersInterface = typeof users.$inferInsert;
+// Users
+export type UserInterface = typeof users.$inferInsert;
 
-export type UsersRolesInterface = typeof userRoles.$inferInsert;
+// User Roles
+export type UserRolesInterface = typeof userRoles.$inferInsert;
 
+// Role types (strings)
+export enum role {
+  patient = "patient",
+  doctor = "doctor",
+  admin = "admin",
+}
+
+// Doctors
 export type DoctorsInterface = typeof doctors.$inferInsert;
 
+// Specialization
+export enum specialization {
+  Oncology = "Oncology"
+}
+
+// Doctor Credentials
+export type DoctorCredentialsInterface = typeof doctorCredentials.$inferInsert;
+
+// Patients
 export type PatientsInterface = typeof patients.$inferInsert;
+
+// Caregivers
+// export type PatientCaregiversInterface = typeof caregiverInfo.$inferInsert;
+
+// Patient-Doctor Management
+export type PatientDoctorManagementInterface =
+  typeof patientDoctorManagement.$inferInsert;
+
+// Scheduled Meetings
+export type AppointmentsInterface = typeof appointments.$inferInsert;
+
+// Scheduled Meetings Id
+export type AppointmentsIdInterface = typeof appointments.id.dataType;
+
+// User Logins
+export type UserLoginsInterface = typeof userLogins.$inferInsert;
+
+// Emergency Contacts
+export type PatientEmergencyContactsInterface = typeof emergencyContacts.$inferInsert;
+
+// Medications
+export type PatientMedicationsInterface = typeof medications.$inferInsert;
+
+// Allergies
+export type PatientAllergiesInterface = typeof allergies.$inferInsert;
+
+// Diagnoses
+export type PatientDiagnosesInterface = typeof diagnoses.$inferInsert;
+
+// Treatments
+export type PatientTreatmentsInterface = typeof treatments.$inferInsert;
+
+// Medical History
+export type PatientMedicalHistoryInterface = typeof medicalHistory.$inferInsert;
+
+// Cognitive Symptoms
+export type PatientCognitiveSymptomsInterface =
+  typeof cognitiveSymptoms.$inferInsert;
+
+// Patient Information
+export interface PatientHealthInformationInterface {
+  medicalHistory: PatientMedicalHistoryInterface
+  allergies: PatientAllergiesInterface[];
+  cognitiveSymptoms: PatientCognitiveSymptomsInterface[];
+  dianoses: PatientDiagnosesInterface[];
+  emergencyContacts: PatientEmergencyContactsInterface[];
+  medications: PatientMedicationsInterface[];
+  treatments: PatientTreatmentsInterface[];
+}
