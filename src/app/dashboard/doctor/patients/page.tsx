@@ -12,14 +12,11 @@ export default function PatientsPage() {
   const context = useContext(DoctorDashboardContext);
 
   useEffect(() => {
-    // console.log(context?.data);
+    console.log('Context Data:', JSON.stringify(context?.data, null, 2))
+    console.log('Patients Array:', context?.data?.patients)
   }, [context])
 
-  if (!context) {
-    return <Loading />
-  }
-
-  if (context.isLoading) {
+  if (!context || context.isLoading || !context.data) {
     return <Loading />
   }
 
@@ -38,8 +35,12 @@ export default function PatientsPage() {
         onChange={(e) => setSearchTerm(e.target.value)}
       />
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {context.data?.patients?.map((patient) => (
-          <PatientCard key={patient.patientId} patient={patient} patientDict={context.data?.patientDict!} />
+        {context.data?.patients!.map((patient) => (
+          <PatientCard
+            key={patient.patientId}
+            patient={patient}
+            patientDict={context.data?.patientDict || {}}
+          />
         ))}
       </div>
     </div>

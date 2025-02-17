@@ -5,6 +5,7 @@ import {
   appointments,
   userRoles,
   doctorSubcriptions,
+  invoices,
 } from "./schema/management";
 import {
   allergies,
@@ -106,3 +107,6 @@ export interface PatientHealthInformationInterface {
 
 // doctor subscription
 export type DoctorSubscriptionsInterface = typeof doctorSubcriptions.$inferInsert;
+
+// patient invoices
+export type InvoicesInterface = typeof invoices.$inferInsert;

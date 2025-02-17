@@ -2,6 +2,7 @@ import {
   date,
   decimal,
   index,
+  integer,
   numeric,
   pgEnum,
   primaryKey,
@@ -14,7 +15,6 @@ import { patients } from "./patient";
 import { doctors } from "./doctor";
 import { timestamps } from "./utils";
 import { createTable } from "./schema";
-import { z } from "zod";
 
 // User Roles
 export const userRoles = createTable(
@@ -118,7 +118,7 @@ export const invoices = createTable('invoices', {
   stripeInvoiceId: varchar('stripe_invoice_id', { length: 255 }),
   status: invoiceStatusEnum('status').notNull(),
   appointmentId: varchar('appointment_id', { length: 255 })
-    .notNull()
+    // .notNull()
     .references(() => appointments.id),
   patientId: varchar('patient_id', { length: 255 })
     .notNull()
@@ -126,6 +126,9 @@ export const invoices = createTable('invoices', {
   doctorId: varchar('doctor_id', { length: 255 })
     .notNull()
     .references(() => doctors.doctorId),
-  amount: numeric('amount', { precision: 2 }),
+  hourlyRate: numeric('hourly_rate', {precision: 2}).notNull(),
+  duration: integer('duration').notNull(),
+  total: numeric('total', { precision: 2 }).notNull(),
+  notes: text('notes'),
   ...timestamps
 });
