@@ -12,8 +12,8 @@ export default function PatientsPage() {
   const context = useContext(DoctorDashboardContext);
 
   useEffect(() => {
-    console.log('Context Data:', JSON.stringify(context?.data, null, 2))
-    console.log('Patients Array:', context?.data?.patients)
+    // console.log('Context Data:', JSON.stringify(context?.data, null, 2))
+    // console.log('Patients Array:', context?.data?.patients)
   }, [context])
 
   if (!context || context.isLoading || !context.data) {

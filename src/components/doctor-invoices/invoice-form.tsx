@@ -12,54 +12,47 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select"
 import type { InvoicesInterface, PatientsInterface } from "~/server/db/type"
 import { useSession } from "next-auth/react"
+import { PatientDict } from "~/app/context/DoctorDashboardContext"
 
 const invoiceFormSchema = z.object({
   patientId: z.string({
     required_error: "Please select a patient",
   }),
-  hourlyRate: z
-    .string()
-    .min(1, "Hourly rate is required")
-    .pipe(z.coerce.number({ invalid_type_error: "Hourly rate must be a number" }).positive()),
-  duration: z
-    .string()
-    .min(1, "Meeting duration is required")
-    .pipe(z.coerce.number({ invalid_type_error: "Meeting duration must be a number" }).positive()),
-  notes: z.string().min(10, { message: "Notes must be at least 10 characters" }).max(500, {
-    message: "Notes must not exceed 500 characters.",
-  }),
+  notes: z.string(),
+  appointmentId: z.string({
+    required_error: "Please select the appropriate meeting"
+  })
 })
 
 type InvoiceFormValues = z.infer<typeof invoiceFormSchema>
 
 interface Props {
   patients: PatientsInterface[]
+  patientDict: PatientDict
 }
 
-export default function InvoiceForm({ patients }: Props) {
-  const { data: session } = useSession()
-  const [isSaving, setIsSaving] = useState(false)
+export default function InvoiceForm({ patients, patientDict }: Props) {
+  const { data: session } = useSession();
+  const [isSaving, setIsSaving] = useState(false);
+  const [selectedPatientId, setSelectedPatientId] = useState('');
 
   const form = useForm<InvoiceFormValues>({
     resolver: zodResolver(invoiceFormSchema),
     defaultValues: {
       patientId: "",
-      hourlyRate: 0,
-      duration: 0,
       notes: "",
+      appointmentId: ""
     },
-  })
+  });
 
   async function onSubmit(data: InvoiceFormValues) {
     setIsSaving(true)
     try {
       const invoice: InvoicesInterface = {
-        hourlyRate: data.hourlyRate.toString(),
-        duration: data.duration,
-        status: "unpaid",
         patientId: data.patientId,
         doctorId: session?.user.id!,
-        total: ((data.hourlyRate * data.duration) / 60).toFixed(2), // Calculate total
+        appointmentId: data.appointmentId,
+        hourlyRate: process.env.HOURLY_RATE!,
         notes: data.notes,
       }
 
@@ -97,7 +90,11 @@ export default function InvoiceForm({ patients }: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Patient</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={() => {
+                      field.onChange
+                      setSelectedPatientId(field.value)
+                      console.log(field)
+                    }} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a patient" />
@@ -115,32 +112,32 @@ export default function InvoiceForm({ patients }: Props) {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="hourlyRate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Hourly Rate ($)</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="text" inputMode="decimal" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="duration"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Duration (Minutes)</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="text" inputMode="numeric" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {selectedPatientId === '' ? null :
+              <FormField
+                control={form.control}
+                name="appointmentId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Appointment</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select an appointment" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {patientDict[selectedPatientId]!.appointments.map((appointment) => (
+                          <SelectItem key={appointment.id} value={appointment.id!}>
+                            {`${new Date(appointment.scheduledAt).toLocaleDateString()}`}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            }
             <FormField
               control={form.control}
               name="notes"
@@ -151,7 +148,7 @@ export default function InvoiceForm({ patients }: Props) {
                     <Textarea {...field} />
                   </FormControl>
                   <FormDescription>
-                    Please include the time and date of the meeting as well as any relevant notes.
+                    Please enter any relevant notes about the patient, meeting, or general thoughts.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

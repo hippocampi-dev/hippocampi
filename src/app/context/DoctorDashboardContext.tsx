@@ -2,7 +2,7 @@
 import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
 import { createContext, useEffect, useState } from 'react';
-import { DoctorDashboardSidebar } from '~/components/doctor-dashboard/dashboard-sidebar';
+import { DoctorDashboardSidebar } from '~/components/doctor-sidebar/page';
 import { SidebarProvider } from '~/components/ui/sidebar';
 import { 
   PatientDoctorManagementInterface, 
@@ -30,6 +30,7 @@ export interface IPatient {
   patient: PatientsInterface;
   management: PatientDoctorManagementInterface;
   healthInfo: PatientHealthInformationInterface;
+  appointments: AppointmentsInterface[]
 }
 
 export type PatientDict = { [key: string]: IPatient };
@@ -86,11 +87,13 @@ export function DoctorDashboardProvider({ children }: DoctorDashboardProviderPro
           
           fetchedPatients.push(patient);
           const healthInfo = await fetchHealthInfo();
+          const filteredAppointments = filterAppointments(appointments, doctor?.doctorId!, patient.patientId)
           
           patientManagementList[m.patientId] = {
             patient,
             management: m,
-            healthInfo
+            healthInfo,
+            appointments: filteredAppointments
           };
         } catch (error) {
           console.error(`Failed to process patient ${m.patientId}:`, error);
@@ -104,6 +107,8 @@ export function DoctorDashboardProvider({ children }: DoctorDashboardProviderPro
         appointments: appointments,
         invoices: invoices
       };
+
+      console.log(appointments);
 
       setState(prev => ({
         ...prev,
@@ -138,7 +143,7 @@ export function DoctorDashboardProvider({ children }: DoctorDashboardProviderPro
       if (!isValid) {
         redirect('/dashboard/patient');
       } else if (!subscription?.isSubscribed) {
-        redirect(subscription?.url || '/dashboard/doctor/account');
+        redirect(subscription?.url || '/dashboard/doctor/billing');
       } else {
         setState(prev => ({
           ...prev,
@@ -160,6 +165,13 @@ export function DoctorDashboardProvider({ children }: DoctorDashboardProviderPro
         </div>
       </SidebarProvider>
     </DoctorDashboardContext.Provider>
+  );
+}
+
+const filterAppointments = (appointments: AppointmentsInterface[], doctorId: string, patientId: string) => {
+  return appointments.filter(appointment => 
+    appointment.doctorId === doctorId &&
+    appointment.patientId === patientId
   );
 }
 
@@ -294,7 +306,7 @@ export const fetchSubscription = async () => {
     if (data.stripeCustomerId) { // canceled subscription
       return {
         isSubscribed: false,
-        url: '/dashboard/doctor/account'
+        url: '/dashboard/doctor/billing'
       }
     }
     else {

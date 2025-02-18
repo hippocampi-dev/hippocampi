@@ -31,8 +31,8 @@ export default function DoctorInvoices({ invoices, patientDict }: props) {
             <TableRow key={invoice.id}>
               <TableCell>{`${patientDict[invoice.patientId]?.patient.firstName} ${patientDict[invoice.patientId]?.patient.lastName}`}</TableCell>
               <TableCell>${invoice.hourlyRate}</TableCell>
-              <TableCell>{invoice.duration}</TableCell>
-              <TableCell>${invoice.total}</TableCell>
+              <TableCell>{~60} min</TableCell>
+              <TableCell>${process.env.HOURLY_RATE!}</TableCell>
             </TableRow>
           ))}
         </TableBody>

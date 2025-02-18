@@ -70,11 +70,11 @@ export const appointments = createTable(
     patientId: varchar('patient_id', { length: 255 })
       .notNull()
       .references(() => patients.patientId),
-    scheduledAt: timestamp('scheduled_at', { withTimezone: true, mode: 'date', precision: 0 })
+    scheduledAt: timestamp('scheduled_at', { withTimezone: true, mode: 'date' })
       .notNull(),
     reason: text('reason'),
     notes: text('notes'), // Optional field for additional info
-    status: appointmentStatusEnum('appointment_status').notNull().default('Scheduled'), // Options: scheduled, completed, canceled
+    status: appointmentStatusEnum('appointment_status').notNull().default('Scheduled'),
     ...timestamps
   },
   (meeting) => ({
@@ -114,11 +114,11 @@ export const invoices = createTable('invoices', {
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  stripeCustomerId: varchar('stripe_customer_id', { length: 255 }),
-  stripeInvoiceId: varchar('stripe_invoice_id', { length: 255 }),
-  status: invoiceStatusEnum('invoice_status').notNull(),
+  stripeCustomerId: varchar('stripe_customer_id', { length: 255 })
+    .references(() => patients.stripeCustomerId),
+  status: invoiceStatusEnum('invoice_status').notNull().default('unpaid'),
   appointmentId: varchar('appointment_id', { length: 255 })
-    // .notNull()
+    .notNull()
     .references(() => appointments.id),
   patientId: varchar('patient_id', { length: 255 })
     .notNull()
@@ -126,9 +126,7 @@ export const invoices = createTable('invoices', {
   doctorId: varchar('doctor_id', { length: 255 })
     .notNull()
     .references(() => doctors.doctorId),
-  hourlyRate: numeric('hourly_rate', {precision: 2}).notNull(),
-  duration: integer('duration').notNull(),
-  total: numeric('total', { precision: 2 }).notNull(),
+  hourlyRate: numeric('hourly_rate').notNull(),
   notes: text('notes'),
   ...timestamps
 });

@@ -28,6 +28,7 @@ export default function DoctorDashboard() {
       <div className="grid gap-6 md:grid-cols-2">
         <AppointmentList
           appointments={context.data?.appointments!}
+          patientDict={context.data?.patientDict!}
         />
         {/* <PatientList
           patients={context.data?.patients!}

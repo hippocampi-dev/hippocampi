@@ -22,9 +22,8 @@ export default function SelectRolePage() {
       return;
     }
     if (selectedRole) {
-      setUserRole(selectedRole);
+      setUserRole(selectedRole).then(redirect("/dashboard"));
     }
-    redirect("/dashboard");
   };
 
   return (
