@@ -5,7 +5,7 @@ import * as schema_doctor from './schema/doctor';
 import * as schema_management from './schema/management';
 import * as schema_patient from './schema/patient';
 import { eq } from 'drizzle-orm';
-import { DoctorCredentialsInterface, DoctorsInterface, PatientAllergiesInterface, PatientCognitiveSymptomsInterface, PatientDiagnosesInterface, PatientDoctorManagementInterface, PatientEmergencyContactsInterface, PatientHealthInformationInterface, PatientMedicationsInterface, PatientsInterface, PatientTreatmentsInterface, AppointmentsIdInterface, AppointmentsInterface, UserIdInterface, UserRolesInterface, PatientMedicalHistoryInterface, DoctorSubscriptionsInterface } from './type';
+import { DoctorCredentialsInterface, DoctorsInterface, PatientAllergiesInterface, PatientCognitiveSymptomsInterface, PatientDiagnosesInterface, PatientDoctorManagementInterface, PatientEmergencyContactsInterface, PatientHealthInformationInterface, PatientMedicationsInterface, PatientsInterface, PatientTreatmentsInterface, AppointmentsIdInterface, AppointmentsInterface, UserIdInterface, UserRolesInterface, PatientMedicalHistoryInterface, DoctorSubscriptionsInterface, InvoicesInterface } from './type';
 import { db } from '.';
 
 // add user role
@@ -119,6 +119,15 @@ export const addPatientDoctorManagement = async (patientDoctorManagement: Patien
 
 // get patient-doctor management
 export const getPatientDoctorManagement = async (user_id: UserIdInterface) => {
+  const userRole = await getUserRole(user_id);
+
+  if (userRole?.userRole === 'doctor') { // if doctor, get patients
+    return db.query.patientDoctorManagement.findMany({
+      where: (eq(schema_management.patientDoctorManagement.doctorId, user_id))
+    })
+  }
+
+  // other if patient
   return db.query.patientDoctorManagement.findMany({
     where: (eq(schema_management.patientDoctorManagement.patientId, user_id))
   })
@@ -380,4 +389,20 @@ export const isDoctorSubscribed = async (user_id: UserIdInterface) => {
   })
   
   return subscription!.status === 'subscribed'; // return true / false
+}
+
+
+// add invoice
+export const addInvoice = async (invoice: InvoicesInterface) => {
+  return db.insert(schema_management.invoices)
+    .values(invoice)
+    .onConflictDoNothing()
+    .returning();
+}
+
+// get invoice
+export const getInvoice = async (user_id: UserIdInterface) => {
+  return db.query.invoices.findMany({
+    where: eq(schema_management.invoices.doctorId, user_id)
+  });
 }

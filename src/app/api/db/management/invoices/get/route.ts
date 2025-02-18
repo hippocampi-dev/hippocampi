@@ -1,17 +1,17 @@
 import { NextResponse } from "next/server";
-import { getPatientDoctorManagement } from "~/server/db/queries";
+import { getInvoice } from "~/server/db/queries";
 import { getUserId } from "~/utilities/get-user";
 
 export const GET = async () => {
   try {
-    const userId = await getUserId() as "string";;
+    const userId = await getUserId() as "string";
 
     if (userId) {
-      const response = await getPatientDoctorManagement(userId);
-      // console.log(response)
+      const response = await getInvoice(userId);
+      // console.log('response', response)
       return NextResponse.json({ response })
     }
-
+    
     return undefined;
   } catch (error) {
     return NextResponse.json(

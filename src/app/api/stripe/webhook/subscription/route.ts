@@ -76,5 +76,5 @@ export async function POST(request: NextRequest) {
 }
 
 // webhook for testing
-// stripe listen --forward-to localhost:3000/api/stripe/webhook
+// stripe listen --forward-to localhost:3000/api/stripe/webhook/subscription
 // stripe trigger payment_intent.succeeded

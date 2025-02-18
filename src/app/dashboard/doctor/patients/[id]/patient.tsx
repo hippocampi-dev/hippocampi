@@ -16,7 +16,7 @@ import { AppointmentForm } from "~/components/doctor-dashboard/appointment-form"
 import { useSession } from "next-auth/react"
 
 interface PatientDetailsProps {
-  id: string;
+  id: string
 }
 
 export default function PatientDetails({ id }: PatientDetailsProps) {
@@ -26,40 +26,37 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
   const [notes, setNotes] = useState<string>(context ? context.data?.patientDict![id]?.management?.notes! : '');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  if (!context) {
-    return <Loading />
-  }
+  // Callbacks
+  const patientDict = context?.data?.patientDict![id];
+  const selectBirthDate = useCallback(() => {
+    return new Date(selectPatient()?.dateOfBirth!);
+  }, [context?.data])
+  const selectManagement = useCallback(() => {
+    return patientDict?.management;
+  }, [context?.data]);
+  const selectPatient = useCallback(() => {
+    return patientDict?.patient;
+  }, [context?.data]);
+  const selectHealthInfo = useCallback(() => {
+    return patientDict?.healthInfo;
+  }, [context?.data]);
+  const selectMedicalHistory = useCallback(() => {
+    return patientDict?.healthInfo.medicalHistory;
+  }, [context?.data]);
+  const selectAppointments = useCallback(() => {
+    return context?.data?.appointments?.filter(
+      (appointment): appointment is AppointmentsInterface => 
+        appointment.patientId === id
+    ) as AppointmentsInterface[];
+  }, [context?.data]);
 
-  if (context.isLoading) {
+  if (!context || context.isLoading || !context.data) {
     return <Loading />
   }
 
   if (context.error) {
     return <Error />
   }
-
-  // Callbacks
-  const selectPatientDict = useCallback(() => {
-    return context.data?.patientDict![id];
-  }, [context.data]);
-  const selectManagement = useCallback(() => {
-    return selectPatientDict()?.management;
-  }, [context.data]);
-  const selectPatient = useCallback(() => {
-    return selectPatientDict()?.patient;
-  }, [context.data]);
-  const selectHealthInfo = useCallback(() => {
-    return selectPatientDict()?.healthInfo;
-  }, [context.data]);
-  const selectMedicalHistory = useCallback(() => {
-    return selectPatientDict()?.healthInfo.medicalHistory;
-  }, [context.data]);
-  const selectAppointments = useCallback(() => {
-    return context.data?.appointments?.filter(
-      (appointment): appointment is AppointmentsInterface => 
-        appointment.patientId === id
-    ) as AppointmentsInterface[];
-  }, [context.data]);
 
   const handleAddNote = async () => {
     // In a real application, you'd send this note to your backend
@@ -109,7 +106,7 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
     }
 
     try {
-      const response = await fetch('/api/db/management/selectAppointments()?/add', {
+      const response = await fetch('/api/db/management/appointments/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -137,17 +134,19 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
         <ArrowLeft className="mr-2 h-4 w-4" /> Back to Patients
       </Button>
 
-      <div className="flex items-center space-x-4">
-        <Avatar className="h-20 w-20">
-          <AvatarFallback className="text-2xl">
-            {`${selectPatient()?.firstName} ${selectPatient()?.lastName}`}
-          </AvatarFallback>
-        </Avatar>
-        <div>
-          <h1 className="text-3xl font-bold">{`${selectPatient()?.firstName} ${selectPatient()?.lastName}`}</h1>
-          <p className="text-xl text-muted-foreground">Patient ID: {id}</p>
+      <div className="flex items-center space-x-4 justify-between">
+        <div className="flex items-center space-x-4">
+          <Avatar className="h-20 w-20">
+            <AvatarFallback className="text-2xl">
+              {`${selectPatient()?.firstName} ${selectPatient()?.lastName}`}
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <h1 className="text-3xl font-bold">{`${selectPatient()?.firstName} ${selectPatient()?.lastName}`}</h1>
+            <p className="text-xl text-muted-foreground">Patient ID: {id}</p>
+          </div>
         </div>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        {/* <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Calendar className="mr-2 h-4 w-4" />
@@ -161,7 +160,7 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
               onCancel={handleCancelAppointment}
             />
           </DialogContent>
-        </Dialog>
+        </Dialog> */}
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
@@ -180,7 +179,7 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
               </div>
               <div>
                 <dt className="font-medium">Date of Birth</dt>
-                <dd>{selectPatient()?.dateOfBirth.toDateString()}</dd>
+                <dd>{`${selectBirthDate().toLocaleDateString()}`}</dd>
               </div>
               <div>
                 <dt className="font-medium">Email</dt>
@@ -260,7 +259,7 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
                   </p>
                   <p className="text-sm text-muted-foreground">{"Dosage:" + item.dosage}</p>
                   <p className="text-sm text-muted-foreground">{"Frequency:" + item.frequency}</p>
-                  <p className="text-sm text-muted-foreground">{`${item.startDate?.toDateString()}-${item.endDate?.toDateString()}`}</p>
+                  <p className="text-sm text-muted-foreground">{`${item.startDate}-${item.endDate}`}</p>
                 </li>
               ))}
             </ul>
@@ -282,7 +281,7 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
                     {item.treatmentName}
                   </p>
                   <p className="text-sm text-muted-foreground">{item.notes}</p>
-                  <p className="text-sm text-muted-foreground">{`${item.start_date.toDateString()}-${item.endDate?.toDateString()}`}</p>
+                  <p className="text-sm text-muted-foreground">{`${item.start_date}-${item.endDate}`}</p>
                 </li>
               ))}
             </ul>
@@ -311,21 +310,21 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
         </Card>
 
         {/* Notes */}
-        <Card>
+        {/* <Card>
           <CardHeader>
             <CardTitle>Notes</CardTitle>
             <CardDescription>Add new observations or notes about the patient</CardDescription>
           </CardHeader>
           <CardContent>
             <Textarea
-              placeholder={notes}
+              placeholder={notes ? notes : ''}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               className="mb-4"
             />
             <Button onClick={handleAddNote}>Update Notes</Button>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
     </div>
   )

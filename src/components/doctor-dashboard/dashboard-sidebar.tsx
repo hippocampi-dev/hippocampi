@@ -1,4 +1,4 @@
-import { Home, Calendar, Users, Settings, LogOut, User, Receipt } from "lucide-react"
+import { Home, Calendar, Users, Settings, LogOut, User, Receipt, ReceiptText } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -19,12 +19,17 @@ export function DoctorDashboardSidebar() {
       redirectTo: '/'
     });
   }
+
+  if (!context || context.isLoading || !context.data) {
+    return null
+  }
+
   return (
     <Sidebar>
       <SidebarHeader>
         <h2 className="text-xl font-bold px-4 py-2">{context ? `Dr ${context.doctor?.lastName}`: ''}</h2>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="px-4">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
@@ -60,6 +65,14 @@ export function DoctorDashboardSidebar() {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
+              <Link href="/dashboard/doctor/invoices">
+                <ReceiptText className="w-4 h-4 mr-2" />
+                <span>Invoices</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
               <Link href="/dashboard/doctor/account">
                 <User className="w-4 h-4 mr-2" />
                 <span>Account</span>
@@ -76,7 +89,7 @@ export function DoctorDashboardSidebar() {
           </SidebarMenuItem> */}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarContent className="mt-auto flex flex-col justify-end mb-10">
+      <SidebarContent className="mt-auto flex flex-col justify-end mb-10 px-4">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton onClick={handleSignOut}>
