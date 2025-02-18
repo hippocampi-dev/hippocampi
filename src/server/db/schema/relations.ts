@@ -3,6 +3,7 @@ import { accounts, sessions, userLogins, users } from "./auth";
 import { doctors, doctorCredentials } from "./doctor";
 import { allergies, cognitiveSymptoms, diagnoses, emergencyContacts, medicalHistory, medications, patients, treatments } from "./patient";
 import { patientDoctorManagement, appointments, userRoles } from "./management";
+import { conversations, messages } from "./message";
 
 
 export const usersRelations = relations(users, ({ one, many }) => ({
@@ -154,4 +155,27 @@ export const doctorsCredentialsRelations = relations(doctorCredentials, ({ one }
     fields: [doctorCredentials.doctorId],
     references: [doctors.doctorId]
   })
+}));
+
+export const conversationsRelations = relations(conversations, ({ one, many }) => ({
+  patient: one(patients, {
+    fields: [conversations.patientId],
+    references: [patients.patientId],
+  }),
+  doctor: one(doctors, {
+    fields: [conversations.doctorId],
+    references: [doctors.doctorId],
+  }),
+  messages: many(messages),
+}));
+
+export const messagesRelations = relations(messages, ({ one }) => ({
+  conversation: one(conversations, {
+    fields: [messages.conversationId],
+    references: [conversations.conversationId],
+  }),
+  sender: one(users, {
+    fields: [messages.senderId],
+    references: [users.id],
+  }),
 }));

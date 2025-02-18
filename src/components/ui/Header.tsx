@@ -1,13 +1,13 @@
 "use client"
+
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { signOut, useSession } from "next-auth/react"
-import { redirect } from "next/navigation";
+import { redirect } from "next/navigation"
+import { Button } from "~/components/ui/button"
 
 export function Header() {
   const {data: session} = useSession();
-
-
 
   return (
     <header className="bg-white shadow-md">
@@ -27,14 +27,23 @@ export function Header() {
               Contact Us
             </Link>
           </div>
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <button
-              onClick={session ? async () => {await signOut({redirect: true, redirectTo: "/"})} : async () => redirect("/sign-up")}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300"
-            >
-              {session ? `Sign Out` : `Sign Up`}
-            </button>
-          </motion.div>
+          <div className="flex space-x-2">
+            {session && (
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button variant="outline" asChild className="border-blue-600 text-blue-600 hover:bg-blue-50">
+                  <Link href="/dashboard">Go to Dashboard</Link>
+                </Button>
+              </motion.div>
+            )}
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                onClick={session ? () => signOut({ redirect: true, callbackUrl: "/" }) : () => redirect("/sign-up")}
+                className="bg-blue-600 text-white hover:bg-blue-700"
+              >
+                {session ? `Sign Out` : `Sign Up`}
+              </Button>
+            </motion.div>
+          </div>
         </div>
       </nav>
     </header>

@@ -11,10 +11,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
+  SidebarSeparator,
   SidebarTrigger,
 } from '~/components/ui/sidebar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '~/components/ui/dropdown-menu';
-import { Bell, Calendar, ChevronDown, FileText, Home, LogOut, User, UserCircle, Video } from 'lucide-react';
+import { Bell, Calendar, ChevronDown, ExternalLink, FileText, Home, LogOut, User, UserCircle, Video } from 'lucide-react';
 import Link from 'next/link';
 import { signOut, useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
@@ -32,10 +33,19 @@ export default function DashboardLayout({
       <div className="flex h-screen w-screen">
         <Sidebar className="w-64">
           <SidebarHeader>
-            <SidebarTrigger />
+          <SidebarMenuButton asChild>
+                    <Link href="/" className="flex w-full items-center">
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      Main Page
+                    </Link>
+                  </SidebarMenuButton>
           </SidebarHeader>
           <SidebarContent>
             <SidebarMenu>
+              <SidebarMenuItem>
+                  
+                </SidebarMenuItem>
+                <SidebarSeparator />
                 <Link href = "/dashboard/patient">
                 <SidebarMenuItem>
                     <SidebarMenuButton>

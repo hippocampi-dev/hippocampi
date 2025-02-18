@@ -194,9 +194,9 @@ export const getCognitiveSymptoms = async (user_id: UserIdInterface) => {
 }
 
 // add diagnoses
-export const addDiagnoses = async (dianosis: PatientDiagnosesInterface) => {
+export const addDiagnoses = async (diagnosis: PatientDiagnosesInterface) => {
   return db.insert(schema_patient.diagnoses)
-    .values(dianosis)
+    .values(diagnosis)
     .onConflictDoNothing()
     .returning();
 }

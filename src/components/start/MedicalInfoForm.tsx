@@ -31,15 +31,15 @@ export type Diagnosis = {
 export type CognitiveSymptom = {
   symptomType: string;
   onsetDate: string;
-  severityLevel?: "mild" | "moderate" | "severe";
+  severityLevel?: "mild" | "moderate" | "severe" | "undefined";
   notes?: string;
 };
 
 export type MedicalInfo = {
   medications: Medication[];
   allergies: Allergy[];
-  diagnosis?: Diagnosis;
-  cognitiveSymptoms?: CognitiveSymptom;
+  diagnosis: Diagnosis;
+  cognitiveSymptoms: CognitiveSymptom[];
 };
 
 type MedicalInfoFormProps = {
@@ -80,6 +80,23 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
     const allys = [...data.allergies];
     allys.splice(index, 1);
     onChange({ ...data, allergies: allys });
+  };
+
+  // Handlers for cognitive symptoms (now an array)
+  const handleAddCognitiveSymptom = () => {
+    onChange({
+      ...data,
+      cognitiveSymptoms: [
+        ...data.cognitiveSymptoms,
+        { symptomType: "", onsetDate: "", severityLevel: "undefined", notes: "" },
+      ],
+    });
+  };
+
+  const handleRemoveCognitiveSymptom = (index: number) => {
+    const newCs = [...data.cognitiveSymptoms];
+    newCs.splice(index, 1);
+    onChange({ ...data, cognitiveSymptoms: newCs });
   };
 
   return (
@@ -311,85 +328,79 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
       </div>
 
       {/* Cognitive Symptoms Section */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold">Cognitive Symptoms</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="symptomType">Symptom Type</Label>
-            <Input
-              id="symptomType"
-              placeholder="Enter symptom type"
-              value={data.cognitiveSymptoms?.symptomType || ""}
-              onChange={(e) =>
-                onChange({
-                  ...data,
-                  cognitiveSymptoms: {
-                    ...data.cognitiveSymptoms,
-                    symptomType: e.target.value,
-                  },
-                })
-              }
-            />
+      <div>
+        <h3 className="text-lg font-semibold mb-2">Cognitive Symptoms</h3>
+        {data.cognitiveSymptoms.map((cs, i) => (
+          <div key={i} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div className="space-y-2">
+              <Label htmlFor={`cs_symptomType_${i}`}>Symptom Type</Label>
+              <Input
+                id={`cs_symptomType_${i}`}
+                placeholder="Enter symptom type"
+                value={cs.symptomType}
+                onChange={(e) => {
+                  const newCs = [...data.cognitiveSymptoms];
+                  newCs[i].symptomType = e.target.value;
+                  onChange({ ...data, cognitiveSymptoms: newCs });
+                }}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor={`cs_onsetDate_${i}`}>Onset Date</Label>
+              <Input
+                id={`cs_onsetDate_${i}`}
+                type="date"
+                value={cs.onsetDate}
+                onChange={(e) => {
+                  const newCs = [...data.cognitiveSymptoms];
+                  newCs[i].onsetDate = e.target.value;
+                  onChange({ ...data, cognitiveSymptoms: newCs });
+                }}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor={`cs_severityLevel_${i}`}>Severity Level</Label>
+              <Select
+                value={cs.severityLevel || ""}
+                onValueChange={(value) => {
+                  const newCs = [...data.cognitiveSymptoms];
+                  newCs[i].severityLevel = value as "mild" | "moderate" | "severe";
+                  onChange({ ...data, cognitiveSymptoms: newCs });
+                }}
+              >
+                <SelectTrigger id={`cs_severityLevel_${i}`}>
+                  <SelectValue placeholder="Select severity" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="mild">Mild</SelectItem>
+                  <SelectItem value="moderate">Moderate</SelectItem>
+                  <SelectItem value="severe">Severe</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2 md:col-span-2">
+              <Label htmlFor={`cs_notes_${i}`}>Additional Notes</Label>
+              <Textarea
+                id={`cs_notes_${i}`}
+                placeholder="Enter additional details about your cognitive symptoms"
+                value={cs.notes || ""}
+                onChange={(e) => {
+                  const newCs = [...data.cognitiveSymptoms];
+                  newCs[i].notes = e.target.value;
+                  onChange({ ...data, cognitiveSymptoms: newCs });
+                }}
+              />
+            </div>
+            <div className="flex items-center">
+              <Button variant="outline" onClick={() => handleRemoveCognitiveSymptom(i)}>
+                Remove Cognitive Symptom
+              </Button>
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="onsetDate">Onset Date</Label>
-            <Input
-              id="onsetDate"
-              type="date"
-              value={data.cognitiveSymptoms?.onsetDate || ""}
-              onChange={(e) =>
-                onChange({
-                  ...data,
-                  cognitiveSymptoms: {
-                    ...data.cognitiveSymptoms,
-                    onsetDate: e.target.value,
-                  },
-                })
-              }
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="severityLevel">Severity Level</Label>
-            <Select
-              value={data.cognitiveSymptoms?.severityLevel || ""}
-              onValueChange={(value) =>
-                onChange({
-                  ...data,
-                  cognitiveSymptoms: {
-                    ...data.cognitiveSymptoms,
-                    severityLevel: value as "mild" | "moderate" | "severe",
-                  },
-                })
-              }
-            >
-              <SelectTrigger id="severityLevel">
-                <SelectValue placeholder="Select severity" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="mild">Mild</SelectItem>
-                <SelectItem value="moderate">Moderate</SelectItem>
-                <SelectItem value="severe">Severe</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="cognitiveNotes">Additional Notes</Label>
-            <Textarea
-              id="cognitiveNotes"
-              placeholder="Enter additional details about your cognitive symptoms"
-              value={data.cognitiveSymptoms?.notes || ""}
-              onChange={(e) =>
-                onChange({
-                  ...data,
-                  cognitiveSymptoms: {
-                    ...data.cognitiveSymptoms,
-                    notes: e.target.value,
-                  },
-                })
-              }
-            />
-          </div>
-        </div>
+        ))}
+        <Button onClick={handleAddCognitiveSymptom}>Add Cognitive Symptom</Button>
       </div>
     </div>
   );
