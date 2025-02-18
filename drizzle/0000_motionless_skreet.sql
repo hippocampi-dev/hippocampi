@@ -1,11 +1,23 @@
 DO $$ BEGIN
- CREATE TYPE "public"."status" AS ENUM('subscribed', 'unsubscribed');
+ CREATE TYPE "public"."appointment_status" AS ENUM('Scheduled', 'Canceled', 'Completed');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."gender" AS ENUM('male', 'female', 'non_binary', 'other', 'prefer_not_to_say');
+ CREATE TYPE "public"."invoice_status" AS ENUM('unpaid', 'paid');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."subscription_status" AS ENUM('subscribed', 'unsubscribed');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."gender" AS ENUM('male', 'female', 'other', 'prefer_not_to_say');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -102,7 +114,7 @@ CREATE TABLE IF NOT EXISTS "hippocampi_appointments" (
 	"scheduled_at" timestamp (0) with time zone NOT NULL,
 	"reason" text,
 	"notes" text,
-	"status" "status" DEFAULT 'Scheduled' NOT NULL,
+	"appointment_status" "appointment_status" DEFAULT 'Scheduled' NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
@@ -111,7 +123,7 @@ CREATE TABLE IF NOT EXISTS "hippocampi_doctor_subscriptions" (
 	"doctor_id" varchar(255) PRIMARY KEY NOT NULL,
 	"stripe_customer_id" varchar(255),
 	"subscription_id" varchar(255),
-	"status" "status" DEFAULT 'unsubscribed' NOT NULL,
+	"subscription_status" "subscription_status" DEFAULT 'unsubscribed' NOT NULL,
 	"start_date" timestamp,
 	"end_date" timestamp,
 	"created_at" timestamp DEFAULT now() NOT NULL,
@@ -122,11 +134,14 @@ CREATE TABLE IF NOT EXISTS "hippocampi_invoices" (
 	"id" varchar(255) PRIMARY KEY NOT NULL,
 	"stripe_customer_id" varchar(255),
 	"stripe_invoice_id" varchar(255),
-	"status" "status" NOT NULL,
-	"appointment_id" varchar(255) NOT NULL,
+	"invoice_status" "invoice_status" NOT NULL,
+	"appointment_id" varchar(255),
 	"patient_id" varchar(255) NOT NULL,
 	"doctor_id" varchar(255) NOT NULL,
-	"amount" numeric(2),
+	"hourly_rate" numeric(2) NOT NULL,
+	"duration" integer NOT NULL,
+	"total" numeric(2) NOT NULL,
+	"notes" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
@@ -135,7 +150,7 @@ CREATE TABLE IF NOT EXISTS "hippocampi_patient_doctor_management" (
 	"id" varchar(255) PRIMARY KEY NOT NULL,
 	"doctor_id" varchar(255) NOT NULL,
 	"patient_id" varchar(255) NOT NULL,
-	"last_visit" date NOT NULL,
+	"last_visit" date,
 	"notes" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
@@ -207,7 +222,7 @@ CREATE TABLE IF NOT EXISTS "hippocampi_medications" (
 	"medication_name" varchar NOT NULL,
 	"dosage" text NOT NULL,
 	"frequency" "frequency" NOT NULL,
-	"start_date" date NOT NULL,
+	"start_date" date,
 	"end_date" date,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
@@ -229,6 +244,8 @@ CREATE TABLE IF NOT EXISTS "hippocampi_patients" (
 	"city" varchar NOT NULL,
 	"state" varchar NOT NULL,
 	"zip_code" varchar NOT NULL,
+	"hipaa_compliance" boolean NOT NULL,
+	"stripe_customer_id" varchar(255),
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "hippocampi_patients_email_unique" UNIQUE("email")

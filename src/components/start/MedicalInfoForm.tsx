@@ -82,6 +82,8 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
     onChange({ ...data, allergies: allys });
   };
 
+  if (!data) return null;
+
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold mb-4">Medical Information</h2>
@@ -99,7 +101,7 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                 value={med.medicationName}
                 onChange={(e) => {
                   const meds = [...data.medications];
-                  meds[i].medicationName = e.target.value;
+                  meds[i]!.medicationName = e.target.value;
                   onChange({ ...data, medications: meds });
                 }}
               />
@@ -112,7 +114,7 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                 value={med.dosage}
                 onChange={(e) => {
                   const meds = [...data.medications];
-                  meds[i].dosage = e.target.value;
+                  meds[i]!.dosage = e.target.value;
                   onChange({ ...data, medications: meds });
                 }}
               />
@@ -123,7 +125,7 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                 value={med.frequency}
                 onValueChange={(value) => {
                   const meds = [...data.medications];
-                  meds[i].frequency = value as Medication["frequency"];
+                  meds[i]!.frequency = value as Medication["frequency"];
                   onChange({ ...data, medications: meds });
                 }}
               >   
@@ -146,7 +148,7 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                 value={med.start_date}
                 onChange={(e) => {
                   const meds = [...data.medications];
-                  meds[i].start_date = e.target.value;
+                  meds[i]!.start_date = e.target.value;
                   onChange({ ...data, medications: meds });
                 }}
               />
@@ -159,7 +161,7 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                 value={med.end_date}
                 onChange={(e) => {
                   const meds = [...data.medications];
-                  meds[i].end_date = e.target.value;
+                  meds[i]!.end_date = e.target.value;
                   onChange({ ...data, medications: meds });
                 }}
               />
@@ -187,7 +189,7 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                 value={allergy.allergen}
                 onChange={(e) => {
                   const allers = [...data.allergies];
-                  allers[i].allergen = e.target.value;
+                  allers[i]!.allergen = e.target.value;
                   onChange({ ...data, allergies: allers });
                 }}
               />
@@ -200,7 +202,7 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                 value={allergy.reaction}
                 onChange={(e) => {
                   const allers = [...data.allergies];
-                  allers[i].reaction = e.target.value;
+                  allers[i]!.reaction = e.target.value;
                   onChange({ ...data, allergies: allers });
                 }}
               />
@@ -211,7 +213,7 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                 value={allergy.severity}
                 onValueChange={(value) => {
                   const allers = [...data.allergies];
-                  allers[i].severity = value as Allergy["severity"];
+                  allers[i]!.severity = value as Allergy["severity"];
                   onChange({ ...data, allergies: allers });
                 }}
               >
@@ -250,7 +252,7 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                   ...data,
                   diagnosis: { 
                     ...data.diagnosis, 
-                    conditionName: e.target.value 
+                    conditionName: e.target.value
                   },
                 })
               }
@@ -284,7 +286,7 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                   ...data,
                   diagnosis: { 
                     ...data.diagnosis, 
-                    selfReported: e.target.checked 
+                    selfReported: e.target.checked
                   },
                 })
               }

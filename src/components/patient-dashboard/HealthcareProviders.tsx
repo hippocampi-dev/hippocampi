@@ -17,6 +17,7 @@ export default async function HealthcareProviders() {
         doctorIds.map((id) => getDoctor(id as UserIdInterface))
     );
 
+    if (!doctors) return null;
 
     return (
         <Card className="flex-1">
@@ -25,7 +26,7 @@ export default async function HealthcareProviders() {
                 </CardHeader>
                 <CardContent>
                 <div>
-                    {(!doctors || doctors.length === 0 || !doctors.some(doctors => doctors.doctorId)) ? (
+                    {(!doctors || doctors.length === 0 || !doctors.some(doctors => doctors!.doctorId)) ? (
                         <div className="flex flex-col items-center space-y-4">
                         <p className="text-lg text-gray-600">No assigned doctor</p>
                         <Link href = "/dashboard/patient/select-doctor">
@@ -35,13 +36,13 @@ export default async function HealthcareProviders() {
                     ) : (
                         <ul className="flex flex-col space-y-4">
                         {doctors.map((doctor) => (
-                          <li key={doctor.doctorId} className="flex items-center space-x-4">
+                          <li key={doctor!.doctorId} className="flex items-center space-x-4">
                             <div>
                               <p className="font-medium">
-                                Dr. {doctor.firstName} {doctor.lastName}
+                                Dr. {doctor!.firstName} {doctor!.lastName}
                               </p>
                               <p className="text-sm text-muted-foreground">
-                                {doctor.specialization} | {doctor.location}
+                                {doctor!.specialization} | {doctor!.location}
                               </p>
                             </div>
                           </li>
