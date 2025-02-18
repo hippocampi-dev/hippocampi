@@ -1,5 +1,5 @@
 {
-  "id": "8aabe28f-f2d7-4107-8321-e9cdac53d4b9",
+  "id": "ac898f84-e67b-4256-a4d9-1e44c863527f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -603,9 +603,9 @@
           "primaryKey": false,
           "notNull": false
         },
-        "status": {
-          "name": "status",
-          "type": "status",
+        "appointment_status": {
+          "name": "appointment_status",
+          "type": "appointment_status",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
@@ -726,9 +726,9 @@
           "primaryKey": false,
           "notNull": false
         },
-        "status": {
-          "name": "status",
-          "type": "status",
+        "subscription_status": {
+          "name": "subscription_status",
+          "type": "subscription_status",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
@@ -802,9 +802,9 @@
           "primaryKey": false,
           "notNull": false
         },
-        "status": {
-          "name": "status",
-          "type": "status",
+        "invoice_status": {
+          "name": "invoice_status",
+          "type": "invoice_status",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
@@ -813,7 +813,7 @@
           "name": "appointment_id",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "patient_id": {
           "name": "patient_id",
@@ -827,9 +827,27 @@
           "primaryKey": false,
           "notNull": true
         },
-        "amount": {
-          "name": "amount",
+        "hourly_rate": {
+          "name": "hourly_rate",
           "type": "numeric(2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "duration": {
+          "name": "duration",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "total": {
+          "name": "total",
+          "type": "numeric(2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
@@ -919,7 +937,7 @@
           "name": "last_visit",
           "type": "date",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "notes": {
           "name": "notes",
@@ -1427,7 +1445,7 @@
           "name": "start_date",
           "type": "date",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "end_date": {
           "name": "end_date",
@@ -1564,6 +1582,18 @@
           "primaryKey": false,
           "notNull": true
         },
+        "hipaa_compliance": {
+          "name": "hipaa_compliance",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "stripe_customer_id": {
+          "name": "stripe_customer_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -1682,8 +1712,25 @@
     }
   },
   "enums": {
-    "public.status": {
-      "name": "status",
+    "public.appointment_status": {
+      "name": "appointment_status",
+      "schema": "public",
+      "values": [
+        "Scheduled",
+        "Canceled",
+        "Completed"
+      ]
+    },
+    "public.invoice_status": {
+      "name": "invoice_status",
+      "schema": "public",
+      "values": [
+        "unpaid",
+        "paid"
+      ]
+    },
+    "public.subscription_status": {
+      "name": "subscription_status",
       "schema": "public",
       "values": [
         "subscribed",
@@ -1696,7 +1743,6 @@
       "values": [
         "male",
         "female",
-        "non_binary",
         "other",
         "prefer_not_to_say"
       ]

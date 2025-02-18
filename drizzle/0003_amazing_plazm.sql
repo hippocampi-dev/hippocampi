@@ -1,1 +1,0 @@
-ALTER TABLE "hippocampi_patients" ADD COLUMN "hipaa_compliance" boolean NOT NULL;
