@@ -5,9 +5,9 @@ import { PatientDiagnosesInterface } from "~/server/db/type";
 // pass in PatientDiagnosesInteface json
 export const POST = async (request: Request) => {
   const rawBody = await request.json();
-    
+    console.log(rawBody)
     // Convert the dateOfBirth string to a Date object
-    const diagnosisDate = convertDateStringToDate(rawBody.diagnosisDate);
+    const diagnosisDate = convertDateStringToDate(rawBody.diagnosis.diagnosisDate);
   
     const body: PatientDiagnosesInterface = {
       ...rawBody,

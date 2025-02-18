@@ -4,27 +4,32 @@ import { PatientCognitiveSymptomsInterface } from "~/server/db/type";
 
 // pass in PatientCognitiveSymptomsInteface json
 export const POST = async (request: Request) => {
-  const rawBody = await request.json();
-      
-      // Convert the dateOfBirth string to a Date object
-      const onsetDate = convertDateStringToDate(rawBody.onsetDate);
-      const body: PatientCognitiveSymptomsInterface = {
-        ...rawBody,
-        onsetDate // now a Date object
-      };
   try {
-    const response = await addCognitiveSymptoms(body);
+      const rawBody = await request.json();
+      console.log("Raw cogniSymps data:", rawBody);
+      const patientId = rawBody.patientId;
+      // Iterate through each medication and convert date strings.
+      const cognitiveSymptoms: PatientCognitiveSymptomsInterface = rawBody.cognitiveSymptoms.map((cog: any) => {
+        const {onsetDate, ...rest } = cog;
+        return {
+          patientId,
+          ...rest,
+          onsetDate: cog.onsetDate ? convertDateStringToDate(cog.onsetDate) : null,
+        }
+      });
+      const response = await addCognitiveSymptoms(cognitiveSymptoms);
 
     if (!response) {
-      return Response.json("Error");
+      return new Response(JSON.stringify("Error"), {
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     return new Response(JSON.stringify(response), {
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    return Response.json({ error }, { status: 500 });
+    console.error("Error in medications API:", error);
+    return new Response(JSON.stringify({ error }), { status: 500 });
   }
 };

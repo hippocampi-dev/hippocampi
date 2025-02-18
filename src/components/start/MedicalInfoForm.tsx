@@ -11,27 +11,27 @@ export type Medication = {
   medicationName: string;
   dosage: string;
   frequency: "daily" | "weekly" | "monthly" | "as_needed";
-  start_date: string;
+  start_date?: string;
   end_date?: string;
 };
 
 export type Allergy = {
   allergen: string;
-  reaction: string;
+  reaction?: string;
   severity: "mild" | "moderate" | "severe";
 };
 
 export type Diagnosis = {
   conditionName: string;
-  diagnosisDate: string;
+  diagnosisDate?: string;
   selfReported: boolean;
   notes?: string;
 };
 
 export type CognitiveSymptom = {
   symptomType: string;
-  onsetDate: string;
-  severityLevel?: "mild" | "moderate" | "severe";
+  onsetDate?: string;
+  severityLevel?: "mild" | "moderate" | "severe" | "undefined";
   notes?: string;
 };
 
@@ -39,7 +39,7 @@ export type MedicalInfo = {
   medications: Medication[];
   allergies: Allergy[];
   diagnosis?: Diagnosis;
-  cognitiveSymptoms?: CognitiveSymptom;
+  cognitiveSymptoms: CognitiveSymptom[];
 };
 
 type MedicalInfoFormProps = {
@@ -82,7 +82,22 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
     onChange({ ...data, allergies: allys });
   };
 
-  if (!data) return null;
+  // Handlers for cognitive symptoms (now an array)
+  const handleAddCognitiveSymptom = () => {
+    onChange({
+      ...data,
+      cognitiveSymptoms: [
+        ...data.cognitiveSymptoms,
+        { symptomType: "", onsetDate: "", severityLevel: "undefined", notes: "" },
+      ],
+    });
+  };
+
+  const handleRemoveCognitiveSymptom = (index: number) => {
+    const newCs = [...data.cognitiveSymptoms];
+    newCs.splice(index, 1);
+    onChange({ ...data, cognitiveSymptoms: newCs });
+  };
 
   return (
     <div className="space-y-6">
@@ -101,7 +116,9 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                 value={med.medicationName}
                 onChange={(e) => {
                   const meds = [...data.medications];
-                  meds[i]!.medicationName = e.target.value;
+                  if (meds[i]) {
+                    meds[i].medicationName = e.target.value;
+                  }
                   onChange({ ...data, medications: meds });
                 }}
               />
@@ -114,7 +131,9 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                 value={med.dosage}
                 onChange={(e) => {
                   const meds = [...data.medications];
-                  meds[i]!.dosage = e.target.value;
+                  if (meds[i]) {
+                    meds[i]!.dosage = e.target.value;
+                  }
                   onChange({ ...data, medications: meds });
                 }}
               />
@@ -125,7 +144,9 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                 value={med.frequency}
                 onValueChange={(value) => {
                   const meds = [...data.medications];
-                  meds[i]!.frequency = value as Medication["frequency"];
+                  if (meds[i]) {
+                    meds[i].frequency = value as Medication["frequency"];
+                  }
                   onChange({ ...data, medications: meds });
                 }}
               >   
@@ -148,7 +169,9 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                 value={med.start_date}
                 onChange={(e) => {
                   const meds = [...data.medications];
-                  meds[i]!.start_date = e.target.value;
+                  if (meds[i]) {
+                    meds[i].start_date = e.target.value;
+                  }
                   onChange({ ...data, medications: meds });
                 }}
               />
@@ -161,7 +184,9 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                 value={med.end_date}
                 onChange={(e) => {
                   const meds = [...data.medications];
-                  meds[i]!.end_date = e.target.value;
+                  if (meds[i]) {
+                    meds[i].start_date = e.target.value;
+                  }
                   onChange({ ...data, medications: meds });
                 }}
               />
@@ -189,7 +214,9 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                 value={allergy.allergen}
                 onChange={(e) => {
                   const allers = [...data.allergies];
-                  allers[i]!.allergen = e.target.value;
+                  if (allers[i]) {
+                    allers[i].allergen = e.target.value;
+                  }
                   onChange({ ...data, allergies: allers });
                 }}
               />
@@ -202,7 +229,9 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                 value={allergy.reaction}
                 onChange={(e) => {
                   const allers = [...data.allergies];
-                  allers[i]!.reaction = e.target.value;
+                  if (allers[i]) {
+                    allers[i].allergen = e.target.value;
+                  }
                   onChange({ ...data, allergies: allers });
                 }}
               />
@@ -213,7 +242,9 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                 value={allergy.severity}
                 onValueChange={(value) => {
                   const allers = [...data.allergies];
-                  allers[i]!.severity = value as Allergy["severity"];
+                  if (allers[i]) {
+                    allers[i].severity = value as Allergy['severity'];
+                  }
                   onChange({ ...data, allergies: allers });
                 }}
               >
@@ -250,9 +281,11 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
               onChange={(e) =>
                 onChange({
                   ...data,
-                  diagnosis: { 
-                    ...data.diagnosis, 
-                    conditionName: e.target.value
+                  diagnosis: {
+                    conditionName: data.diagnosis?.conditionName ?? "", // default to empty string
+                    selfReported: data.diagnosis?.selfReported ?? false, // default to false
+                    diagnosisDate: e.target.value,
+                    notes: data.diagnosis?.notes,
                   },
                 })
               }
@@ -267,9 +300,11 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
               onChange={(e) =>
                 onChange({
                   ...data,
-                  diagnosis: { 
-                    ...data.diagnosis, 
-                    diagnosisDate: e.target.value 
+                  diagnosis: {
+                    conditionName: data.diagnosis?.conditionName ?? "", // default to empty string
+                    selfReported: data.diagnosis?.selfReported ?? false, // default to false
+                    diagnosisDate: e.target.value,
+                    notes: data.diagnosis?.notes,
                   },
                 })
               }
@@ -284,9 +319,11 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
               onChange={(e) =>
                 onChange({
                   ...data,
-                  diagnosis: { 
-                    ...data.diagnosis, 
-                    selfReported: e.target.checked
+                  diagnosis: {
+                    conditionName: data.diagnosis?.conditionName ?? "", // default to empty string
+                    selfReported: data.diagnosis?.selfReported ?? false, // default to false
+                    diagnosisDate: e.target.value,
+                    notes: data.diagnosis?.notes,
                   },
                 })
               }
@@ -301,9 +338,11 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
               onChange={(e) =>
                 onChange({
                   ...data,
-                  diagnosis: { 
-                    ...data.diagnosis, 
-                    notes: e.target.value 
+                  diagnosis: {
+                    conditionName: data.diagnosis?.conditionName ?? "", // default to empty string
+                    selfReported: data.diagnosis?.selfReported ?? false, // default to false
+                    diagnosisDate: e.target.value,
+                    notes: data.diagnosis?.notes,
                   },
                 })
               }
@@ -313,85 +352,89 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
       </div>
 
       {/* Cognitive Symptoms Section */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold">Cognitive Symptoms</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="symptomType">Symptom Type</Label>
-            <Input
-              id="symptomType"
-              placeholder="Enter symptom type"
-              value={data.cognitiveSymptoms?.symptomType || ""}
-              onChange={(e) =>
-                onChange({
-                  ...data,
-                  cognitiveSymptoms: {
-                    ...data.cognitiveSymptoms,
-                    symptomType: e.target.value,
-                  },
-                })
-              }
-            />
+      <div>
+        <h3 className="text-lg font-semibold mb-2">Cognitive Symptoms</h3>
+        {data.cognitiveSymptoms.map((cs, i) => (
+          <div key={i} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div className="space-y-2">
+              <Label htmlFor={`cs_symptomType_${i}`}>Symptom Type</Label>
+              <Input
+                id={`cs_symptomType_${i}`}
+                placeholder="Enter symptom type"
+                value={cs.symptomType}
+                onChange={(e) => {
+                  const newCs = [...data.cognitiveSymptoms];
+                  
+                  if (newCs[i]) {
+                    newCs[i].symptomType = e.target.value;
+                  }
+                  onChange({ ...data, cognitiveSymptoms: newCs });
+                }}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor={`cs_onsetDate_${i}`}>Onset Date</Label>
+              <Input
+                id={`cs_onsetDate_${i}`}
+                type="date"
+                value={cs.onsetDate}
+                onChange={(e) => {
+                  const newCs = [...data.cognitiveSymptoms];
+                  if (newCs[i]) {
+                    newCs[i].symptomType = e.target.value;
+                  }
+                  onChange({ ...data, cognitiveSymptoms: newCs });
+                }}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor={`cs_severityLevel_${i}`}>Severity Level</Label>
+              <Select
+                value={cs.severityLevel || ""}
+                onValueChange={(value) => {
+                  const newCs = [...data.cognitiveSymptoms];
+                  if (newCs[i]) {
+                    newCs[i].severityLevel = value as "mild" | "moderate" | "severe";
+                  }
+                  
+                  onChange({ ...data, cognitiveSymptoms: newCs });
+                }}
+              >
+                <SelectTrigger id={`cs_severityLevel_${i}`}>
+                  <SelectValue placeholder="Select severity" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="mild">Mild</SelectItem>
+                  <SelectItem value="moderate">Moderate</SelectItem>
+                  <SelectItem value="severe">Severe</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2 md:col-span-2">
+              <Label htmlFor={`cs_notes_${i}`}>Additional Notes</Label>
+              <Textarea
+                id={`cs_notes_${i}`}
+                placeholder="Enter additional details about your cognitive symptoms"
+                value={cs.notes || ""}
+                onChange={(e) => {
+                  const newCs = [...data.cognitiveSymptoms];
+                  if (newCs[i]) {
+                    newCs[i].notes = e.target.value;
+                  }
+                  onChange({ ...data, cognitiveSymptoms: newCs });
+                }}
+              />
+            </div>
+            <div className="flex items-center">
+              <Button variant="outline" onClick={() => handleRemoveCognitiveSymptom(i)}>
+                Remove Cognitive Symptom
+              </Button>
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="onsetDate">Onset Date</Label>
-            <Input
-              id="onsetDate"
-              type="date"
-              value={data.cognitiveSymptoms?.onsetDate || ""}
-              onChange={(e) =>
-                onChange({
-                  ...data,
-                  cognitiveSymptoms: {
-                    ...data.cognitiveSymptoms,
-                    onsetDate: e.target.value,
-                  },
-                })
-              }
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="severityLevel">Severity Level</Label>
-            <Select
-              value={data.cognitiveSymptoms?.severityLevel || ""}
-              onValueChange={(value) =>
-                onChange({
-                  ...data,
-                  cognitiveSymptoms: {
-                    ...data.cognitiveSymptoms,
-                    severityLevel: value as "mild" | "moderate" | "severe",
-                  },
-                })
-              }
-            >
-              <SelectTrigger id="severityLevel">
-                <SelectValue placeholder="Select severity" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="mild">Mild</SelectItem>
-                <SelectItem value="moderate">Moderate</SelectItem>
-                <SelectItem value="severe">Severe</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="cognitiveNotes">Additional Notes</Label>
-            <Textarea
-              id="cognitiveNotes"
-              placeholder="Enter additional details about your cognitive symptoms"
-              value={data.cognitiveSymptoms?.notes || ""}
-              onChange={(e) =>
-                onChange({
-                  ...data,
-                  cognitiveSymptoms: {
-                    ...data.cognitiveSymptoms,
-                    notes: e.target.value,
-                  },
-                })
-              }
-            />
-          </div>
-        </div>
+        ))}
+        <Button onClick={handleAddCognitiveSymptom}>Add Cognitive Symptom</Button>
       </div>
     </div>
   );

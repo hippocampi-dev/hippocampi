@@ -12,4 +12,3 @@ export function convertDateStringToDate(dateString: string): Date {
   }
   return parsedDate;
 }
-

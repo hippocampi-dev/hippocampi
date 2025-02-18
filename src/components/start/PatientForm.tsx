@@ -10,6 +10,7 @@ import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { PatientsInterface } from "~/server/db/type";
+import { cognitiveSymptoms } from "~/server/db/schema/patient";
 
 // Helper function to format Zod errors
 const formatZodErrors = (issues: z.ZodIssue[]): string =>
@@ -81,7 +82,7 @@ export const cognitiveSymptomSchema = z.object({
       (val) => !val || validatePastDate(val),
       { message: "Onset date cannot be in the future" }
     ),
-  severityLevel: z.enum(["mild", "moderate", "severe"]).optional(),
+  severityLevel: z.enum(["mild", "moderate", "severe", "undefined"]).optional(),
   notes: z.string().optional(),
 });
 
@@ -110,7 +111,7 @@ export const medicalInfoSchema = z.object({
   medications: z.array(medicationSchema).optional(),
   allergies: z.array(allergySchema).optional(),
   diagnosis: diagnosisSchema.optional(),
-  cognitiveSymptoms: cognitiveSymptomSchema.optional(),
+  cognitiveSymptoms: z.array(cognitiveSymptomSchema).optional(),
 });
 
 // TypeScript types inferred from the schemas
@@ -142,7 +143,7 @@ export default function PatientForm() {
     medications: [],
     allergies: [],
     diagnosis: undefined,
-    cognitiveSymptoms: undefined,
+    cognitiveSymptoms: [],
   });
   const [error, setError] = useState<string | null>(null);
 
@@ -171,6 +172,12 @@ export default function PatientForm() {
       setError(formatZodErrors(medParse.error.errors));
       return;
     }
+    const parsedMedicalInfo: MedicalInfo = {
+      ...medParse.data,
+      medications: medParse.data.medications || [],
+      allergies: medParse.data.allergies || [],
+      cognitiveSymptoms: medParse.data.cognitiveSymptoms || [],
+    };
     setError(null);
     if (!session) {
       console.error("Session is null");
@@ -204,7 +211,7 @@ export default function PatientForm() {
       zipCode: basicParse.data.zipCode,
       hipaaCompliance: basicParse.data.hipaaCompliance,
     };
-
+    
     try {
       // 1. Post basic patient info
       const patientRes = await fetch("/api/db/patient/add", {
@@ -214,7 +221,8 @@ export default function PatientForm() {
       });
       if (!patientRes.ok) throw new Error("Failed to add patient basic info");
       
-      const patientId = session.user.id; // assume API returns the new patient's id
+      const patientId = session.user.id; 
+ // assume API returns the new patient's id
   
       // 2. Post allergies if provided
       if (medicalInfo.allergies && medicalInfo.allergies.length > 0) {
@@ -227,7 +235,8 @@ export default function PatientForm() {
       }
   
       // 3. Post cognitive symptoms if provided
-      if (medicalInfo.cognitiveSymptoms) {
+      if (medicalInfo.cognitiveSymptoms && medicalInfo.cognitiveSymptoms.length > 0) {
+        console.log(medicalInfo.cognitiveSymptoms)
         const cogRes = await fetch("/api/db/patient/health-info/cognitive-symptoms/add", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -248,7 +257,6 @@ export default function PatientForm() {
   
       // 5. Post medications if provided
       if (medicalInfo.medications && medicalInfo.medications.length > 0) {
-        console.log(patientId)
         const medsRes = await fetch("/api/db/patient/health-info/medications/add", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -284,10 +292,15 @@ export default function PatientForm() {
             transition={{ duration: 0.3 }}
           >
             {step === 1 && (
-              <PersonalInfoForm data={personalInfo} onChange={setPersonalInfo} />
+              <PersonalInfoForm data={{ ...personalInfo, middle_initial: personalInfo.middle_initial || "" }} onChange={(data) => setPersonalInfo(prev => ({ ...prev, ...data }))} />
             )}
             {step === 2 && (
-              <MedicalInfoForm data={medicalInfo} onChange={setMedicalInfo} />
+              <MedicalInfoForm data={{
+                medications: medicalInfo.medications ?? [],
+                allergies: medicalInfo.allergies ?? [],
+                diagnosis: medicalInfo.diagnosis, // diagnosis can remain optional if desired
+                cognitiveSymptoms: medicalInfo.cognitiveSymptoms ?? []
+              }} onChange={setMedicalInfo} />
             )}
           </motion.div>
         </AnimatePresence>

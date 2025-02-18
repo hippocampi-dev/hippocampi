@@ -23,7 +23,7 @@ export default function Dashboard() {
         if (!userRoleData.response) redirect('/select-role')
 
         const role = userRoleData.response.userRole;
-        
+        console.log(role)
         if (role === 'doctor') {
           const doctorResponse = await fetch('api/db/doctor/get');
           const doctorData = await doctorResponse.json();
@@ -38,7 +38,7 @@ export default function Dashboard() {
           const patientResponse = await fetch('api/db/patient/get');
           const patientData = await patientResponse.json();
           const patient = patientData.response;
-
+          console.log(patient)
           if (!patient) {
             router.push('/dashboard/get-started');
           } else {

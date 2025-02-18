@@ -269,7 +269,7 @@ export const fetchHealthItem = async (route: string) => {
 export const fetchHealthInfo = async () => {
   const allergies = await fetchHealthItem('/api/db/patient/health-info/allergies/get');
   const cognitiveSymptoms = await fetchHealthItem('/api/db/patient/health-info/cognitive-symptoms/get');
-  const dianoses = await fetchHealthItem('/api/db/patient/health-info/diagnoses/get');
+  const diagnoses = await fetchHealthItem('/api/db/patient/health-info/diagnoses/get');
   const emergencyContacts = await fetchHealthItem('/api/db/patient/health-info/emergency-contacts/get');
   const medications = await fetchHealthItem('/api/db/patient/health-info/medications/get');
   const treatments = await fetchHealthItem('/api/db/patient/health-info/treatments/get');
@@ -278,7 +278,7 @@ export const fetchHealthInfo = async () => {
   const patientDictKey: PatientHealthInformationInterface = {
     allergies: allergies,
     cognitiveSymptoms: cognitiveSymptoms,
-    diagnoses: dianoses,
+    diagnoses: diagnoses,
     emergencyContacts: emergencyContacts,
     medications: medications,
     treatments: treatments,
