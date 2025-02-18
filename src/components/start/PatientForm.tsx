@@ -172,6 +172,12 @@ export default function PatientForm() {
       setError(formatZodErrors(medParse.error.errors));
       return;
     }
+    const parsedMedicalInfo: MedicalInfo = {
+      ...medParse.data,
+      medications: medParse.data.medications || [],
+      allergies: medParse.data.allergies || [],
+      cognitiveSymptoms: medParse.data.cognitiveSymptoms || [],
+    };
     setError(null);
     if (!session) {
       console.error("Session is null");
@@ -205,7 +211,7 @@ export default function PatientForm() {
       zipCode: basicParse.data.zipCode,
       hipaaCompliance: basicParse.data.hipaaCompliance,
     };
-
+    
     try {
       // 1. Post basic patient info
       const patientRes = await fetch("/api/db/patient/add", {
@@ -286,10 +292,15 @@ export default function PatientForm() {
             transition={{ duration: 0.3 }}
           >
             {step === 1 && (
-              <PersonalInfoForm data={personalInfo} onChange={setPersonalInfo} />
+              <PersonalInfoForm data={{ ...personalInfo, middle_initial: personalInfo.middle_initial || "" }} onChange={(data) => setPersonalInfo(prev => ({ ...prev, ...data }))} />
             )}
             {step === 2 && (
-              <MedicalInfoForm data={medicalInfo} onChange={setMedicalInfo} />
+              <MedicalInfoForm data={{
+                medications: medicalInfo.medications ?? [],
+                allergies: medicalInfo.allergies ?? [],
+                diagnosis: medicalInfo.diagnosis, // diagnosis can remain optional if desired
+                cognitiveSymptoms: medicalInfo.cognitiveSymptoms ?? []
+              }} onChange={setMedicalInfo} />
             )}
           </motion.div>
         </AnimatePresence>

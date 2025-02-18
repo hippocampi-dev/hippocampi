@@ -1,0 +1,1 @@
+ALTER TABLE "hippocampi_conversations" ALTER COLUMN "status" SET DEFAULT 'open';

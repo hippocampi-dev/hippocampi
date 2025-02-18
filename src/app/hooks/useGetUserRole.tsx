@@ -1,4 +1,6 @@
-
+interface UserRoleResponse {
+  response: boolean;
+}
 
 async function fetchUserRole(): Promise<UserRoleResponse | null> {
     try {
