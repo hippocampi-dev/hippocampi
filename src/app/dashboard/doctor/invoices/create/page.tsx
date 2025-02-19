@@ -8,12 +8,14 @@ import Loading from "~/components/loading/page";
 export default function CreateInvoicePage() {
   const context = useContext(DoctorDashboardContext);
 
-  if (!context) return (
-    <main className="w-full h-full">
-      <Loading />
-    </main>
-  )
+  if (!context || context.isLoading || !context.data) {
+    return <Loading />
+  }
+
   return (
-    <InvoiceForm patients={context.data?.patients!} />
+    <InvoiceForm
+      patients={context.data?.patients!}
+      patientDict={context.data.patientDict!}
+    />
   )
 }

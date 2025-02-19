@@ -2,7 +2,7 @@
 import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
 import { createContext, useEffect, useState } from 'react';
-import { DoctorDashboardSidebar } from '~/components/doctor-dashboard/dashboard-sidebar';
+import { DoctorDashboardSidebar } from '~/components/doctor-sidebar/page';
 import { SidebarProvider } from '~/components/ui/sidebar';
 import { 
   PatientDoctorManagementInterface, 
@@ -24,15 +24,23 @@ interface DoctorDashboardData {
   management?: PatientDoctorManagementInterface[];
   appointments?: AppointmentsInterface[];
   invoices?: InvoicesInterface[];
+  appointmentInvoiceDict?: AppointmentInvoiceDict; // key = invoiceId --> corresponding appointment
+}
+
+export type AppointmentInvoiceDict = {
+  [key: string]: AppointmentsInterface
 }
 
 export interface IPatient {
   patient: PatientsInterface;
   management: PatientDoctorManagementInterface;
   healthInfo: PatientHealthInformationInterface;
+  appointments: AppointmentsInterface[]
 }
 
-export type PatientDict = { [key: string]: IPatient };
+export type PatientDict = {
+  [key: string]: IPatient
+};
 
 interface DoctorContextProps {
   doctor?: DoctorsInterface;
@@ -73,7 +81,7 @@ export function DoctorDashboardProvider({ children }: DoctorDashboardProviderPro
       // fetch doctor
       const doctor = await fetchDoctor();
       // fetch invoices
-      const invoices = await fetchInvoices();
+      const invoices: InvoicesInterface[] = await fetchInvoices();
       
       const fetchedPatients: PatientsInterface[] = [];
       const patientManagementList: { [key: string]: IPatient } = {};
@@ -86,11 +94,13 @@ export function DoctorDashboardProvider({ children }: DoctorDashboardProviderPro
           
           fetchedPatients.push(patient);
           const healthInfo = await fetchHealthInfo();
+          const filteredAppointments = filterAppointments(appointments, doctor?.doctorId!, patient.patientId)
           
           patientManagementList[m.patientId] = {
             patient,
             management: m,
-            healthInfo
+            healthInfo,
+            appointments: filteredAppointments
           };
         } catch (error) {
           console.error(`Failed to process patient ${m.patientId}:`, error);
@@ -102,8 +112,11 @@ export function DoctorDashboardProvider({ children }: DoctorDashboardProviderPro
         patientDict: patientManagementList,
         management: management,
         appointments: appointments,
-        invoices: invoices
+        invoices: invoices,
+        appointmentInvoiceDict: createAppointmentInvoiceDictionary(appointments, invoices)
       };
+
+      // console.log(_data);
 
       setState(prev => ({
         ...prev,
@@ -138,7 +151,7 @@ export function DoctorDashboardProvider({ children }: DoctorDashboardProviderPro
       if (!isValid) {
         redirect('/dashboard/patient');
       } else if (!subscription?.isSubscribed) {
-        redirect(subscription?.url || '/dashboard/doctor/account');
+        redirect(subscription?.url || '/dashboard/doctor/billing');
       } else {
         setState(prev => ({
           ...prev,
@@ -160,6 +173,13 @@ export function DoctorDashboardProvider({ children }: DoctorDashboardProviderPro
         </div>
       </SidebarProvider>
     </DoctorDashboardContext.Provider>
+  );
+}
+
+const filterAppointments = (appointments: AppointmentsInterface[], doctorId: string, patientId: string) => {
+  return appointments.filter(appointment => 
+    appointment.doctorId === doctorId &&
+    appointment.patientId === patientId
   );
 }
 
@@ -294,7 +314,7 @@ export const fetchSubscription = async () => {
     if (data.stripeCustomerId) { // canceled subscription
       return {
         isSubscribed: false,
-        url: '/dashboard/doctor/account'
+        url: '/dashboard/doctor/billing'
       }
     }
     else {
@@ -318,4 +338,25 @@ export const fetchInvoices = async () => {
     console.log('Failed to patient invoices');
     return [];
   }
+}
+
+export function createAppointmentInvoiceDictionary(
+  appointments: AppointmentsInterface[],
+  invoices: InvoicesInterface[]
+): AppointmentInvoiceDict {
+  const dictionary: AppointmentInvoiceDict = {};
+
+  invoices.forEach(invoice => {
+    const matchingAppointment = appointments.find(appointment => 
+      appointment.id === invoice.appointmentId
+    );
+    
+    if (matchingAppointment) {
+      dictionary[invoice.id!] = matchingAppointment;
+    } else {
+      console.warn(`Invoice ${invoice.id} has no matching appointment`);
+    }
+  });
+
+  return dictionary;
 }

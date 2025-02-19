@@ -11,7 +11,7 @@ import { DoctorDashboardContext } from "~/app/context/DoctorDashboardContext"
 import Loading from "~/components/loading/page"
 import Error from "~/components/error/page"
 import { AppointmentsInterface, PatientDoctorManagementInterface } from "~/server/db/type"
-import { Dialog, DialogContent, DialogTrigger } from "~/components/ui/dialog"
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "~/components/ui/dialog"
 import { AppointmentForm } from "~/components/doctor-dashboard/appointment-form"
 import { useSession } from "next-auth/react"
 
@@ -23,7 +23,6 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
   const router = useRouter()
   const context = useContext(DoctorDashboardContext);
   const { data: session } = useSession();
-  const [notes, setNotes] = useState<string>(context ? context.data?.patientDict![id]?.management?.notes! : '');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Callbacks
@@ -58,70 +57,8 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
     return <Error />
   }
 
-  const handleAddNote = async () => {
-    // In a real application, you'd send this note to your backend
-    const body: PatientDoctorManagementInterface = {
-      doctorId: session?.user.id!,
-      patientId: id,
-      lastVisit: selectManagement()?.lastVisit!,
-      id: selectManagement()?.id,
-      created_at: selectManagement()?.created_at,
-      updated_at: selectManagement()?.updated_at,
-      notes: notes
-    };
-
-    try {
-      const response = await fetch('/api/db/management/patient-doctor-management/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      })
-      
-      context.fetchPatientData!; // refetch context
-      const result = await response.json();
-    } catch (error) {
-      console.error('Error fetching data:', error)
-    }
-  }
-
-  const handleScheduleAppointment = async (
-    appointment: {
-      patientId: string,
-      date: Date,
-      reason: string,
-      notes: string
-    }
-  ) => {
-    // In a real application, you'd send this appointment to your backend
-    console.log("New appointment scheduled:", appointment.date.toLocaleString());
-
-    const body: AppointmentsInterface = {
-      doctorId: session?.user.id!,
-      patientId: id,
-      scheduledAt: appointment.date,
-      reason: appointment.reason,
-      notes: appointment.notes
-    }
-
-    try {
-      const response = await fetch('/api/db/management/appointments/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      })
-      
-      const result = await response.json();
-      context.fetchPatientData!; // refetch context
-    } catch (error) {
-      console.error('Error fetching data:', error)
-    }
-
+  const handleScheduleAppointment = async () => {
     setIsDialogOpen(false);
-    // Optionally, you could update the local state to show the new appointment immediately
   };
 
   const handleCancelAppointment = () => {
@@ -146,7 +83,7 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
             <p className="text-xl text-muted-foreground">Patient ID: {id}</p>
           </div>
         </div>
-        {/* <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Calendar className="mr-2 h-4 w-4" />
@@ -154,13 +91,15 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
             </Button>
           </DialogTrigger>
           <DialogContent>
+            <DialogTitle>Appointment</DialogTitle>
             <AppointmentForm
-              patientId={selectPatient()?.patientId}
+              // patientId={selectPatient()?.patientId}
+              patients={context.data.patients}
               onSchedule={handleScheduleAppointment}
               onCancel={handleCancelAppointment}
             />
           </DialogContent>
-        </Dialog> */}
+        </Dialog>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">

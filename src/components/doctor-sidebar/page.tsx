@@ -11,6 +11,7 @@ import Link from "next/link"
 import { signOut } from "next-auth/react"
 import { useContext } from "react"
 import { DoctorDashboardContext } from "~/app/context/DoctorDashboardContext"
+
 export function DoctorDashboardSidebar() {
   const context = useContext(DoctorDashboardContext);
   const handleSignOut = () => {

@@ -1,10 +1,11 @@
-// schema/message.ts
 import { createTable } from "./schema";
-import { varchar, text, timestamp, boolean } from "drizzle-orm/pg-core";
-import { users } from "./auth"; // Assuming your users table is defined here
+import { varchar, text, timestamp, boolean, pgEnum } from "drizzle-orm/pg-core";
+import { users } from "./auth";
 import { patients } from "./patient";
 import { doctors } from "./doctor";
 import { timestamps } from "./utils";
+
+export const statusEnum = pgEnum("status", ["open", "closed"]);
 
 export const conversations = createTable('conversations', {
     conversationId: varchar("conversation_id", { length: 255 })
@@ -18,7 +19,7 @@ export const conversations = createTable('conversations', {
       .notNull()
       .references(() => doctors.doctorId, { onDelete: 'cascade' }),
     subject: varchar("subject", { length: 255 }),
-    status: varchar("status", { length: 50 }).default("open"),
+    status: statusEnum("status").default("open"),
     ...timestamps,
   });
 
@@ -37,5 +38,3 @@ export const conversations = createTable('conversations', {
     read: boolean("read").notNull(),
     ...timestamps,
   });
-  
-  

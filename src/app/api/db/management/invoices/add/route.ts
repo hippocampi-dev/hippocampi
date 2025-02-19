@@ -3,6 +3,7 @@ import { addInvoice } from "~/server/db/queries";
 // pass in PatientDoctorManagementInterface json
 export const POST = async (request: Request) => {
   const body = await request.json();
+  console.log(body);
   
   try {
     const response = await addInvoice(body);

@@ -1,5 +1,5 @@
 'use client'
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Loading from "~/components/loading/page";
 import { useCheckUserRole } from "../hooks/useCheckUserRole";
@@ -19,6 +19,9 @@ export default function Dashboard() {
         }
 
         const userRoleData = await userRoleResponse.json();
+
+        if (!userRoleData.response) redirect('/select-role')
+
         const role = userRoleData.response.userRole;
         console.log(role)
         if (role === 'doctor') {

@@ -151,6 +151,14 @@ export const cancelAppointment = async (meeting_id: AppointmentsIdInterface) => 
 
 // get scheduled meeting
 export const getAppointments = async (user_id: UserIdInterface) => {
+  const userRole = await getUserRole(user_id);
+
+  if (userRole?.userRole === 'doctor') {
+    return db.query.appointments.findMany({
+      where: eq(schema_management.appointments.doctorId, user_id)
+    });
+  }
+
   return db.query.appointments.findMany({
     where: (eq(schema_management.appointments.patientId, user_id))
   })
@@ -400,9 +408,31 @@ export const addInvoice = async (invoice: InvoicesInterface) => {
     .returning();
 }
 
+// set doctor subscription
+export const setInvoice = async (invoice: InvoicesInterface) => {
+  return db.update(schema_management.invoices)
+    .set(invoice)
+    .where(eq(schema_management.invoices.id, invoice.id!))
+    .returning();
+}
+
 // get invoice
 export const getInvoice = async (user_id: UserIdInterface) => {
+  const userRole = await getUserRole(user_id);
+
+  if (userRole?.userRole === 'doctor') {
+    return db.query.invoices.findMany({
+      where: eq(schema_management.invoices.doctorId, user_id)
+    });
+  }
+
   return db.query.invoices.findMany({
-    where: eq(schema_management.invoices.doctorId, user_id)
+    where: eq(schema_management.invoices.patientId, user_id)
+  });
+}
+
+export const getTargetInvoice = async (invoice_id: string) => {
+  return db.query.invoices.findFirst({
+    where: eq(schema_management.invoices.id, invoice_id)
   });
 }

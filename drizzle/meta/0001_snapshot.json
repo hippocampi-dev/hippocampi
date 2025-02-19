@@ -1,6 +1,6 @@
 {
-  "id": "106bc1a0-5048-4988-bf01-5d538e8b523a",
-  "prevId": "6ce905db-3653-401e-a295-6c82ad2624ed",
+  "id": "5c2512f9-8932-4dc4-9ba1-7207904d9220",
+  "prevId": "a0d8d468-c30e-4c9b-8aca-8a6e86859cba",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -130,10 +130,7 @@
           ]
         }
       },
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
     "public.hippocampi_sessions": {
       "name": "hippocampi_sessions",
@@ -191,10 +188,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
     "public.hippocampi_user_logins": {
       "name": "hippocampi_user_logins",
@@ -314,10 +308,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
     "public.hippocampi_users": {
       "name": "hippocampi_users",
@@ -372,10 +363,7 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
     "public.hippocampi_verification_token": {
       "name": "hippocampi_verification_token",
@@ -411,10 +399,7 @@
           ]
         }
       },
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
     "public.hippocampi_doctor_credentials": {
       "name": "hippocampi_doctor_credentials",
@@ -482,10 +467,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
     "public.hippocampi_doctors": {
       "name": "hippocampi_doctors",
@@ -579,10 +561,7 @@
             "email"
           ]
         }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      }
     },
     "public.hippocampi_appointments": {
       "name": "hippocampi_appointments",
@@ -608,7 +587,7 @@
         },
         "scheduled_at": {
           "name": "scheduled_at",
-          "type": "timestamp (0) with time zone",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true
         },
@@ -624,9 +603,9 @@
           "primaryKey": false,
           "notNull": false
         },
-        "status": {
-          "name": "status",
-          "type": "status",
+        "appointment_status": {
+          "name": "appointment_status",
+          "type": "appointment_status",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
@@ -723,10 +702,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
     "public.hippocampi_doctor_subscriptions": {
       "name": "hippocampi_doctor_subscriptions",
@@ -750,9 +726,9 @@
           "primaryKey": false,
           "notNull": false
         },
-        "status": {
-          "name": "status",
-          "type": "status",
+        "subscription_status": {
+          "name": "subscription_status",
+          "type": "subscription_status",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
@@ -802,10 +778,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
     "public.hippocampi_invoices": {
       "name": "hippocampi_invoices",
@@ -823,24 +796,19 @@
           "primaryKey": false,
           "notNull": false
         },
-        "stripe_invoice_id": {
-          "name": "stripe_invoice_id",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "status": {
-          "name": "status",
-          "type": "status",
+        "invoice_status": {
+          "name": "invoice_status",
+          "type": "invoice_status",
           "typeSchema": "public",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "'unpaid'"
         },
         "appointment_id": {
           "name": "appointment_id",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "patient_id": {
           "name": "patient_id",
@@ -856,19 +824,7 @@
         },
         "hourly_rate": {
           "name": "hourly_rate",
-          "type": "numeric(2)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "duration": {
-          "name": "duration",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "total": {
-          "name": "total",
-          "type": "numeric(2)",
+          "type": "numeric",
           "primaryKey": false,
           "notNull": true
         },
@@ -936,10 +892,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
     "public.hippocampi_patient_doctor_management": {
       "name": "hippocampi_patient_doctor_management",
@@ -1020,10 +973,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
     "public.hippocampi_user_roles": {
       "name": "hippocampi_user_roles",
@@ -1073,10 +1023,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
     "public.hippocampi_allergies": {
       "name": "hippocampi_allergies",
@@ -1144,10 +1091,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
     "public.hippocampi_cognitive_symptoms": {
       "name": "hippocampi_cognitive_symptoms",
@@ -1222,10 +1166,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
     "public.hippocampi_diagnoses": {
       "name": "hippocampi_diagnoses",
@@ -1300,10 +1241,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
     "public.hippocampi_emergency_contacts": {
       "name": "hippocampi_emergency_contacts",
@@ -1378,10 +1316,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
     "public.hippocampi_medical_history": {
       "name": "hippocampi_medical_history",
@@ -1452,10 +1387,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
     "public.hippocampi_medications": {
       "name": "hippocampi_medications",
@@ -1536,10 +1468,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
     "public.hippocampi_patients": {
       "name": "hippocampi_patients",
@@ -1688,10 +1617,7 @@
             "email"
           ]
         }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      }
     },
     "public.hippocampi_treatments": {
       "name": "hippocampi_treatments",
@@ -1765,10 +1691,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
     "public.hippocampi_conversations": {
       "name": "hippocampi_conversations",
@@ -1803,7 +1726,8 @@
           "type": "status",
           "typeSchema": "public",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": "'open'"
         },
         "created_at": {
           "name": "created_at",
@@ -1850,10 +1774,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     },
     "public.hippocampi_messages": {
       "name": "hippocampi_messages",
@@ -1934,19 +1855,33 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "uniqueConstraints": {}
     }
   },
   "enums": {
-    "public.status": {
-      "name": "status",
+    "public.appointment_status": {
+      "name": "appointment_status",
       "schema": "public",
       "values": [
-        "open",
-        "closed"
+        "Scheduled",
+        "Canceled",
+        "Completed"
+      ]
+    },
+    "public.invoice_status": {
+      "name": "invoice_status",
+      "schema": "public",
+      "values": [
+        "unpaid",
+        "paid"
+      ]
+    },
+    "public.subscription_status": {
+      "name": "subscription_status",
+      "schema": "public",
+      "values": [
+        "subscribed",
+        "unsubscribed"
       ]
     },
     "public.gender": {
@@ -1982,13 +1917,18 @@
         "friend",
         "other"
       ]
+    },
+    "public.status": {
+      "name": "status",
+      "schema": "public",
+      "values": [
+        "open",
+        "closed"
+      ]
     }
   },
   "schemas": {},
   "sequences": {},
-  "roles": {},
-  "policies": {},
-  "views": {},
   "_meta": {
     "columns": {},
     "schemas": {},

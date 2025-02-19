@@ -6,7 +6,7 @@ import * as schema_auth from './schema/auth';
 import * as schema_doctor from './schema/doctor';
 import * as schema_management from './schema/management';
 import * as schema_patient from './schema/patient';
-import * as schema_message from './schema/message'
+import * as schema_message from './schema/message';
 
 /**
  * Cache the database connection in development. This avoids creating a new connection on every HMR
