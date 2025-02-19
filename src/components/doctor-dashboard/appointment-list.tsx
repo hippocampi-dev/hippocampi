@@ -1,16 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 import { Badge } from "~/components/ui/badge"
 import { AppointmentsInterface } from "~/server/db/type"
+import { PatientDict } from "~/app/context/DoctorDashboardContext"
 
 interface AppointmentListProps {
   appointments: AppointmentsInterface[]
+  patientDict: PatientDict
 }
 
-export function AppointmentList({ appointments }: AppointmentListProps) {
-  if (!appointments) {
-    return (
-      <></>
-    )
+export function AppointmentList({ appointments, patientDict }: AppointmentListProps) {
+  if (!appointments || !patientDict) {
+    return null;
   }
 
   return (
@@ -23,8 +23,8 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
           {appointments.map((appointment) => (
             <li key={appointment.id} className="flex items-center justify-between">
               <div>
-                <p className="font-medium">{appointment.patientId}</p>
-                <p className="text-sm text-muted-foreground">{appointment.scheduledAt.toLocaleString()}</p>
+                <p className="font-medium">{`${patientDict[appointment.patientId]?.patient.firstName} ${patientDict[appointment.patientId]?.patient.lastName}`}</p>
+                <p className="text-sm text-muted-foreground">{new Date(appointment.scheduledAt).toLocaleString()}</p>
               </div>
               <Badge variant={appointment.status === 'Scheduled' ? "default" : "secondary"}>{appointment.status}</Badge>
             </li>

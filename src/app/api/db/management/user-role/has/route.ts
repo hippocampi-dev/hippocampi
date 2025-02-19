@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getUserRole, hasUserRole } from "~/server/db/queries";
+import { hasUserRole } from "~/server/db/queries";
 import { getUserId } from "~/utilities/get-user";
 
 export const GET = async () => {

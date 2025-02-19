@@ -11,26 +11,45 @@ import { DoctorDashboardContext } from "~/app/context/DoctorDashboardContext"
 import Loading from "~/components/loading/page"
 import Error from "~/components/error/page"
 import { AppointmentsInterface, PatientDoctorManagementInterface } from "~/server/db/type"
-import { Dialog, DialogContent, DialogTrigger } from "~/components/ui/dialog"
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "~/components/ui/dialog"
 import { AppointmentForm } from "~/components/doctor-dashboard/appointment-form"
 import { useSession } from "next-auth/react"
 
 interface PatientDetailsProps {
-  id: string;
+  id: string
 }
 
 export default function PatientDetails({ id }: PatientDetailsProps) {
   const router = useRouter()
   const context = useContext(DoctorDashboardContext);
   const { data: session } = useSession();
-  const [notes, setNotes] = useState<string>(context ? context.data?.patientDict![id]?.management?.notes! : "");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  if (!context) {
-    return <Loading />
-  }
+  // Callbacks
+  const patientDict = context?.data?.patientDict![id];
+  const selectBirthDate = useCallback(() => {
+    return new Date(selectPatient()?.dateOfBirth!);
+  }, [context?.data])
+  const selectManagement = useCallback(() => {
+    return patientDict?.management;
+  }, [context?.data]);
+  const selectPatient = useCallback(() => {
+    return patientDict?.patient;
+  }, [context?.data]);
+  const selectHealthInfo = useCallback(() => {
+    return patientDict?.healthInfo;
+  }, [context?.data]);
+  const selectMedicalHistory = useCallback(() => {
+    return patientDict?.healthInfo.medicalHistory;
+  }, [context?.data]);
+  const selectAppointments = useCallback(() => {
+    return context?.data?.appointments?.filter(
+      (appointment): appointment is AppointmentsInterface => 
+        appointment.patientId === id
+    ) as AppointmentsInterface[];
+  }, [context?.data]);
 
-  if (context.isLoading) {
+  if (!context || context.isLoading || !context.data) {
     return <Loading />
   }
 
@@ -38,86 +57,8 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
     return <Error />
   }
 
-  // Callbacks
-  const selectPatientDict = useCallback(() => {
-    return context.data?.patientDict![id];
-  }, [context.data]);
-  const selectManagement = useCallback(() => {
-    return selectPatientDict()?.management;
-  }, [context.data]);
-  const selectPatient = useCallback(() => {
-    return selectPatientDict()?.patient;
-  }, [context.data]);
-  const selectHealthInfo = useCallback(() => {
-    return selectPatientDict()?.healthInfo;
-  }, [context.data]);
-  const selectMedicalHistory = useCallback(() => {
-    return selectPatientDict()?.healthInfo.medicalHistory;
-  }, [context.data]);
-  const selectAppointments = useCallback(() => {
-    return context.data?.appointments?.filter(
-      (appointment): appointment is AppointmentsInterface => 
-        appointment.patientId === id
-    ) as AppointmentsInterface[];
-  }, [context.data]);
-
-  const handleAddNote = async () => {
-    // In a real application, you'd send this note to your backend
-    const body: PatientDoctorManagementInterface = {
-      doctorId: session?.user.id!,
-      patientId: id,
-      lastVisit: selectManagement()?.lastVisit!,
-      id: selectManagement()?.id,
-      created_at: selectManagement()?.created_at,
-      updated_at: selectManagement()?.updated_at,
-      notes: notes
-    };
-
-    try {
-      const response = await fetch('/api/db/management/patient-doctor-management/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      })
-      
-      context.fetchPatientData!; // refetch context
-      const result = await response.json();
-    } catch (error) {
-      console.error('Error fetching data:', error)
-    }
-  }
-
-  const handleScheduleAppointment = async (appointment: { appointmentDate: Date, reason: string, notes: string }) => {
-    // In a real application, you'd send this appointment to your backend
-    console.log("New appointment scheduled:", appointment.appointmentDate.toLocaleString());
-
-    const body: AppointmentsInterface = {
-      doctorId: session?.user.id!,
-      patientId: id,
-      scheduledAt: appointment.appointmentDate,
-      reason: appointment.reason,
-      notes: appointment.notes
-    }
-
-    try {
-      const response = await fetch('/api/db/management/selectAppointments()?/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      })
-      
-      const result = await response.json();
-      context.fetchPatientData!; // refetch context
-    } catch (error) {
-      console.error('Error fetching data:', error)
-    }
-
+  const handleScheduleAppointment = async () => {
     setIsDialogOpen(false);
-    // Optionally, you could update the local state to show the new appointment immediately
   };
 
   const handleCancelAppointment = () => {
@@ -130,15 +71,17 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
         <ArrowLeft className="mr-2 h-4 w-4" /> Back to Patients
       </Button>
 
-      <div className="flex items-center space-x-4">
-        <Avatar className="h-20 w-20">
-          <AvatarFallback className="text-2xl">
-            {`${selectPatient()?.firstName} ${selectPatient()?.lastName}`}
-          </AvatarFallback>
-        </Avatar>
-        <div>
-          <h1 className="text-3xl font-bold">{`${selectPatient()?.firstName} ${selectPatient()?.lastName}`}</h1>
-          <p className="text-xl text-muted-foreground">Patient ID: {id}</p>
+      <div className="flex items-center space-x-4 justify-between">
+        <div className="flex items-center space-x-4">
+          <Avatar className="h-20 w-20">
+            <AvatarFallback className="text-2xl">
+              {`${selectPatient()?.firstName} ${selectPatient()?.lastName}`}
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <h1 className="text-3xl font-bold">{`${selectPatient()?.firstName} ${selectPatient()?.lastName}`}</h1>
+            <p className="text-xl text-muted-foreground">Patient ID: {id}</p>
+          </div>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
@@ -148,8 +91,10 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
             </Button>
           </DialogTrigger>
           <DialogContent>
+            <DialogTitle>Appointment</DialogTitle>
             <AppointmentForm
-              patientName={`${selectPatient()?.firstName} ${selectPatient()?.lastName}`}
+              // patientId={selectPatient()?.patientId}
+              patients={context.data.patients}
               onSchedule={handleScheduleAppointment}
               onCancel={handleCancelAppointment}
             />
@@ -173,7 +118,7 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
               </div>
               <div>
                 <dt className="font-medium">Date of Birth</dt>
-                <dd>{selectPatient()?.dateOfBirth.toDateString()}</dd>
+                <dd>{`${selectBirthDate().toLocaleDateString()}`}</dd>
               </div>
               <div>
                 <dt className="font-medium">Email</dt>
@@ -253,7 +198,7 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
                   </p>
                   <p className="text-sm text-muted-foreground">{"Dosage:" + item.dosage}</p>
                   <p className="text-sm text-muted-foreground">{"Frequency:" + item.frequency}</p>
-                  <p className="text-sm text-muted-foreground">{`${item.startDate.toDateString()}-${item.endDate?.toDateString()}`}</p>
+                  <p className="text-sm text-muted-foreground">{`${item.startDate}-${item.endDate}`}</p>
                 </li>
               ))}
             </ul>
@@ -275,7 +220,7 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
                     {item.treatmentName}
                   </p>
                   <p className="text-sm text-muted-foreground">{item.notes}</p>
-                  <p className="text-sm text-muted-foreground">{`${item.startDate.toDateString()}-${item.endDate?.toDateString()}`}</p>
+                  <p className="text-sm text-muted-foreground">{`${item.start_date}-${item.endDate}`}</p>
                 </li>
               ))}
             </ul>
@@ -304,21 +249,21 @@ export default function PatientDetails({ id }: PatientDetailsProps) {
         </Card>
 
         {/* Notes */}
-        <Card>
+        {/* <Card>
           <CardHeader>
             <CardTitle>Notes</CardTitle>
             <CardDescription>Add new observations or notes about the patient</CardDescription>
           </CardHeader>
           <CardContent>
             <Textarea
-              placeholder={notes}
+              placeholder={notes ? notes : ''}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               className="mb-4"
             />
             <Button onClick={handleAddNote}>Update Notes</Button>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
     </div>
   )

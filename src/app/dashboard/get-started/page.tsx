@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Loading from "~/components/loading/page";
 import PatientDashboard from "~/components/patient-dashboard/page";
 import { role, UserRolesInterface } from "~/server/db/type";
+import PatientForm from "~/components/start/PatientForm";
 
 export default function NewUserForm() {
   const [userRole, setUserRole] = useState("");
@@ -35,7 +36,9 @@ export default function NewUserForm() {
   )
 
   if (userRole === role.patient) return (
-    <PatientDashboard />
+    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-indigo-100 to-purple-100 p-4">
+      <PatientForm />
+    </main>
   )
 
   if (userRole === role.doctor) return (

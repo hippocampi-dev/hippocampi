@@ -2,8 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 import { Avatar, AvatarFallback } from "~/components/ui/avatar"
 import { PatientsInterface } from "~/server/db/type"
 import { PatientDict } from "~/app/context/DoctorDashboardContext"
-import { Link } from "lucide-react"
 import { Button } from "../ui/button"
+import Link from "next/link"
 
 interface PatientCardProps {
   patient: PatientsInterface
@@ -39,7 +39,7 @@ export function PatientCard({ patient, patientDict }: PatientCardProps) {
             <dd className="truncate">{patient.email}</dd>
           </div>
           <Button asChild className="w-full mt-4">
-            <Link href={`/dashboard/patients/${patient.patientId}`}>View Details</Link>
+            <Link href={`/dashboard/doctor/patients/${patient.patientId}`}>View Details</Link>
           </Button>
         </dl>
       </CardContent>

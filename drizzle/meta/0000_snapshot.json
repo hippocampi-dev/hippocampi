@@ -1,5 +1,5 @@
 {
-  "id": "8c22e9ac-1820-45f8-af82-9f7ded4916fb",
+  "id": "a0d8d468-c30e-4c9b-8aca-8a6e86859cba",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -515,6 +515,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "bio": {
+          "name": "bio",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -581,7 +587,7 @@
         },
         "scheduled_at": {
           "name": "scheduled_at",
-          "type": "timestamp (0) with time zone",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true
         },
@@ -597,9 +603,9 @@
           "primaryKey": false,
           "notNull": false
         },
-        "status": {
-          "name": "status",
-          "type": "status",
+        "appointment_status": {
+          "name": "appointment_status",
+          "type": "appointment_status",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
@@ -698,6 +704,209 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+    "public.hippocampi_doctor_subscriptions": {
+      "name": "hippocampi_doctor_subscriptions",
+      "schema": "",
+      "columns": {
+        "doctor_id": {
+          "name": "doctor_id",
+          "type": "varchar(255)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "stripe_customer_id": {
+          "name": "stripe_customer_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "subscription_id": {
+          "name": "subscription_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "subscription_status": {
+          "name": "subscription_status",
+          "type": "subscription_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'unsubscribed'"
+        },
+        "start_date": {
+          "name": "start_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "end_date": {
+          "name": "end_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "hippocampi_doctor_subscriptions_doctor_id_hippocampi_doctors_doctor_id_fk": {
+          "name": "hippocampi_doctor_subscriptions_doctor_id_hippocampi_doctors_doctor_id_fk",
+          "tableFrom": "hippocampi_doctor_subscriptions",
+          "tableTo": "hippocampi_doctors",
+          "columnsFrom": [
+            "doctor_id"
+          ],
+          "columnsTo": [
+            "doctor_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.hippocampi_invoices": {
+      "name": "hippocampi_invoices",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "stripe_customer_id": {
+          "name": "stripe_customer_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "invoice_status": {
+          "name": "invoice_status",
+          "type": "invoice_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'unpaid'"
+        },
+        "appointment_id": {
+          "name": "appointment_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "patient_id": {
+          "name": "patient_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "doctor_id": {
+          "name": "doctor_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hourly_rate": {
+          "name": "hourly_rate",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "hippocampi_invoices_stripe_customer_id_hippocampi_patients_stripe_customer_id_fk": {
+          "name": "hippocampi_invoices_stripe_customer_id_hippocampi_patients_stripe_customer_id_fk",
+          "tableFrom": "hippocampi_invoices",
+          "tableTo": "hippocampi_patients",
+          "columnsFrom": [
+            "stripe_customer_id"
+          ],
+          "columnsTo": [
+            "stripe_customer_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "hippocampi_invoices_appointment_id_hippocampi_appointments_id_fk": {
+          "name": "hippocampi_invoices_appointment_id_hippocampi_appointments_id_fk",
+          "tableFrom": "hippocampi_invoices",
+          "tableTo": "hippocampi_appointments",
+          "columnsFrom": [
+            "appointment_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "hippocampi_invoices_patient_id_hippocampi_patients_patient_id_fk": {
+          "name": "hippocampi_invoices_patient_id_hippocampi_patients_patient_id_fk",
+          "tableFrom": "hippocampi_invoices",
+          "tableTo": "hippocampi_patients",
+          "columnsFrom": [
+            "patient_id"
+          ],
+          "columnsTo": [
+            "patient_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "hippocampi_invoices_doctor_id_hippocampi_doctors_doctor_id_fk": {
+          "name": "hippocampi_invoices_doctor_id_hippocampi_doctors_doctor_id_fk",
+          "tableFrom": "hippocampi_invoices",
+          "tableTo": "hippocampi_doctors",
+          "columnsFrom": [
+            "doctor_id"
+          ],
+          "columnsTo": [
+            "doctor_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.hippocampi_patient_doctor_management": {
       "name": "hippocampi_patient_doctor_management",
       "schema": "",
@@ -724,7 +933,7 @@
           "name": "last_visit",
           "type": "date",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "notes": {
           "name": "notes",
@@ -760,7 +969,7 @@
             "doctor_id"
           ],
           "onDelete": "cascade",
-          "onUpdate": "cascade"
+          "onUpdate": "no action"
         },
         "hippocampi_patient_doctor_management_patient_id_hippocampi_patients_patient_id_fk": {
           "name": "hippocampi_patient_doctor_management_patient_id_hippocampi_patients_patient_id_fk",
@@ -773,7 +982,7 @@
             "patient_id"
           ],
           "onDelete": "cascade",
-          "onUpdate": "cascade"
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1232,7 +1441,7 @@
           "name": "start_date",
           "type": "date",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "end_date": {
           "name": "end_date",
@@ -1306,7 +1515,7 @@
           "name": "condition",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "date_of_birth": {
           "name": "date_of_birth",
@@ -1368,6 +1577,18 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
+        },
+        "hipaa_compliance": {
+          "name": "hipaa_compliance",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "stripe_customer_id": {
+          "name": "stripe_customer_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -1484,16 +1705,196 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
+    },
+    "public.hippocampi_conversations": {
+      "name": "hippocampi_conversations",
+      "schema": "",
+      "columns": {
+        "conversation_id": {
+          "name": "conversation_id",
+          "type": "varchar(255)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "patient_id": {
+          "name": "patient_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "doctor_id": {
+          "name": "doctor_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "subject": {
+          "name": "subject",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'open'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "hippocampi_conversations_patient_id_hippocampi_patients_patient_id_fk": {
+          "name": "hippocampi_conversations_patient_id_hippocampi_patients_patient_id_fk",
+          "tableFrom": "hippocampi_conversations",
+          "tableTo": "hippocampi_patients",
+          "columnsFrom": [
+            "patient_id"
+          ],
+          "columnsTo": [
+            "patient_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "hippocampi_conversations_doctor_id_hippocampi_doctors_doctor_id_fk": {
+          "name": "hippocampi_conversations_doctor_id_hippocampi_doctors_doctor_id_fk",
+          "tableFrom": "hippocampi_conversations",
+          "tableTo": "hippocampi_doctors",
+          "columnsFrom": [
+            "doctor_id"
+          ],
+          "columnsTo": [
+            "doctor_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.hippocampi_messages": {
+      "name": "hippocampi_messages",
+      "schema": "",
+      "columns": {
+        "message_id": {
+          "name": "message_id",
+          "type": "varchar(255)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "conversation_id": {
+          "name": "conversation_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sender_id": {
+          "name": "sender_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "read": {
+          "name": "read",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "hippocampi_messages_conversation_id_hippocampi_conversations_conversation_id_fk": {
+          "name": "hippocampi_messages_conversation_id_hippocampi_conversations_conversation_id_fk",
+          "tableFrom": "hippocampi_messages",
+          "tableTo": "hippocampi_conversations",
+          "columnsFrom": [
+            "conversation_id"
+          ],
+          "columnsTo": [
+            "conversation_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "hippocampi_messages_sender_id_hippocampi_users_id_fk": {
+          "name": "hippocampi_messages_sender_id_hippocampi_users_id_fk",
+          "tableFrom": "hippocampi_messages",
+          "tableTo": "hippocampi_users",
+          "columnsFrom": [
+            "sender_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
     }
   },
   "enums": {
-    "public.status": {
-      "name": "status",
+    "public.appointment_status": {
+      "name": "appointment_status",
       "schema": "public",
       "values": [
         "Scheduled",
         "Canceled",
         "Completed"
+      ]
+    },
+    "public.invoice_status": {
+      "name": "invoice_status",
+      "schema": "public",
+      "values": [
+        "unpaid",
+        "paid"
+      ]
+    },
+    "public.subscription_status": {
+      "name": "subscription_status",
+      "schema": "public",
+      "values": [
+        "subscribed",
+        "unsubscribed"
       ]
     },
     "public.gender": {
@@ -1502,7 +1903,6 @@
       "values": [
         "male",
         "female",
-        "non_binary",
         "other",
         "prefer_not_to_say"
       ]
@@ -1529,6 +1929,14 @@
         "sibling",
         "friend",
         "other"
+      ]
+    },
+    "public.status": {
+      "name": "status",
+      "schema": "public",
+      "values": [
+        "open",
+        "closed"
       ]
     }
   },

@@ -9,6 +9,7 @@ export default defineConfig({
     "./src/server/db/schema/doctor.ts",
     "./src/server/db/schema/management.ts",
     "./src/server/db/schema/patient.ts",
+    "./src/server/db/schema/message.ts",
     "./src/server/db/schema/relations.ts",
   ],
   dialect: "postgresql",

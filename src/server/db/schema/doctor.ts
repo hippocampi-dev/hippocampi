@@ -28,7 +28,8 @@ export const doctors = createTable(
     location: text("location")
       .notNull(),
     specialization: varchar("specialization"),
-    ratings: varchar("ratings", { length:20 }),
+    ratings: varchar("ratings", { length: 20 }),
+    bio: text('bio').notNull(),
     ...timestamps
   }
 )
