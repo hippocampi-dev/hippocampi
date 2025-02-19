@@ -4,10 +4,8 @@ import { PatientDoctorManagementInterface } from "~/server/db/type";
 // pass in PatientDoctorManagementInterface json
 export const POST = async (request: Request) => {
   const body: PatientDoctorManagementInterface = await request.json();
-  console.log(body)
   try {
     const response = await addPatientDoctorManagement(body);
-
     if (!response) {
       return Response.json("Error");
     }

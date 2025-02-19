@@ -1,61 +1,88 @@
-import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
+
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
+import { Button } from '~/components/ui/button';
+import Link from 'next/link';
 import { getDoctor, getPatientDoctorManagement } from '~/server/db/queries';
 import { getUserId } from '~/utilities/get-user';
-import { Button } from '../ui/button';
-import Link from 'next/link';
 import { UserIdInterface } from '~/server/db/type';
+import MessageButton from './MessageButton';
 
 
 
 export default async function HealthcareProviders() {
-    const userId = await getUserId() as "string";
-    const patientDoctorRelations = await getPatientDoctorManagement(userId);
-    const doctorIds = patientDoctorRelations.map((relation) => relation.doctorId);
+  const userId = await getUserId() as "string";
+  const patientDoctorRelations = await getPatientDoctorManagement(userId);
+  const doctorIds = patientDoctorRelations.map((relation) => relation.doctorId);
 
-    const doctors = await Promise.all(
-        doctorIds.map((id) => getDoctor(id as UserIdInterface))
-    );
+  const doctors = await Promise.all(
+    doctorIds.map((id) => getDoctor(id as UserIdInterface))
+  );
 
-    if (!doctors) return null;
-
-    return (
-        <Card className="flex-1">
-                <CardHeader>
-                  <CardTitle>Healthcare Providers</CardTitle>
-                </CardHeader>
-                <CardContent>
-                <div>
-                    {(!doctors || doctors.length === 0) ? (
-                        <div className="flex flex-col items-center space-y-4">
-                        <p className="text-lg text-gray-600">No assigned doctor</p>
-                        <Link href = "/dashboard/patient/select-doctor">
-                            <Button>Select Doctor</Button>
-                        </Link>
-                        </div>
-                    ) : (
-                        <ul className="flex flex-col space-y-4">
-                        {doctors.map((doctor) => doctor && (
-                          <Link href = {`/dashboard/patient/doctors/${doctor.doctorId}`}>
-                            <li key={doctor.doctorId} className="flex items-center space-x-4">
-                              <div>
-                                <p className="font-medium">
-                                  Dr. {doctor!.firstName} {doctor!.lastName}
-                                </p>
-                                <p className="text-sm text-muted-foreground">
-                                  {doctor!.specialization} | {doctor!.location}
-                                </p>
-                              </div>
-                            </li>
-                          </Link>
-                        ))}
-                      </ul>
-                        
-
-        
-                    )}
-                    </div>
-                </CardContent>
-              </Card>
-    )
+  return (
+    <Card className="flex-1">
+      <CardHeader>
+        <CardTitle>Healthcare Providers</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {(!doctors || doctors.length === 0) ? (
+          <div className="flex flex-col items-center space-y-4">
+            <p className="text-lg text-gray-600">No assigned doctor</p>
+            <Link href="/dashboard/patient/select-doctor">
+              <Button>Select Doctor</Button>
+            </Link>
+          </div>
+        ) : (
+          <ul className="flex flex-col space-y-6">
+            {doctors.map((doctor) =>
+              doctor ? (
+                <li key={doctor.doctorId} className="border p-4 rounded shadow-md">
+                  <div className="mb-4">
+                    <h3 className="text-2xl font-bold">
+                      Dr. {doctor.firstName} {doctor.lastName}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      {doctor.specialization ? doctor.specialization : "General Practitioner"} | {doctor.location}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Ratings: {doctor.ratings ? doctor.ratings : "N/A"}
+                    </p>
+                    <p className="mt-2 text-gray-700">
+                      {doctor.bio}
+                    </p>
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <Button 
+                      variant="outline" 
+                      className="flex-1"
+                      asChild
+                    >
+                      <Link href={`https://placeholder.com/reviews/${doctor.doctorId}`}>
+                        Details
+                      </Link>
+                    </Button>
+                    <Button 
+                      variant="default" 
+                      className="flex-1"
+                      asChild
+                      >
+                        <MessageButton doctorId={doctor.doctorId} patientId={userId}/>
+                    </Button>
+                    <Button 
+                      variant="default" 
+                      className="flex-1"
+                      asChild
+                    >
+                      <Link href={`/dashboard/appointments/schedule?doctorId=${doctor.doctorId}`}>
+                        Schedule Appointment
+                      </Link>
+                    </Button>
+                  </div>
+                </li>
+              ) : null
+            )}
+          </ul>
+        )}
+      </CardContent>
+    </Card>
+  );
 }

@@ -14,7 +14,7 @@ export default async function DashboardHome() {
   const session = await auth()
   // Assume session is already handled in the layout (or fetched here via your method)
   if (!session) {
-    redirect("/sign-in")
+    redirect("/sign-up")
   }
 
   return (

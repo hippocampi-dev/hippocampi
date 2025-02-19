@@ -7,6 +7,7 @@ import {
   doctorSubcriptions,
   invoices,
 } from "./schema/management";
+import { conversations, messages } from "./schema/message";
 import {
   allergies,
   cognitiveSymptoms,
@@ -17,6 +18,7 @@ import {
   patients,
   treatments,
 } from "./schema/patient";
+
 
 // User ID
 export type UserIdInterface = typeof users.id.dataType;
@@ -110,3 +112,7 @@ export type DoctorSubscriptionsInterface = typeof doctorSubcriptions.$inferInser
 
 // patient invoices
 export type InvoicesInterface = typeof invoices.$inferInsert;
+
+export type ConversationsInterface = typeof conversations.$inferInsert;
+
+export type MessagesInterface = typeof messages.$inferInsert;

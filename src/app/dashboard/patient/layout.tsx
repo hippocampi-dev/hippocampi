@@ -61,6 +61,14 @@ export default function DashboardLayout({
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
+                <Link href = "/dashboard/patient/messages">
+                <SidebarMenuButton>
+                  <FileText className="mr-2 h-4 w-4" />
+                  Message
+                </SidebarMenuButton>
+                </Link>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
                 <SidebarMenuButton>
                   <Calendar className="mr-2 h-4 w-4" />
                   Assessments

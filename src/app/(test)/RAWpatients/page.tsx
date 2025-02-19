@@ -1,12 +1,8 @@
-"use client"
+import { auth } from "~/server/auth";
+import { getConversation } from "~/server/db/queries";
 
-import { useSession } from "next-auth/react"
 
-export default function Page() {
-    const {data : session} = useSession()
-    
-    return (
-        <div className = "bg-gray-800 text-green-400 p-4 rounded-md font-mono text-sm overflow-auto max-h-96">
-        </div>
-    )
+export default async function Test() {
+    const session = await auth()
+    // const conversation = getConversation(session?.user.id)
 }

@@ -4,9 +4,12 @@ import * as schema_auth from './schema/auth';
 import * as schema_doctor from './schema/doctor';
 import * as schema_management from './schema/management';
 import * as schema_patient from './schema/patient';
+import * as schema_message from "./schema/message"
 import { eq } from 'drizzle-orm';
-import { DoctorCredentialsInterface, DoctorsInterface, PatientAllergiesInterface, PatientCognitiveSymptomsInterface, PatientDiagnosesInterface, PatientDoctorManagementInterface, PatientEmergencyContactsInterface, PatientHealthInformationInterface, PatientMedicationsInterface, PatientsInterface, PatientTreatmentsInterface, AppointmentsIdInterface, AppointmentsInterface, UserIdInterface, UserRolesInterface, PatientMedicalHistoryInterface, DoctorSubscriptionsInterface, InvoicesInterface } from './type';
+import { DoctorCredentialsInterface, DoctorsInterface, PatientAllergiesInterface, PatientCognitiveSymptomsInterface, PatientDiagnosesInterface, PatientDoctorManagementInterface, PatientEmergencyContactsInterface, PatientHealthInformationInterface, PatientMedicationsInterface, PatientsInterface, PatientTreatmentsInterface, AppointmentsIdInterface, AppointmentsInterface, UserIdInterface, UserRolesInterface, PatientMedicalHistoryInterface, DoctorSubscriptionsInterface, InvoicesInterface, ConversationsInterface, MessagesInterface } from './type';
 import { db } from '.';
+import { desc, asc } from 'drizzle-orm';
+
 
 // add user role
 export const addUserRole = async (user: UserRolesInterface) => {
@@ -436,3 +439,44 @@ export const getTargetInvoice = async (invoice_id: string) => {
     where: eq(schema_management.invoices.id, invoice_id)
   });
 }
+
+export const getConversation = async (
+  patientId: string,
+  doctorId: string
+): Promise<ConversationsInterface | null> => {
+  const conversation = await db.query.conversations.findFirst({
+    where: eq(schema_message.conversations.patientId, patientId) &&
+           eq(schema_message.conversations.doctorId, doctorId),
+  });
+  return conversation ?? null;
+};
+
+export const createConversation = async (data: {
+  patientId: string;
+  doctorId: string;
+  subject?: string;
+}): Promise<ConversationsInterface[]> => {
+  return db.insert(schema_message.conversations)
+    .values(data)
+    .returning();
+};
+
+export const getMessages = async (
+  conversationId: string
+): Promise<MessagesInterface[]> => {
+  return db.query.messages.findMany({
+    where: eq(schema_message.messages.conversationId, conversationId),
+    orderBy: asc(schema_message.messages.created_at),
+  });
+};
+
+export const createMessage = async (data: {
+  conversationId: string;
+  senderId: string;
+  content: string;
+  read?: boolean;
+}): Promise<MessagesInterface[]> => {
+  return db.insert(schema_message.messages)
+    .values({ ...data, read: data.read ?? false })
+    .returning();
+};
