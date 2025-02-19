@@ -44,6 +44,6 @@ export default function SignIn() {
         </CardFooter>
       </Card>
     </main>
-  )
+  );
 }
 
