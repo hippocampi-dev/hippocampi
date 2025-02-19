@@ -1,29 +1,104 @@
-# Create T3 App
+# HippoCampi
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+## API Documentation
 
-## What's next? How do I make an app with this?
+### Overview
+This API provides endpoints for managing resources through RESTful HTTP methods. All database types are defined in /src/server/db/type.ts.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+### Endpoints
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+#### GET Routes
+These endpoints retrieve existing data from the system.
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+| Endpoint | Description | Response Type |
+| --- | --- | --- |
+| `/api/db/patient/get` | Retrieve patient profile | PatientsInterface |
+| `/api/db/patient/health-info/get` | Retrieve all health information | PatientHealthInformationInterface |
+| `/api/db/patient/health-info/allergies/get` | Retrieve patient allergies | PatientAllergiesInterface[] |
+| `/api/db/patient/health-info/cognitive-symptoms/get` | Retrieve patient cognitive symptoms | PatientCognitiveSymptomsInterface[] |
+| `/api/db/patient/health-info/diagnoses/get` | Retrieve patient diagnoses | PatientDiagnosesInterface[] |
+| `/api/db/patient/health-info/emergency-contacts/get` | Retrieve patient emergency contacts | PatientEmergencyContactsInterface[] |
+| `/api/db/patient/health-info/medications/get` | Retrieve patient medications | PatientMedicationsInterface[] |
+| `/api/db/patient/health-info/treatments/get` | Retrieve patient treatments | PatientTreatmentsInterface[] |
+| `/api/db/doctor/get` | Retrieve doctor profile information | DoctorsInterface |
+| `/api/db/doctor/credentials/get` | Retrieve doctor credentials | DoctorCredentialsInterface |
+| `/api/db/management/user-role/get` | Retrieve user role (patient or doctor) | UserRolesInterface |
+| `/api/db/management/user-role/has` | Check if user has role | Boolean |
+| `/api/db/management/patient-doctor-management/get` | Retrieve patient-doctor pair | PatientDoctorManagementInterface[] |
+| `/api/db/management/scheduled-meetings/get` | Retrieve scheduled meetings | ScheduledMeetingsInterface[] |
 
-## Learn More
+#### POST Routes
+These endpoints create new or update existing entries in the system.
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+| Endpoint | Description | Request Body | Response Type |
+| --- | --- | --- | --- |
+| `/api/db/patient/add` | Add new patient | PatientsInterface | PatientsInterface |
+| `/api/db/patient/set` | Update patient | PatientsInterface | PatientsInterface |
+| `/api/db/patient/health-info/allergies/add` | Add new patient allergies | PatientAllergiesInterface | PatientAllergiesInterface |
+| `/api/db/patient/health-info/allergies/set` | Update patient allergies | PatientAllergiesInterface | PatientAllergiesInterface |
+| `/api/db/patient/health-info/cognitive-symptoms/add` | Add new patient cognitive symptom | PatientCognitiveSymptomsInterface | PatientCognitiveSymptomsInterface |
+| `/api/db/patient/health-info/cognitive-symptoms/set` | Update patient cognitive symptom | PatientCognitiveSymptomsInterface | PatientCognitiveSymptomsInterface |
+| `/api/db/patient/health-info/diagnoses/add` | Add new patient diagnosis | PatientDiagnosesInterface | PatientDiagnosesInterface |
+| `/api/db/patient/health-info/diagnoses/set` | Update patient cognitive symptoms | PatientDiagnosesInterface | PatientDiagnosesInterface |PatientCognitiveSymptomsInterface | PatientCognitiveSymptomsInterface |
+| `/api/db/patient/health-info/emergency-contacts/add` | Add new patient emergency contact | PatientEmergencyContactsInterface | PatientEmergencyContactsInterface |
+| `/api/db/patient/health-info/emergency-contacts/set` | Update patient emergency contact | PatientEmergencyContactsInterface | PatientEmergencyContactsInterface |
+| `/api/db/patient/health-info/medications/add` | Add new patient medication | PatientMedicationsInterface | PatientMedicationsInterface |
+| `/api/db/patient/health-info/medications/set` | Update patient medication | PatientMedicationsInterface | PatientMedicationsInterface |
+| `/api/db/patient/health-info/treatments/add` | Add new patient treatment | PatientTreatmentsInterface | PatientTreatmentsInterface |
+| `/api/db/patient/health-info/treatments/set` | Update patient treatment | PatientTreatmentsInterface | PatientTreatmentsInterface |serIdInterface, PatientMedicationsInterface | PatientMedicationsInterface |
+| `/api/db/patient/health-info/caregivers/add` | Add new patient caregiver | PatientCaregiversInterface | PatientCaregiversInterface |
+| `/api/db/patient/health-info/caregivers/set` | Update patient caregiver | PatientCaregiversInterface | PatientCaregiversInterface |
+| `/api/db/doctor/add` | Add new doctor profile | DoctorsInterface | DoctorsInterface |
+| `/api/db/doctor/set` | Update doctor profile | DoctorsInterface | DoctorsInterface |
+| `/api/db/doctor/credentials/add` | Add new doctor credential | DoctorCredentialsInterface | DoctorCredentialsInterface |
+| `/api/db/doctor/credentials/set` | Update doctor credential | DoctorCredentialsInterface | DoctorCredentialsInterface |
+| `/api/db/management/user-role/add` | Add user role | UserRolesInterface | UserRolesInterface |
+| `/api/db/management/scheduled-meetings/add` | Add scheduled meeting | ScheduledMeetingsInterface | ScheduledMeetingsInterface |
+| `/api/db/management/scheduled-meetings/cancel` | Cancel scheduled meeting | ScheduledMeetingsIdInterface | ScheduledMeetingsInterface |
+| `/api/db/management/patient-doctor-management/add` | Add patient-doctor pair | PatientDoctorManagementInterface | PatientDoctorManagementInterface |
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+### Database Types
+All database-related types are located in in src/server/db/type.ts
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+```typescript
+// Example types structure
+type PatientsInterface = {
+  email: string;
+  patientId: string;
+  first_name: string;
+  last_name: string;
+  date_of_birth: Date;
+  gender: "male" | "female" | "non_binary" | "other" | "prefer_not_to_say";
+  primary_language: string;
+  ... 7 more ...;
+  middle_initial?: string | ... 1 more ... | undefined;
+}
+```
 
-## How do I deploy this?
+### Usage Examples
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+#### Getting Patient Information
+```bash
+GET /api/patient/get
+```
+
+Response:
+```json
+[
+  {
+    "patientId": "(very long string of numbers and letter)",
+    "first_name": "Jane",
+    "last_name": "Doe",
+    "middle_initial": "J",
+    "date_of_birth": "01-01-2000",
+    "gender": "female",
+    "primary_language": "English",
+    "phone_number": "1234567890",
+    "email": "janedoe123@gmail.com",
+    "street_address": "1234 Main Street",
+    "city": "Los Angeles",
+    "state": "California",
+    "zip_code": "12345",
+  }
+]
+```

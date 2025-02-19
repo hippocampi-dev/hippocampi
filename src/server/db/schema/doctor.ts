@@ -8,26 +8,28 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
-import { createTable, users } from "./auth";
-import { timestamps } from "./util";
+import { users } from "./auth";
+import { timestamps } from "./utils";
+import { createTable } from "./schema";
 
 // Doctors
 export const doctors = createTable(
   "doctors",
   {
-    doctorId: varchar("doctorId", { length: 255 })
+    doctorId: varchar("doctor_id", { length: 255 })
       .notNull()
       .primaryKey()
       .references(() => users.id, {onDelete: 'cascade'}),
-    first_name: varchar('first_name').notNull(),
-    last_name: varchar('last_name').notNull(),
+    firstName: varchar('first_name').notNull(),
+    lastName: varchar('last_name').notNull(),
     email: varchar("email", { length: 255 })
       .notNull()
-      .references(() => users.email, {onDelete: 'cascade'}),
+      .unique(),
     location: text("location")
       .notNull(),
     specialization: varchar("specialization"),
-    ratings: varchar("ratings", { length:20 }).notNull(),
+    ratings: varchar("ratings", { length: 20 }),
+    bio: text('bio').notNull(),
     ...timestamps
   }
 )
@@ -36,7 +38,7 @@ export const doctors = createTable(
 export const doctorCredentials = createTable(
   "doctor_credentials",
   {
-    doctorId: varchar("doctorId", { length: 255 })
+    doctorId: varchar("doctor_id", { length: 255 })
       .primaryKey()
       .notNull()
       .references(() => doctors.doctorId, {onDelete: 'cascade'}),
@@ -44,9 +46,6 @@ export const doctorCredentials = createTable(
     medicalSchool: varchar("medical_school", { length: 255 }).notNull(),
     residency: varchar("residency", { length: 255 }).notNull(),
     approach: text("approach").notNull(),
-    specialization: varchar("specialization", { length: 255 })
-      .notNull()
-      .references(() => doctors.specialization, {onDelete: 'cascade'}),
     ...timestamps
   }
 )
