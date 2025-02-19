@@ -3,8 +3,9 @@
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import CreateConversation from "~/components/patient-dashboard/CreateConversation";
+import { Suspense } from "react";
 
-export default function CreateConversationPage() {
+function CreateConversationPageFunction() {
   const searchParams = useSearchParams();
   const doctorId = searchParams.get("doctorId") || "";
   const { data: session } = useSession();
@@ -15,4 +16,12 @@ export default function CreateConversationPage() {
       <CreateConversation patientId={patientId} doctorId={doctorId} />
     </div>
   );
+}
+
+export default function CreateConversationPage() {
+  return (
+    <Suspense>
+      <CreateConversationPageFunction/>
+    </Suspense>
+  )
 }

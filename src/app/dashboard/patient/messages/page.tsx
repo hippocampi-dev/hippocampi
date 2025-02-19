@@ -51,7 +51,7 @@ export default function ConversationsPage() {
                   <span className="text-red-500 text-xs font-semibold">Unread messages</span>
                 )}
               </div>
-              <Link href={`/dashboard/messages/${conv.conversationId}`}>
+              <Link href={`/dashboard/patient/messages/${conv.conversationId}`}>
                 <button className="px-4 py-2 bg-blue-600 text-white rounded">
                   View
                 </button>

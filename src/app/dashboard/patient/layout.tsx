@@ -64,7 +64,7 @@ export default function DashboardLayout({
                 <Link href = "/dashboard/patient/messages">
                 <SidebarMenuButton>
                   <FileText className="mr-2 h-4 w-4" />
-                  Message
+                  Messages
                 </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>

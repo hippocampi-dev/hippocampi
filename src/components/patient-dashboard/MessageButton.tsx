@@ -20,7 +20,7 @@ export default function MessageButton({ doctorId, patientId }: MessageButtonProp
     });
     if (res.ok) {
       const conversation = await res.json();
-      router.push(`/dashboard/messages/${conversation.conversationId}`);
+      router.push(`/dashboard/patient/messages/${conversation.conversationId}`);
     }
   };
 
