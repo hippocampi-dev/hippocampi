@@ -7,7 +7,7 @@ export const POST = async (request: Request) => {
 
   try {
     const response = await addUserRole(body);
-
+    
     if (!response) {
       return Response.json("Error");
     }

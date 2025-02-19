@@ -4,6 +4,8 @@ import {
   patientDoctorManagement,
   appointments,
   userRoles,
+  doctorSubcriptions,
+  invoices,
 } from "./schema/management";
 import {
   allergies,
@@ -31,6 +33,14 @@ export enum role {
   doctor = "doctor",
   admin = "admin",
 }
+
+export enum gender {
+  "male",
+  "female",
+  "non_binary",
+  "other",
+  "prefer_not_to_say"
+};
 
 // Doctors
 export type DoctorsInterface = typeof doctors.$inferInsert;
@@ -89,8 +99,14 @@ export interface PatientHealthInformationInterface {
   medicalHistory: PatientMedicalHistoryInterface
   allergies: PatientAllergiesInterface[];
   cognitiveSymptoms: PatientCognitiveSymptomsInterface[];
-  dianoses: PatientDiagnosesInterface[];
+  diagnoses: PatientDiagnosesInterface[];
   emergencyContacts: PatientEmergencyContactsInterface[];
   medications: PatientMedicationsInterface[];
   treatments: PatientTreatmentsInterface[];
 }
+
+// doctor subscription
+export type DoctorSubscriptionsInterface = typeof doctorSubcriptions.$inferInsert;
+
+// patient invoices
+export type InvoicesInterface = typeof invoices.$inferInsert;

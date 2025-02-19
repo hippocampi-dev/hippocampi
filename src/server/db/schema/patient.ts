@@ -18,7 +18,6 @@ import { timestamps } from './utils'
 export const genderEnum = pgEnum("gender", [
   "male",
   "female",
-  "non_binary",
   "other",
   "prefer_not_to_say"
 ]);
@@ -50,7 +49,7 @@ export const patients = createTable('patients', {
   firstName: varchar('first_name').notNull(),
   lastName: varchar('last_name').notNull(),
   middle_initial: varchar('middle_initial'),
-  condition: varchar("condition").notNull(),
+  condition: varchar("condition"),
   dateOfBirth: date("date_of_birth", { mode: "date" }).notNull(),
   age: integer("age").notNull(),
   gender: genderEnum("gender").notNull(),
@@ -63,6 +62,8 @@ export const patients = createTable('patients', {
   city: varchar('city').notNull(),
   state: varchar('state').notNull(),
   zipCode: varchar('zip_code').notNull(),
+  hipaaCompliance: boolean('hipaa_compliance').notNull(),
+  stripeCustomerId: varchar('stripe_customer_id', { length: 255 }),
   ...timestamps
 })
 
@@ -104,7 +105,7 @@ export const treatments = createTable('treatments', {
     references(() => patients.patientId, {onDelete: 'cascade'})
     .notNull(),
   treatmentName: varchar('treatment_name').notNull(),
-  startDate: date("start_date", { mode: "date" }).notNull(),
+  start_date: date("start_date", { mode: "date" }).notNull(),
   endDate: date("end_date", { mode: "date" }),
   notes: varchar("notes"),
   ...timestamps
@@ -122,7 +123,7 @@ export const medications = createTable('medications', {
   medicationName: varchar('medication_name').notNull(),
   dosage: text('dosage').notNull(),
   frequency: medicationFrequencyEnum("frequency").notNull(),
-  startDate: date("start_date", { mode: "date" }).notNull(),
+  startDate: date("start_date", { mode: "date" }),
   endDate: date("end_date", { mode: "date" }),
   ...timestamps
 })

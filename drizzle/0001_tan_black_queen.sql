@@ -1,0 +1,1 @@
+ALTER TABLE "hippocampi_invoices" DROP CONSTRAINT "hippocampi_invoices_stripe_customer_id_hippocampi_patients_stripe_customer_id_fk";

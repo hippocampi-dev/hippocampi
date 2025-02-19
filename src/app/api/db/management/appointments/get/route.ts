@@ -8,6 +8,7 @@ export const GET = async () => {
 
     if (userId) {
       const response = await getAppointments(userId);
+      // console.log(response);
 
       return NextResponse.json({ response })
     }
