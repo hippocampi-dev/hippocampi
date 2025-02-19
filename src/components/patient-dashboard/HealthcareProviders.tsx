@@ -36,16 +36,18 @@ export default async function HealthcareProviders() {
                     ) : (
                         <ul className="flex flex-col space-y-4">
                         {doctors.map((doctor) => doctor && (
-                          <li key={doctor.doctorId} className="flex items-center space-x-4">
-                            <div>
-                              <p className="font-medium">
-                                Dr. {doctor!.firstName} {doctor!.lastName}
-                              </p>
-                              <p className="text-sm text-muted-foreground">
-                                {doctor!.specialization} | {doctor!.location}
-                              </p>
-                            </div>
-                          </li>
+                          <Link href = {`/dashboard/patient/doctors/${doctor.doctorId}`}>
+                            <li key={doctor.doctorId} className="flex items-center space-x-4">
+                              <div>
+                                <p className="font-medium">
+                                  Dr. {doctor!.firstName} {doctor!.lastName}
+                                </p>
+                                <p className="text-sm text-muted-foreground">
+                                  {doctor!.specialization} | {doctor!.location}
+                                </p>
+                              </div>
+                            </li>
+                          </Link>
                         ))}
                       </ul>
                         
