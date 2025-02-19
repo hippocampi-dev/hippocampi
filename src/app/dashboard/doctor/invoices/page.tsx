@@ -16,6 +16,7 @@ export default function InvoicesPage() {
     <DoctorInvoices
       invoices={context.data?.invoices!}
       patientDict={context?.data?.patientDict!}
+      appointmentInvoiceDict={context.data.appointmentInvoiceDict!}
     />
   )
 }

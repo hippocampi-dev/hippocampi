@@ -1,11 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { Button } from "~/components/ui/button"
-import { Input } from "~/components/ui/input"
 import { Textarea } from "~/components/ui/textarea"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card"
@@ -52,11 +51,11 @@ export default function InvoiceForm({ patients, patientDict }: Props) {
         patientId: data.patientId,
         doctorId: session?.user.id!,
         appointmentId: data.appointmentId,
-        hourlyRate: process.env.HOURLY_RATE!,
+        hourlyRate: process.env.NEXT_PUBLIC_HOURLY_RATE!,
         notes: data.notes,
       }
 
-      const response = await fetch("/api/db/management/invoice/add", {
+      const response = await fetch("/api/db/management/invoices/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(invoice),
@@ -90,11 +89,7 @@ export default function InvoiceForm({ patients, patientDict }: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Patient</FormLabel>
-                  <Select onValueChange={() => {
-                      field.onChange
-                      setSelectedPatientId(field.value)
-                      console.log(field)
-                    }} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a patient" />
@@ -112,32 +107,48 @@ export default function InvoiceForm({ patients, patientDict }: Props) {
                 </FormItem>
               )}
             />
-            {selectedPatientId === '' ? null :
-              <FormField
-                control={form.control}
-                name="appointmentId"
-                render={({ field }) => (
+            <FormField
+              control={form.control}
+              name="appointmentId"
+              render={({ field }) => {
+                const patientId = form.watch('patientId');
+                
+                // Use selectedPatientId instead of patientId for consistent state
+                useEffect(() => {
+                  setSelectedPatientId(patientId);
+                }, [patientId]);
+                return (
                   <FormItem>
                     <FormLabel>Appointment</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select 
+                      onValueChange={field.onChange} 
+                      value={field.value}
+                      disabled={!patientId}
+                    >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select an appointment" />
+                          <SelectValue placeholder={
+                            !patientId 
+                              ? "Please select a patient first" 
+                              : "Select an appointment"
+                          } />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {patientDict[selectedPatientId]!.appointments.map((appointment) => (
+                        {patientId && patientDict[patientId]?.appointments.map((appointment) => (
                           <SelectItem key={appointment.id} value={appointment.id!}>
-                            {`${new Date(appointment.scheduledAt).toLocaleDateString()}`}
+                            {`${new Date(appointment.scheduledAt).toLocaleString()} ${
+                              appointment.status === 'Completed' ? '(Completed)' : ''
+                            }`}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
                   </FormItem>
-                )}
-              />
-            }
+                );
+              }}
+            />
             <FormField
               control={form.control}
               name="notes"

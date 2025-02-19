@@ -24,6 +24,11 @@ interface DoctorDashboardData {
   management?: PatientDoctorManagementInterface[];
   appointments?: AppointmentsInterface[];
   invoices?: InvoicesInterface[];
+  appointmentInvoiceDict?: AppointmentInvoiceDict; // key = invoiceId --> corresponding appointment
+}
+
+export type AppointmentInvoiceDict = {
+  [key: string]: AppointmentsInterface
 }
 
 export interface IPatient {
@@ -33,7 +38,9 @@ export interface IPatient {
   appointments: AppointmentsInterface[]
 }
 
-export type PatientDict = { [key: string]: IPatient };
+export type PatientDict = {
+  [key: string]: IPatient
+};
 
 interface DoctorContextProps {
   doctor?: DoctorsInterface;
@@ -74,7 +81,7 @@ export function DoctorDashboardProvider({ children }: DoctorDashboardProviderPro
       // fetch doctor
       const doctor = await fetchDoctor();
       // fetch invoices
-      const invoices = await fetchInvoices();
+      const invoices: InvoicesInterface[] = await fetchInvoices();
       
       const fetchedPatients: PatientsInterface[] = [];
       const patientManagementList: { [key: string]: IPatient } = {};
@@ -105,10 +112,11 @@ export function DoctorDashboardProvider({ children }: DoctorDashboardProviderPro
         patientDict: patientManagementList,
         management: management,
         appointments: appointments,
-        invoices: invoices
+        invoices: invoices,
+        appointmentInvoiceDict: createAppointmentInvoiceDictionary(appointments, invoices)
       };
 
-      console.log(appointments);
+      // console.log(_data);
 
       setState(prev => ({
         ...prev,
@@ -330,4 +338,25 @@ export const fetchInvoices = async () => {
     console.log('Failed to patient invoices');
     return [];
   }
+}
+
+export function createAppointmentInvoiceDictionary(
+  appointments: AppointmentsInterface[],
+  invoices: InvoicesInterface[]
+): AppointmentInvoiceDict {
+  const dictionary: AppointmentInvoiceDict = {};
+
+  invoices.forEach(invoice => {
+    const matchingAppointment = appointments.find(appointment => 
+      appointment.id === invoice.appointmentId
+    );
+    
+    if (matchingAppointment) {
+      dictionary[invoice.id!] = matchingAppointment;
+    } else {
+      console.warn(`Invoice ${invoice.id} has no matching appointment`);
+    }
+  });
+
+  return dictionary;
 }

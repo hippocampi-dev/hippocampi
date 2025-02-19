@@ -114,8 +114,7 @@ export const invoices = createTable('invoices', {
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  stripeCustomerId: varchar('stripe_customer_id', { length: 255 })
-    .references(() => patients.stripeCustomerId),
+  stripeCustomerId: varchar('stripe_customer_id', { length: 255 }),
   status: invoiceStatusEnum('invoice_status').notNull().default('unpaid'),
   appointmentId: varchar('appointment_id', { length: 255 })
     .notNull()

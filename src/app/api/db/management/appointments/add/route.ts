@@ -4,7 +4,7 @@ import { AppointmentsInterface } from "~/server/db/type";
 // pass in AppointmentsInterface json
 export const POST = async (request: Request) => {
   const body = await request.json();
-  console.log(body);
+  // console.log(body);
 
   const apppointment: AppointmentsInterface = {
     ...body,

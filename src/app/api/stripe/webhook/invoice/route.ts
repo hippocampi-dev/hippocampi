@@ -3,40 +3,70 @@ import Stripe from "stripe";
 import { NextResponse, NextRequest } from "next/server";
 import { getTargetInvoice, setInvoice } from "~/server/db/queries";
 import { InvoicesInterface } from "~/server/db/type";
+import { headers } from "next/headers";
 
 export async function POST(request: NextRequest) {
-  const body = await request.text(); // pass id
-  const signature = request.headers.get("Stripe-Signature") as string;
+  let event: Stripe.Event;
 
   try {
-    let event = stripe.webhooks.constructEvent(
-      body,
-      signature!,
-      process.env.STRIPE_WEBHOOK_SECRET!
+    const stripeSignature = (await headers()).get('stripe-signature');
+    event = stripe.webhooks.constructEvent(
+      await request.text(),
+      stripeSignature as string,
+      process.env.STRIPE_WEBHOOK_SECRET as string
     );
-
-    // console.log('event', event)
-
-    // console.log('session', session);
-
-    if (event.type === 'checkout.session.completed') {
-      const session = event.data.object as Stripe.Checkout.Session
-
-      const oldInvoice = await getTargetInvoice(session.metadata!.id!)
-
-      const invoice: InvoicesInterface = {
-        ...oldInvoice!,
-        status: 'paid'
-      };
-
-      setInvoice(invoice);
-    }
-
-    return NextResponse.json({ status: 'Success',  event: event.type });
-  } catch (error) {
-    console.log(error);
-    return NextResponse.json({ status: 'Failed',  error });
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    // On error, log and return the error message.
+    if (err! instanceof Error) console.log(err);
+    console.log(`❌ Error message: ${errorMessage}`);
+    return NextResponse.json(
+      {message: `Webhook Error: ${errorMessage}`},
+      {status: 400}
+    );
   }
+
+  const permittedEvents: string[] = [
+    'checkout.session.completed',
+  ];
+
+  if (permittedEvents.includes(event.type)) {
+    // console.log(event.data);
+    try {
+      switch (event.type) {
+        case 'checkout.session.completed':
+          const data = event.data.object as Stripe.Checkout.Session
+    
+          const oldInvoice = await getTargetInvoice(data.metadata!.id!)
+    
+          const invoice: InvoicesInterface = {
+            ...oldInvoice!,
+            status: 'paid'
+          };
+    
+          const result = await setInvoice(invoice);
+          break;
+        default:
+          throw new Error(`Unhandled event: ${event.type}`);
+      }
+    } catch (error) {
+      console.log(error);
+      return NextResponse.json(
+        {message: 'Webhook handler failed'},
+        {status: 500}
+      );
+    }
+  }
+
+  return NextResponse.json({message: 'Received'}, {status: 200});
+}
+
+export async function OPTIONS() {
+  return new Response(null, {
+    headers: {
+      Allow: "POST",
+    },
+  });
 }
 
 // webhook for testing
