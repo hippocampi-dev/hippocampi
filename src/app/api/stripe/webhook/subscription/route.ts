@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     event = stripe.webhooks.constructEvent(
       await request.text(),
       stripeSignature as string,
-      process.env.STRIPE_WEBHOOK_SECRET as string
+      process.env.STRIPE_SUBSCRIPTION_WEBHOOK_SECRET as string
     );
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
