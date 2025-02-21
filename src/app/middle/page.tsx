@@ -29,7 +29,13 @@ export default function Middle() {
 
     fetchData();
   }, []);
-  if (data.loading) return <Loading />
+  if (data.loading) {
+    return (
+      <main className="w-screen h-screen">
+        <Loading />
+      </main>
+    )
+  }
   if (!data.content) redirect("/select-role");
   else {
     redirect('/dashboard')
