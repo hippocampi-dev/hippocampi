@@ -72,7 +72,7 @@ export default function SubscriptionPlans() {
             </CardTitle>
             <CardDescription>
               <span className="text-6xl">
-                ${plan.price}
+                ${plan.price / 100}
               </span> / month
               </CardDescription>
           </CardHeader>

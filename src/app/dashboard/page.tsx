@@ -53,5 +53,9 @@ export default function Dashboard() {
     redirectUser();
   }, []); // Add router to dependencies
 
-  return <Loading />;
+  return (
+    <main className="w-screen h-screen">
+      <Loading />
+    </main>
+  )
 }

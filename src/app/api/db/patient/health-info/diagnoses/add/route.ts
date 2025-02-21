@@ -6,11 +6,13 @@ import { PatientDiagnosesInterface } from "~/server/db/type";
 export const POST = async (request: Request) => {
   const rawBody = await request.json();
     console.log(rawBody)
+
     // Convert the dateOfBirth string to a Date object
     const diagnosisDate = convertDateStringToDate(rawBody.diagnosis.diagnosisDate);
-  
+    const patientId = rawBody.patientId;
     const body: PatientDiagnosesInterface = {
-      ...rawBody,
+      patientId,
+      ...rawBody.diagnosis,
       diagnosisDate, // now a Date object
     };
   try {
