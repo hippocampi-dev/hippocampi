@@ -35,12 +35,7 @@ export default function SignIn() {
         </CardContent>
         <CardFooter className="flex flex-col space-y-2 text-sm text-muted-foreground">
           <div className="text-center">By signing in, you agree to our Terms of Service and Privacy Policy.</div>
-          <div className="text-center">
-            Don't have an account?{" "}
-            <a href="/signup" className="underline text-primary">
-              Sign up
-            </a>
-          </div>
+          
         </CardFooter>
       </Card>
     </main>
