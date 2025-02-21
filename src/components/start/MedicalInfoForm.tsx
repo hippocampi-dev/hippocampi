@@ -6,6 +6,7 @@ import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Button } from "../ui/button";
+import { diagnosisSchema } from "./PatientForm";
 
 export type Medication = {
   medicationName: string;
@@ -185,7 +186,7 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                 onChange={(e) => {
                   const meds = [...data.medications];
                   if (meds[i]) {
-                    meds[i].start_date = e.target.value;
+                    meds[i].end_date = e.target.value;
                   }
                   onChange({ ...data, medications: meds });
                 }}
@@ -230,7 +231,7 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                 onChange={(e) => {
                   const allers = [...data.allergies];
                   if (allers[i]) {
-                    allers[i].allergen = e.target.value;
+                    allers[i].reaction = e.target.value;
                   }
                   onChange({ ...data, allergies: allers });
                 }}
@@ -282,13 +283,14 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                 onChange({
                   ...data,
                   diagnosis: {
-                    conditionName: data.diagnosis?.conditionName ?? "", // default to empty string
+                    conditionName: e.target.value, // default to empty string
                     selfReported: data.diagnosis?.selfReported ?? false, // default to false
-                    diagnosisDate: e.target.value,
+                    diagnosisDate: data.diagnosis?.diagnosisDate ?? "",
                     notes: data.diagnosis?.notes,
                   },
                 })
               }
+              
             />
           </div>
           <div className="space-y-2">
@@ -321,8 +323,8 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                   ...data,
                   diagnosis: {
                     conditionName: data.diagnosis?.conditionName ?? "", // default to empty string
-                    selfReported: data.diagnosis?.selfReported ?? false, // default to false
-                    diagnosisDate: e.target.value,
+                    selfReported: e.target.checked, // default to false
+                    diagnosisDate: data.diagnosis?.diagnosisDate ?? "",
                     notes: data.diagnosis?.notes,
                   },
                 })
@@ -341,8 +343,8 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                   diagnosis: {
                     conditionName: data.diagnosis?.conditionName ?? "", // default to empty string
                     selfReported: data.diagnosis?.selfReported ?? false, // default to false
-                    diagnosisDate: e.target.value,
-                    notes: data.diagnosis?.notes,
+                    diagnosisDate: data.diagnosis?.diagnosisDate ?? "",
+                    notes: e.target.value,
                   },
                 })
               }
@@ -382,7 +384,7 @@ export default function MedicalInfoForm({ data, onChange }: MedicalInfoFormProps
                 onChange={(e) => {
                   const newCs = [...data.cognitiveSymptoms];
                   if (newCs[i]) {
-                    newCs[i].symptomType = e.target.value;
+                    newCs[i].onsetDate = e.target.value;
                   }
                   onChange({ ...data, cognitiveSymptoms: newCs });
                 }}
