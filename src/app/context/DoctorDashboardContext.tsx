@@ -311,13 +311,13 @@ export const fetchSubscription = async () => {
         url: null
       }
     }
-    if (data.stripeCustomerId) { // canceled subscription
+    if (data.stripeCustomerId) { // old customer that canceled subscription
       return {
         isSubscribed: false,
         url: '/dashboard/doctor/billing'
       }
     }
-    else {
+    else { // new customer
       return {
         isSubscribed: false,
         url: '/checkout/subscription'

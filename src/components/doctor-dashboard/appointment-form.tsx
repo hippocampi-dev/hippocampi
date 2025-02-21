@@ -101,8 +101,8 @@ export function AppointmentForm({
   return (
     <Card className="w-full max-w-2xl mx-auto my-9">
       <CardHeader>
-        <CardTitle>Create an invoice</CardTitle>
-        <CardDescription>Create an invoice that will be sent to your patient</CardDescription>
+        <CardTitle>Schedule an appointment</CardTitle>
+        <CardDescription>Schedule an appointment with your patients</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -187,7 +187,7 @@ export function AppointmentForm({
               )}
             />
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Saving..." : "Create Invoice"}
+              {isSubmitting ? "Saving..." : "Schedule Appointment"}
             </Button>
           </form>
         </Form>

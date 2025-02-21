@@ -74,6 +74,14 @@ export default function DashboardLayout({
                   Assessments
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <Link href = "/dashboard/patient/invoices">
+                <SidebarMenuButton>
+                  <FileText className="mr-2 h-4 w-4" />
+                  Invoices
+                </SidebarMenuButton>
+                </Link>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarContent>
           <SidebarFooter>
