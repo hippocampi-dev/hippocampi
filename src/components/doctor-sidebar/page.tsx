@@ -11,6 +11,7 @@ import Link from "next/link"
 import { signOut } from "next-auth/react"
 import { useContext } from "react"
 import { DoctorDashboardContext } from "~/app/context/DoctorDashboardContext"
+import { redirect } from "next/navigation"
 
 export function DoctorDashboardSidebar() {
   const context = useContext(DoctorDashboardContext);
@@ -92,12 +93,12 @@ export function DoctorDashboardSidebar() {
       </SidebarContent>
       <SidebarContent className="mt-auto flex flex-col justify-end mb-10 px-4">
         <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton onClick={handleSignOut}>
-              <LogOut className="w-4 h-4 mr-2" />
-              <span>Sign Out</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+        <button className={`w-full text-left`} onClick={async () => {await signOut({redirect: true, redirectTo: "/"}); redirect("/")}}>
+                  <SidebarMenuItem>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Sign Out</span>
+                  </SidebarMenuItem>
+                  </button>
         </SidebarMenu>
       </SidebarContent>
     </Sidebar>

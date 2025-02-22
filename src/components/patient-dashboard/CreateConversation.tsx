@@ -76,7 +76,7 @@ export default function CreateConversation({ patientId, doctorId: initialDoctorI
         body: JSON.stringify({ conversationId, senderId: patientId, content: messageContent }),
       });
       if (!msgRes.ok) throw new Error("Failed to send message");
-      router.push(`/dashboard/messages/${conversationId}`);
+      router.push(`/dashboard/patient/messages/${conversationId}`);
     } catch (err: any) {
       setError(err.message || "An error occurred");
     } finally {
