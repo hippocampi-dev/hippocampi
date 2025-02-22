@@ -15,21 +15,7 @@ export default function MessageButton({
   const router = useRouter();
 
   const handleMessageClick = async () => {
-    // Create (or fetch) conversation and then redirect
-    const res = await fetch(
-      `/api/db/messages/conversations/get?patientId=${patientId}`,
-      {},
-    );
-    if (res.ok) {
-      const conversation = await res.json();
-      if (conversation.conversationId) {
-        router.push(
-          `/dashboard/patient/messages/${conversation.conversationId}`,
-        );
-      } else {
-        router.push("/dashboard/patient/messages/create");
-      }
-    }
+    router.push(`/dashboard/patient/messages/create?doctor=`);
   };
 
   return (

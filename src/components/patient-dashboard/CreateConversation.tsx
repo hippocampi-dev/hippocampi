@@ -17,9 +17,14 @@ type CreateConversationProps = {
   doctorId?: string; // Optional preselected doctor
 };
 
-export default function CreateConversation({ patientId, doctorId: initialDoctorId }: CreateConversationProps) {
+export default function CreateConversation({
+  patientId,
+  doctorId: initialDoctorId,
+}: CreateConversationProps) {
   const router = useRouter();
-  const [selectedDoctorId, setSelectedDoctorId] = useState<string | undefined>(initialDoctorId);
+  const [selectedDoctorId, setSelectedDoctorId] = useState<string | undefined>(
+    initialDoctorId,
+  );
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [subject, setSubject] = useState("");
   const [messageContent, setMessageContent] = useState("");
@@ -35,10 +40,10 @@ export default function CreateConversation({ patientId, doctorId: initialDoctorI
           throw new Error("Failed to load doctors");
         }
         const data = await res.json();
-        const normalized = Array.isArray(data.response) ? data.response : [data.response];
+        const normalized = Array.isArray(data.response)
+          ? data.response
+          : [data.response];
         setDoctors(normalized);
-
-
       } catch (err) {
         console.error(err);
         setError("Failed to load doctors");
@@ -46,7 +51,7 @@ export default function CreateConversation({ patientId, doctorId: initialDoctorI
     }
     fetchDoctors();
   }, [initialDoctorId]);
-  console.log(doctors)
+  console.log(doctors);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,13 +72,17 @@ export default function CreateConversation({ patientId, doctorId: initialDoctorI
       });
       if (!convRes.ok) throw new Error("Failed to create conversation");
       const conversation = await convRes.json();
-      const conversationId = conversation.conversationId;
+      const conversationId = conversation[0].conversationId;
 
       // Create the initial message
       const msgRes = await fetch("/api/db/messages/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ conversationId, senderId: patientId, content: messageContent }),
+        body: JSON.stringify({
+          conversationId,
+          senderId: patientId,
+          content: messageContent,
+        }),
       });
       if (!msgRes.ok) throw new Error("Failed to send message");
       router.push(`/dashboard/patient/messages/${conversationId}`);
@@ -84,20 +93,23 @@ export default function CreateConversation({ patientId, doctorId: initialDoctorI
     }
   };
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto p-6 bg-white rounded shadow">
-      <h2 className="text-xl font-bold mb-4">Start a Conversation</h2>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-      
+    <form
+      onSubmit={handleSubmit}
+      className="mx-auto max-w-md rounded bg-white p-6 shadow"
+    >
+      <h2 className="mb-4 text-xl font-bold">Start a Conversation</h2>
+      {error && <p className="mb-4 text-red-500">{error}</p>}
+
       {!initialDoctorId && (
         <div className="mb-4">
-          <label htmlFor="doctorSelect" className="block font-semibold mb-1">
+          <label htmlFor="doctorSelect" className="mb-1 block font-semibold">
             Select a Doctor
           </label>
           <select
             id="doctorSelect"
             value={selectedDoctorId || ""}
             onChange={(e) => setSelectedDoctorId(e.target.value)}
-            className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
+            className="w-full rounded border border-gray-300 p-2 focus:border-blue-500 focus:outline-none focus:ring"
             required
           >
             <option value="" disabled>
@@ -105,7 +117,8 @@ export default function CreateConversation({ patientId, doctorId: initialDoctorI
             </option>
             {doctors.map((doc) => (
               <option key={doc.doctorId} value={doc.doctorId}>
-                Dr. {doc.firstName} {doc.lastName} {doc.specialization ? `- ${doc.specialization}` : ""}
+                Dr. {doc.firstName} {doc.lastName}{" "}
+                {doc.specialization ? `- ${doc.specialization}` : ""}
               </option>
             ))}
           </select>
@@ -119,9 +132,9 @@ export default function CreateConversation({ patientId, doctorId: initialDoctorI
           </p>
         </div>
       )}
-      
+
       <div className="mb-4">
-        <label htmlFor="subject" className="block font-semibold mb-1">
+        <label htmlFor="subject" className="mb-1 block font-semibold">
           Subject
         </label>
         <input
@@ -130,12 +143,12 @@ export default function CreateConversation({ patientId, doctorId: initialDoctorI
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
           placeholder="Enter conversation subject"
-          className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
+          className="w-full rounded border border-gray-300 p-2 focus:border-blue-500 focus:outline-none focus:ring"
           required
         />
       </div>
       <div className="mb-6">
-        <label htmlFor="message" className="block font-semibold mb-1">
+        <label htmlFor="message" className="mb-1 block font-semibold">
           Message
         </label>
         <textarea
@@ -143,7 +156,7 @@ export default function CreateConversation({ patientId, doctorId: initialDoctorI
           value={messageContent}
           onChange={(e) => setMessageContent(e.target.value)}
           placeholder="Type your message..."
-          className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
+          className="w-full rounded border border-gray-300 p-2 focus:border-blue-500 focus:outline-none focus:ring"
           rows={4}
           required
         />

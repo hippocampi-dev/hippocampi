@@ -10,18 +10,14 @@ function CreateConversationPageFunction() {
   const doctorId = searchParams.get("doctorId") || "";
   const { data: session } = useSession();
   const patientId = session?.user.id || "";
-  
+
   return (
     <div className="p-8">
-      <CreateConversation patientId={patientId} doctorId={doctorId} />
+      <CreateConversation patientId={patientId} />
     </div>
   );
 }
 
 export default function CreateConversationPage() {
-  return (
-    <Suspense>
-      <CreateConversationPageFunction/>
-    </Suspense>
-  )
+  return <CreateConversationPageFunction />;
 }
