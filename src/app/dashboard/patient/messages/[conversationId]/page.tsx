@@ -38,7 +38,7 @@ export default function ConversationDetailPage() {
         `/api/db/messages/conversations/getName?conversationId=${conversationId}`,
       );
       const data = await res.json();
-      setConversationName(data);
+      setConversationName(data.subject);
       setLoading(false);
     };
     fetchMessages();
