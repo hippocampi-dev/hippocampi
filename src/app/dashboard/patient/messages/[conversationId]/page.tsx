@@ -20,16 +20,29 @@ export default function ConversationDetailPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [conversationName, setConversationName] = useState("Loading");
 
   useEffect(() => {
     if (!conversationId) return;
     const fetchMessages = async () => {
-      const res = await fetch(`/api/db/messages/get?conversationId=${conversationId}`);
+      const res = await fetch(
+        `/api/db/messages/get?conversationId=${conversationId}`,
+      );
       const data = await res.json();
       setMessages(data);
       setLoading(false);
     };
+    const fetchConversationName = async () => {
+      setLoading(true);
+      const res = await fetch(
+        `/api/db/messages/conversations/getName?conversationId=${conversationId}`,
+      );
+      const data = await res.json();
+      setConversationName(data);
+      setLoading(false);
+    };
     fetchMessages();
+    fetchConversationName();
   }, [conversationId]);
 
   const handleSend = async () => {
@@ -51,11 +64,11 @@ export default function ConversationDetailPage() {
   if (loading) return <p>Loading messages...</p>;
 
   return (
-    <div className="max-w-3xl mx-auto p-8 bg-white rounded shadow">
-      <h1 className="text-2xl font-bold mb-4">Conversation</h1>
-      <div className="space-y-4 mb-6">
+    <div className="mx-auto max-w-3xl rounded bg-white p-8 shadow">
+      <h1 className="mb-4 text-2xl font-bold">{conversationName}</h1>
+      <div className="mb-6 space-y-4">
         {messages.map((msg) => (
-          <div key={msg.messageId} className="p-4 border rounded">
+          <div key={msg.messageId} className="rounded border p-4">
             <p className="text-gray-700">{msg.content}</p>
             <p className="text-xs text-gray-500">
               {new Date(msg.created_at).toLocaleString()}
@@ -69,7 +82,7 @@ export default function ConversationDetailPage() {
           placeholder="Type your message..."
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          className="flex-1 border p-2 rounded"
+          className="flex-1 rounded border p-2"
         />
         <Button onClick={handleSend}>Send</Button>
       </div>

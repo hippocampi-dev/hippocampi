@@ -26,7 +26,7 @@ export default function MessageButton({ doctorId, patientId }: MessageButtonProp
 
   return (
     
-    <button onClick={handleMessageClick}
+    <button className = "h-9 px-4 py-2 flex-1 bg-slate-900 text-slate-50 shadow hover:bg-slate-900/90 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-50/90" onClick={handleMessageClick}
     >
       Message
     </button>
