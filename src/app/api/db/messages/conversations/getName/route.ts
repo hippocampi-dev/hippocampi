@@ -9,14 +9,16 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const conversationId = searchParams.get("conversationId");
   if (!conversationId) {
-    return NextResponse.json({ error: "No conversationId provided" }, { status: 400 });
+    return NextResponse.json(
+      { error: "No conversationId provided" },
+      { status: 400 },
+    );
   }
   const conversationSubjects = await db.query.conversations.findFirst({
-      where: eq(schema.conversations.conversationId, conversationId),
-      columns: {
-        subject: true,
-      }
-    });
-    console.log(conversationSubjects);
+    where: eq(schema.conversations.conversationId, conversationId),
+    columns: {
+      subject: true,
+    },
+  });
   return NextResponse.json(conversationSubjects);
 }
