@@ -1,9 +1,12 @@
 "use client"
 
 import { motion } from "motion/react"
+import { Header } from "~/components/ui/Header"
 
 export default function Contact() {
   return (
+    <>
+    <Header />
     <div className="py-16">
       <div className="container mx-auto px-6">
         <h1 className="text-4xl font-bold mb-8 text-center">Contact Us</h1>
@@ -91,6 +94,7 @@ export default function Contact() {
         </div>
       </div>
     </div>
+    </>
   )
 }
 
