@@ -28,19 +28,24 @@ export async function POST(request: NextRequest) {
 
   const permittedEvents: string[] = [
     'checkout.session.completed',
+    'payment.'
   ];
+
+  let data;
 
   if (permittedEvents.includes(event.type)) {
     // console.log(event.data);
     try {
       switch (event.type) {
         case 'checkout.session.completed':
-          const data = event.data.object as Stripe.Checkout.Session
+          data = event.data.object as Stripe.Checkout.Session
     
-          const oldInvoice = await getTargetInvoice(data.metadata!.id!)
+          const oldInvoice = await getTargetInvoice(data.metadata!.id!);
+          console.log(data);
     
           const invoice: InvoicesInterface = {
             ...oldInvoice!,
+            stripePaymentId: data.payment_intent as string,
             status: 'paid'
           };
     

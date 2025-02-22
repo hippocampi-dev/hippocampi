@@ -98,6 +98,14 @@ export default function DashboardLayout({
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <Link href="/dashboard/patient/invoices">
+                  <SidebarMenuButton>
+                    <FileText className="mr-2 h-4 w-4" />
+                    Invoices
+                  </SidebarMenuButton>
+                </Link>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarContent>
           <SidebarFooter>
