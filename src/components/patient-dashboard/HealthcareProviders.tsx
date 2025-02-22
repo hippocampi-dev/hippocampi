@@ -50,7 +50,7 @@ export default async function HealthcareProviders() {
                       {doctor.bio}
                     </p>
                   </div>
-                  <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="flex flex-wrap flex-col sm:flex-row gap-4">
                     <Button 
                       variant="outline" 
                       className="flex-1"
