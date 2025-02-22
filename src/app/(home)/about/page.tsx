@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 import { Header } from "~/components/ui/Header";
 
@@ -44,32 +45,42 @@ export default function AboutPage() {
     <div>
       <Header />
       {/* Company Overview */}
-      <section id="company-overview" className="bg-white py-20">
-        <div className="container mx-auto px-4">
-          <h1 className="mb-6 text-center text-4xl font-bold">
-            About HippoCampi
-          </h1>
-          <p className="mb-4 text-lg">
-            HippoCampi is at the forefront of digital healthcare, specializing
-            in transforming the lives of cancer survivors battling cognitive
-            decline—commonly known as chemo brain. Our platform connects
-            patients directly with a dedicated care team of neuropsychologists,
-            oncologists, speech therapists, and integrative medicine physicians.
+      <div className="min-h-screen bg-gray-50">
+      <main className="container mx-auto px-4 py-16 max-w-3xl">
+        <h1 className="text-4xl font-bold text-gray-900 mb-8">Welcome to HippoCampi</h1>
+        <blockquote className="border-l-4 border-blue-500 pl-4 mb-8 italic text-gray-700">
+          "As soon as all blood counts were good, eh, on we go, back to living a normal life. Working full time. But now
+          I'm at home. Simply, because I was completely drained."
+          <footer className="text-sm mt-2">
+            - Klaver et al, 2019.
+            <Link
+              href="https://www.researchgate.net/publication/337497205_Cancer-related_cognitive_problems_at_work_experiences_of_survivors_and_professionals"
+              target="_blank"
+              className="text-blue-600 hover:underline ml-1"
+            >
+              Klaver research article about cancer related cognitive impairment
+            </Link>
+          </footer>
+        </blockquote>
+        <p className="mb-6 text-gray-800 leading-relaxed">
+          This breaks our hearts—seeing a survivor finally beat cancer, only to have their dreams of a normal life
+          stolen by its lasting impairments. It's why this story and others inspire our mission at HippoCampi to tackle
+          the devastating realities of cognitive and mental decline in cancer patients and survivors.
+        </p>
+        <p className="mb-6 text-gray-800 leading-relaxed">
+          To address these challenges, we are building a digital platform that connects patients with comprehensive care
+          teams who design personalized treatment plans in just 1-2 weeks, ensuring patients get the care they
+          desperately need, when they need it the most.
+        </p>
+        <div className="bg-white shadow-md rounded-lg p-6">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Our Mission</h2>
+          <p className="text-gray-700">
+            At HippoCampi, we're dedicated to improving the lives of cancer patients and survivors by addressing
+            cognitive and mental decline through personalized care and innovative digital solutions.
           </p>
-          <p className="mb-4 text-lg">
-            Inspired by insights from research such as that by Klaver et al.,
-            which underscores the tragic gap in addressing cognitive challenges,
-            our mission is clear. We bridge this gap with compassion,
-            state-of-the-art technology, and an unwavering commitment to every
-            patient’s journey toward recovery.
-          </p>
-          <p className="text-lg">
-            From automating medical billing and insurance processes to offering
-            a seamless referral system between hospitals and specialists, we are
-            redefining what it means to provide holistic post-chemotherapy care.
-          </p>
-        </div>
-      </section>
+          </div>
+      </main>
+    </div>
 
       {/* Our Team Section */}
       <section id="our-team" className="bg-gray-50 py-20">

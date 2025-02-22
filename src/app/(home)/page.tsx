@@ -10,17 +10,31 @@ export default function Home() {
     <div className="min-h-screen">
       <Header />
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-500 to-purple-600 py-20 text-white">
-        <div className="container mx-auto px-6 text-center">
-          <h1 className="mb-4 text-4xl font-bold md:text-6xl">
-            Post-Chemo care, personalized for you!
+      <section className="h-screen flex gap-16 py-6 px-[5%]">
+        <div className="container mx-auto flex-1 flex flex-col justify-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            Post-chemo care, quick and personalized
           </h1>
-          <p className="mb-8 text-xl md:text-2xl">
-            Customized cognitive and mental healthcare begins here.
+          <p className="text-xl md:text-2xl mb-8 w-4/5">
+            Customized cognitive and mental healthcare begins here
           </p>
           <Button asChild>
-            <Link href="/about">Learn More</Link>
+            <Link
+              href="/about"
+              className="w-fit"
+            >
+              Learn More
+            </Link>
           </Button>
+        </div>
+        <div className="flex-1 object-cover flex justify-center items-center">
+          <Image
+            className="w-2/3"
+            alt="hippocampi-hero"
+            width={9999}
+            height={9999}
+            src={'/hero.avif'}
+          />
         </div>
       </section>
 
@@ -38,7 +52,7 @@ export default function Home() {
             with peak efficiency and expertise.
           </p>
           <Button asChild>
-            <Link href="/about">Learn More About Our Mission</Link>
+            <Link href="/about">Learn more</Link>
           </Button>
         </div>
       </section>

@@ -73,7 +73,7 @@ export default function Contact() {
           <div className="mt-12 text-center">
             <h2 className="text-2xl font-semibold mb-4">Alternative Contact Methods</h2>
             <p className="text-lg text-gray-700 mb-2">Email: info@hippocampi.co</p>
-            <p className="text-lg text-gray-700 mb-2">Phone: +1 (818) 913 - 0022</p>
+            <p className="text-lg text-gray-700 mb-2">Phone: +1 (818) 913-0022</p>
             <div className="mt-4">
               <a href="#" className="text-blue-600 hover:text-blue-800 mr-4">
                 LinkedIn
