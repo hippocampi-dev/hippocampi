@@ -1,6 +1,5 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
-import { DoctorSubscriptionsInterface } from "~/server/db/type";
 import { getDoctorSubscription } from "~/server/db/queries";
 import { getUserId } from "~/utilities/get-user";
 
@@ -24,7 +23,7 @@ export async function POST(request: Request) {
     metadata: {
       subscription: JSON.stringify(metadata)
     },
-    success_url: `${request.headers.get('origin')}/dashboard/doctor`,
+    success_url: `${request.headers.get('origin')}/dashboard`,
     cancel_url: `${request.headers.get('origin')}/checkout/subscription`,
   });
 

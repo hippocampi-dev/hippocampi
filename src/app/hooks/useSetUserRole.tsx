@@ -2,12 +2,12 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { UserRolesInterface } from "~/server/db/type";
+import { role, UserRolesInterface } from "~/server/db/type";
 
 export default function useSetUserRole() {
   const { data: session } = useSession();
 
-  const setUserRole = async (userRole: string) => {
+  const setUserRole = async (userRole: role) => {
     console.log(session);
     if (!session) {
       console.error("Session is null");
@@ -16,7 +16,7 @@ export default function useSetUserRole() {
 
     const params: UserRolesInterface = {
       userId: session.user.id,
-      userRole: userRole,
+      userRole: userRole
     };
 
     try {

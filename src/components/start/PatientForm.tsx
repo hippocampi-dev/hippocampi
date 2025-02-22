@@ -9,7 +9,7 @@ import MedicalInfoForm from "./MedicalInfoForm";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { PatientsInterface } from "~/server/db/type";
+import { PatientsInterface, SubscriptionsInterface } from "~/server/db/type";
 import { cognitiveSymptoms } from "~/server/db/schema/patient";
 
 // Helper function to format Zod errors
@@ -264,6 +264,17 @@ export default function PatientForm() {
         });
         if (!medsRes.ok) throw new Error("Failed to add medications");
       }
+
+      // 6. Post subscription
+      const subscription: SubscriptionsInterface = {
+        userId: session.user.id
+      }
+      const subscriptionRes = await fetch('/api/db/management/subscription/add', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(subscription)
+      });
+      if (!subscriptionRes.ok) throw new Error("Failed to add subscriptions");
   
       router.push("/dashboard");
     } catch (error: any) {

@@ -1,6 +1,6 @@
+'use client'
 
 // app/dashboard/page.tsx
-import * as React from 'react';
 import TitleCard from '~/components/patient-dashboard/TitleCard';
 import PatientNotifications from '~/components/patient-dashboard/PatientNotifications';
 import HealthcareProviders from '~/components/patient-dashboard/HealthcareProviders';
@@ -8,21 +8,25 @@ import { Bell, Calendar, ChevronDown, FileText, Home, LogOut, User, UserCircle, 
 import { Button } from '~/components/ui/button';
 import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
-import { auth } from '~/server/auth';
+import { PatientDashboardContext } from '~/app/context/PatientDashboadContext';
+import Loading from '~/components/loading/page';
+import { useContext } from 'react';
 
-export default async function DashboardHome() {
-  const session = await auth()
-  // Assume session is already handled in the layout (or fetched here via your method)
-  if (!session) {
-    redirect("/sign-up")
+export default function DashboardHome() {
+  const context = useContext(PatientDashboardContext);
+  const {data: session} = useSession();
+
+  if (!context || context.isLoading) {
+    return <Loading />
   }
 
   return (
     <div>
-      <TitleCard name={session.user.name} />
+      <TitleCard name={session!.user.name} />
       <div className="grid flex-1 gap-8 overflow-hidden md:grid-cols-3">
         <PatientNotifications />
         <div className="flex flex-col space-y-8">
+          {/* Kenan can u fix the healthcare providers below, issue cuz thats a server component and this is a client component because I'm using the context to protect the routes */}
           <HealthcareProviders />
           <div className="card p-4 bg-white rounded shadow">
             <div className="card-header mb-4">

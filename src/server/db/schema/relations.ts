@@ -2,14 +2,15 @@ import { relations } from "drizzle-orm";
 import { accounts, sessions, userLogins, users } from "./auth";
 import { doctors, doctorCredentials } from "./doctor";
 import { allergies, cognitiveSymptoms, diagnoses, emergencyContacts, medicalHistory, medications, patients, treatments } from "./patient";
-import { patientDoctorManagement, appointments, userRoles } from "./management";
+import { patientDoctorManagement, appointments, userRoles, subscriptions } from "./management";
 import { conversations, messages } from "./message";
 
 
 export const usersRelations = relations(users, ({ one, many }) => ({
   accounts: many(accounts),
   user_logins: many(userLogins),
-  user_roles: one(userRoles)
+  user_roles: one(userRoles),
+  subcription: one(subscriptions)
 }));
 
 export const accountsRelations = relations(accounts, ({ one }) => ({
@@ -176,6 +177,13 @@ export const messagesRelations = relations(messages, ({ one }) => ({
   }),
   sender: one(users, {
     fields: [messages.senderId],
+    references: [users.id],
+  }),
+}));
+
+export const subscriptionsRelations = relations(subscriptions, ({ one, many }) => ({
+  user: one(users, {
+    fields: [subscriptions.userId],
     references: [users.id],
   }),
 }));

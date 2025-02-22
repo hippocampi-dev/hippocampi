@@ -23,7 +23,7 @@ export default function Dashboard() {
         if (!userRoleData.response) redirect('/select-role')
 
         const role = userRoleData.response.userRole;
-        console.log(role)
+        // console.log(role)
         if (role === 'doctor') {
           const doctorResponse = await fetch('api/db/doctor/get');
           const doctorData = await doctorResponse.json();

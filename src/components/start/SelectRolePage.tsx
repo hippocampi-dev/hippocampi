@@ -9,9 +9,7 @@ import { redirect } from "next/navigation";
 const RoleSchema = z.nativeEnum(role);
 
 export default function SelectRolePage() {
-  const [selectedRole, setSelectedRole] = useState<"doctor" | "patient" | null>(
-    null,
-  );
+  const [selectedRole, setSelectedRole] = useState<role>();
   // Call the hook at the top level of the component.
   const setUserRole = useSetUserRole();
 
@@ -34,7 +32,7 @@ export default function SelectRolePage() {
         </h1>
         <div className="flex space-x-4">
           <button
-            onClick={() => setSelectedRole("doctor")}
+            onClick={() => setSelectedRole(role.doctor)}
             className={`flex-1 rounded-lg border p-4 text-center text-lg font-medium transition-all ${
               selectedRole === "doctor"
                 ? "border-blue-500 bg-blue-100 text-blue-700"
@@ -44,7 +42,7 @@ export default function SelectRolePage() {
             Doctor
           </button>
           <button
-            onClick={() => setSelectedRole("patient")}
+            onClick={() => setSelectedRole(role.patient)}
             className={`flex-1 rounded-lg border p-4 text-center text-lg font-medium transition-all ${
               selectedRole === "patient"
                 ? "border-blue-500 bg-blue-100 text-blue-700"

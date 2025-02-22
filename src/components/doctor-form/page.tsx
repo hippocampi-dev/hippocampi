@@ -10,7 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "~/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select"
 import { Textarea } from "~/components/ui/textarea"
-import { DoctorCredentialsInterface, DoctorsInterface, DoctorSubscriptionsInterface } from "~/server/db/type"
+import { DoctorCredentialsInterface, DoctorsInterface, SubscriptionsInterface } from "~/server/db/type"
 import { useSession } from "next-auth/react"
 import { redirect } from "next/navigation"
 
@@ -87,8 +87,8 @@ export default function DoctorForm() {
       approach: values.medicalApproach
     }
 
-    const subscription: DoctorSubscriptionsInterface = {
-      doctorId: session.user.id
+    const subscription: SubscriptionsInterface = {
+      userId: session.user.id,
     }
 
     // doctor
@@ -104,6 +104,7 @@ export default function DoctorForm() {
       const result = await response.json();
     } catch (error) {
       console.error('Error adding doctor:', error)
+      throw new Error('Error adding doctor');
     }
 
     // credentials
@@ -119,11 +120,12 @@ export default function DoctorForm() {
       const result = await response.json();
     } catch (error) {
       console.error('Error adding doctor credentials:', error)
+      throw new Error('Error adding doctor credentials');
     }
     
     // set up subscriptions in db
     try {
-      const response = await fetch('/api/db/doctor/subscription/add', {
+      const response = await fetch('/api/db/management/subscription/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -134,6 +136,7 @@ export default function DoctorForm() {
       const result = await response.json();
     } catch (error) {
       console.error('Error setting up subscription:', error)
+      throw new Error('Error adding subscription');
     }
   }
 

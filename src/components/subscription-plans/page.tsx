@@ -7,22 +7,18 @@ import { loadStripe } from '@stripe/stripe-js';
 import Loading from "../loading/page";
 
 // Define types for your plans
-interface Plan {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  interval: string;
-  price_id: string;
+export interface Plan {
+  id: string,
+  name: string,
+  description: string,
+  price: number,
+  interval: string, // 'month'
+  plan_id: string,
+  features: string[]
 }
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
-const features = [
-  "Full support on administrative tasks",
-  "Steady stream of new patients",
-  "Competitive reinburstment rates",
-];
 
 export default function SubscriptionPlans() {
   const [loading, setLoading] = useState<boolean>(false)
@@ -78,7 +74,7 @@ export default function SubscriptionPlans() {
           </CardHeader>
           <CardContent>
             <ul className="list-disc list-inside space-y-2">
-              {features.map((feature, index) => (
+              {plan.features.map((feature, index) => (
                 <li key={index}>{feature}</li>
               ))}
             </ul>

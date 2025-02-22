@@ -2,7 +2,7 @@ import { stripe } from "~/utilities/stripe";
 import Stripe from "stripe";
 import { NextResponse, NextRequest } from "next/server";
 import { getDoctorSubscription, setDoctorSubscription } from "~/server/db/queries";
-import { DoctorSubscriptionsInterface } from "~/server/db/type";
+import { SubscriptionsInterface } from "~/server/db/type";
 import { headers } from "next/headers";
 
 export async function POST(request: NextRequest) {
@@ -43,16 +43,16 @@ export async function POST(request: NextRequest) {
           subscription = await stripe.subscriptions.retrieve(data.subscription as string);
           const rawSubscription = JSON.parse(data.metadata!.subscription!); // all strings
 
-          const filteredSubscription: DoctorSubscriptionsInterface = {
+          const filteredSubscription: SubscriptionsInterface = {
             ...rawSubscription,
             startDate: rawSubscription.startDate ? new Date(rawSubscription.startDate) : null,
             cancelDate: rawSubscription.cancelDate ? new Date(rawSubscription.cancelDate) : null,
           };
-          const id = filteredSubscription.doctorId as "string";
+          const id = filteredSubscription.userId as "string";
         
-          const params: DoctorSubscriptionsInterface = {
+          const params: SubscriptionsInterface = {
             ...filteredSubscription,
-            doctorId: id,
+            userId: id,
             stripeCustomerId: data.customer! as "string",
             subscriptionId: subscription.id as "string",
             status: 'subscribed',
@@ -67,14 +67,14 @@ export async function POST(request: NextRequest) {
           const canceledAt = data.canceled_at!;
         
           if (canceledAt) { // if user canceled subscription
-            setDoctorSubscription(subscription?.doctorId as 'string', {
+            setDoctorSubscription(subscription?.userId as 'string', {
               ...subscription!,
               cancelDate: new Date(data.canceled_at! * 1000),
               status: 'unsubscribed'
             });
           }
           else {
-            setDoctorSubscription(subscription?.doctorId as 'string', {
+            setDoctorSubscription(subscription?.userId as 'string', {
               ...subscription!,
               cancelDate: null,
               status: 'subscribed'

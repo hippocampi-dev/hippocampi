@@ -1,9 +1,9 @@
 import { addDoctorSubscription } from "~/server/db/queries";
-import { DoctorSubscriptionsInterface } from "~/server/db/type";
+import { SubscriptionsInterface } from "~/server/db/type";
 
 // pass in DoctorsInteface json
 export const POST = async (request: Request) => {
-  const body: DoctorSubscriptionsInterface = await request.json();
+  const body: SubscriptionsInterface = await request.json();
   
   try {
     const response = await addDoctorSubscription(body);

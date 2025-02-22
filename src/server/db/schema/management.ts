@@ -17,6 +17,11 @@ import { timestamps } from './utils';
 import { createTable } from './schema';
 
 // User Roles
+export const rolesEnum = pgEnum('user_role', [
+  'patient',
+  'doctor',
+  'admin'
+]);
 export const userRoles = createTable(
   'user_roles',
   {
@@ -24,7 +29,7 @@ export const userRoles = createTable(
       .notNull()
       .primaryKey()
       .references(() => users.id, {onDelete: 'cascade'}), // Ensures one role per user
-    userRole: varchar('user_role', { length: 255 }) // 'doctor' or 'patient'
+    userRole: rolesEnum('user_role')
       .notNull(),
     ...timestamps
   }
@@ -90,11 +95,11 @@ export const subscriptionStatusEnum = pgEnum('subscription_status', [
 ]);
 
 // Payment
-export const doctorSubcriptions = createTable('doctor_subscriptions', {
-  doctorId: varchar('doctor_id', { length: 255 })
+export const subscriptions = createTable('subscriptions', {
+  userId: varchar('doctor_id', { length: 255 })
     .notNull()
     .primaryKey()
-    .references(() => doctors.doctorId, {onDelete: 'cascade'}),
+    .references(() => users.id, {onDelete: 'cascade'}),
   stripeCustomerId: varchar('stripe_customer_id', { length: 255 }),
   subscriptionId: varchar('subscription_id', { length: 255 }),
   status: subscriptionStatusEnum('subscription_status').default('unsubscribed').notNull(),

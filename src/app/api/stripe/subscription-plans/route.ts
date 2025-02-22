@@ -1,44 +1,61 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { Plan } from '~/components/subscription-plans/page';
+import { getUserRole } from '~/server/db/queries';
+import { getUserId } from '~/utilities/get-user';
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+
+// Define feature arrays at the top level
+const featuresPatient = [
+  "Patient Features 1",
+  "Patient Features 2",
+  "Patient Features 3",
+];
+
+const featuresDoctors = [
+  "Full support on administrative tasks",
+  "Steady stream of new patients",
+  "Competitive reinburstment rates",
+];
 
 export async function GET() {
   try {
-    const prices = await stripe.prices.list({
-      expand: ['data.product'],
+    const userId = await getUserId() as 'string';
+    const userRole = await getUserRole(userId);
+    
+    // Determine product ID based on role
+    const productId = userRole?.userRole === 'doctor'
+      ? 'prod_RhGDXvJrHUDpcj'
+      : 'prod_Rp2PpooYhjF3rK';
+      
+    const features = userRole?.userRole === 'doctor' ? featuresDoctors : featuresPatient;
+    // console.log(productId)
+
+    // Get plans for the correct product
+    const plans = await stripe.plans.list({
       active: true,
-      type: 'recurring',
+      product: productId
     });
 
-    // Type guard to ensure price.product exists and is valid
-    const validateProduct = (product: unknown): product is Stripe.Product => {
-      return (
-        product !== null &&
-        product !== undefined &&
-        typeof product === 'object' &&
-        'id' in product &&
-        'name' in product &&
-        'description' in product
-      );
-    };
+    // Map plans synchronously and await inside the mapping function
+    const formattedPlans = await Promise.all(
+      plans.data.map(async (plan) => {
+        const product = await stripe.products.retrieve(plan.product as string);
+        return {
+          id: plan.id,
+          name: product.name,
+          description: product.description!,
+          price: plan.amount!,
+          interval: plan.interval,
+          plan_id: plan.id,
+          features
+        } as Plan;
+      })
+    );
 
-    const plans = prices.data.map(price => {
-      // Check if price.product exists and is valid
-      if (!validateProduct(price.product)) {
-        throw new Error('Invalid product data received from Stripe');
-      }
-
-      return {
-        id: price.id,
-        name: price.product.name,
-        description: price.product.description,
-        price: price.unit_amount,
-        interval: price.recurring!.interval,
-        price_id: price.id,
-      };
-    });
-
-    return NextResponse.json(plans);
+    // console.log(formattedPlans);
+    return NextResponse.json(formattedPlans);
   } catch (error) {
     console.error(error);
     return NextResponse.json(

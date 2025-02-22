@@ -12,7 +12,7 @@ import {
   UserIdInterface, 
   DoctorsInterface, 
   role, 
-  DoctorSubscriptionsInterface, 
+  SubscriptionsInterface, 
   InvoicesInterface 
 } from '~/server/db/type';
 
@@ -151,7 +151,7 @@ export function DoctorDashboardProvider({ children }: DoctorDashboardProviderPro
       if (!isValid) {
         redirect('/dashboard/patient');
       } else if (!subscription?.isSubscribed) {
-        redirect(subscription?.url || '/dashboard/doctor/billing');
+        redirect(subscription?.url!);
       } else {
         setState(prev => ({
           ...prev,
@@ -238,15 +238,15 @@ export const fetchAppointments = async () => {
 }
 
 // return PatientsInterface[]
-export const fetchPatients = async () => {
-  // Fetch Patient-Doctor Management
-  const management = await fetchManagement();
+// export const fetchPatients = async () => {
+//   // Fetch Patient-Doctor Management
+//   const management = await fetchManagement();
 
-  // Filter into ids list
-  const patientIds = management.map((m) => m.patientId);
+//   // Filter into ids list
+//   const patientIds = management.map((m) => m.patientId);
 
-  return patientIds;
-}
+//   return patientIds;
+// }
 
 export const fetchDoctor = async () => {
   try {
@@ -299,11 +299,11 @@ export const fetchHealthInfo = async () => {
 // fetch subscription
 export const fetchSubscription = async () => {
   try {
-    const response = await fetch('/api/db/doctor/subscription/get');
+    const response = await fetch('/api/db/management/subscription/get');
     
     const result = await response.json();
 
-    const data: DoctorSubscriptionsInterface = result.response;
+    const data: SubscriptionsInterface = result.response;
 
     if (data.status === 'subscribed') { // subscribed
       return {

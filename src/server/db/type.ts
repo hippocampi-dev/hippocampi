@@ -4,7 +4,7 @@ import {
   patientDoctorManagement,
   appointments,
   userRoles,
-  doctorSubcriptions,
+  subscriptions,
   invoices,
 } from "./schema/management";
 import { conversations, messages } from "./schema/message";
@@ -108,7 +108,7 @@ export interface PatientHealthInformationInterface {
 }
 
 // doctor subscription
-export type DoctorSubscriptionsInterface = typeof doctorSubcriptions.$inferInsert;
+export type SubscriptionsInterface = typeof subscriptions.$inferInsert;
 
 // patient invoices
 export type InvoicesInterface = typeof invoices.$inferInsert;
