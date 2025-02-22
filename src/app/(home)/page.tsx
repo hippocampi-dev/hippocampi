@@ -1,37 +1,36 @@
 "use client"
 import Link from "next/link"
 import { motion } from "framer-motion"
+import { Header } from "~/components/ui/Header"
+import Image from "next/image"
 
 export default function Home() {
   return (
-    <div>
-      <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-20">
-        <div className="container mx-auto px-6">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <h1 className="text-4xl md:text-6xl font-bold mb-4">
-              Digital Care Platform for Chemo Brain Treatment and Support
-            </h1>
-            <p className="text-xl md:text-2xl mb-8">
-              Empowering cancer patients with innovative cognitive care solutions
-            </p>
-            <Link
-              href="/about"
-              className="bg-white text-blue-600 px-6 py-3 rounded-md font-semibold hover:bg-blue-100 transition duration-300"
-            >
-              Learn More
-            </Link>
-          </motion.div>
-        </div>
-      </section>
-
-      <section className="py-16">
-        <div className="container mx-auto px-6">
-          <h2 className="text-3xl font-bold text-center mb-8">Welcome to Hippocampi</h2>
-          <p className="text-xl text-center text-gray-600 max-w-3xl mx-auto">
-            At Hippocampi, we're revolutionizing the way cancer patients manage chemo brain symptoms. Our digital
-            platform connects patients with specialized care teams, providing personalized support and innovative
-            treatments to improve cognitive function and quality of life.
+    <div className="w-screen h-screen">
+      <Header />
+      <section className="h-full flex gap-16 py-6 px-[5%]">
+        <div className="container mx-auto flex-1 flex flex-col justify-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            Post-chemo care, quick and personalized
+          </h1>
+          <p className="text-xl md:text-2xl mb-8 w-4/5">
+            Customized cognitive and mental healthcare begins here
           </p>
+          <Link
+            href="/about"
+            className="bg-blue-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-500 transition duration-300 w-fit"
+          >
+            Learn More
+          </Link>
+        </div>
+        <div className="flex-1 object-cover flex justify-center items-center">
+          <Image
+            className="w-2/3"
+            alt="hippocampi-hero"
+            width={9999}
+            height={9999}
+            src={'/hero.avif'}
+          />
         </div>
       </section>
     </div>
