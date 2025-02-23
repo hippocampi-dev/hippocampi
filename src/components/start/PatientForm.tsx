@@ -266,15 +266,15 @@ export default function PatientForm() {
       }
 
       // 6. Post subscription
-      const subscription: SubscriptionsInterface = {
-        userId: session.user.id
-      }
-      const subscriptionRes = await fetch('/api/db/management/subscription/add', {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(subscription)
-      });
-      if (!subscriptionRes.ok) throw new Error("Failed to add subscriptions");
+      // const subscription: SubscriptionsInterface = {
+      //   userId: session.user.id,
+      // }
+      // const subscriptionRes = await fetch('/api/db/management/subscription/add', {
+      //   method: 'POST',
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify(subscription)
+      // });
+      // if (!subscriptionRes.ok) throw new Error("Failed to add subscriptions");
   
       router.push("/dashboard");
     } catch (error: any) {

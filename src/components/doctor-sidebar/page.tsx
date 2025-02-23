@@ -93,12 +93,12 @@ export function DoctorDashboardSidebar() {
       </SidebarContent>
       <SidebarContent className="mt-auto flex flex-col justify-end mb-10 px-4">
         <SidebarMenu>
-        <button className={`w-full text-left`} onClick={async () => {await signOut({redirect: true, redirectTo: "/"}); redirect("/")}}>
-                  <SidebarMenuItem>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Sign Out</span>
-                  </SidebarMenuItem>
-                  </button>
+          <button className={`w-full text-left`} onClick={async () => {await signOut({redirect: true, redirectTo: "/"}); redirect("/")}}>
+            <SidebarMenuItem className="flex items-center">
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Sign Out</span>
+            </SidebarMenuItem>
+          </button>
         </SidebarMenu>
       </SidebarContent>
     </Sidebar>

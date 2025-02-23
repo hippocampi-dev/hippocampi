@@ -96,12 +96,12 @@ export function PatientDashboardProvider({ children }: PatientDashboardProviderP
   useEffect(() => {
     const onStart = async () => {
       const isValid = await validateUser();
-      const subscription = await fetchSubscription();
+      // const subscription = await fetchSubscription();
       
       if (!isValid) {
         redirect('/dashboard/doctor');
-      } else if (!subscription?.isSubscribed) {
-        redirect(subscription?.url || '/dashboard/patient/billing');
+      // } else if (!subscription?.isSubscribed) {
+      //   redirect(subscription?.url || '/dashboard/patient/billing');
       } else {
         await fetchDoctorData()
       }
