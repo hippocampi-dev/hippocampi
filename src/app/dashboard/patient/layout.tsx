@@ -91,14 +91,6 @@ export default function DashboardLayout({
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/dashboard/patient/chatbot">
-                    <MessagesSquare className="mr-2 h-4 w-4" />
-                    Chat Bot
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
                 <Link href="/dashboard/patient/invoices">
                   <SidebarMenuButton>
                     <FileText className="mr-2 h-4 w-4" />
@@ -106,14 +98,14 @@ export default function DashboardLayout({
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
-              {/* <SidebarMenuItem>
-                <Link href="/dashboard/patient/billing">
-                  <SidebarMenuButton>
-                    <FileText className="mr-2 h-4 w-4" />
-                    Billing
-                  </SidebarMenuButton>
-                </Link>
-              </SidebarMenuItem> */}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/dashboard/patient/chatbot">
+                    <MessagesSquare className="mr-2 h-4 w-4" />
+                    Chat Bot
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarContent>
           <SidebarFooter>
@@ -154,6 +146,5 @@ export default function DashboardLayout({
         </main>
       </div>
     </SidebarProvider>
-    
   );
 }

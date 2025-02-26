@@ -1,14 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import Link from "next/link";
-import { getDoctor, getAllPatientDoctorManagement } from "~/server/db/queries";
+import { getDoctor, getPatientDoctorManagement } from "~/server/db/queries";
 import { getUserId } from "~/utilities/get-user";
 import { UserIdInterface } from "~/server/db/type";
 import MessageButton from "./MessageButton";
 
 export default async function HealthcareProviders() {
   const userId = (await getUserId()) as "string";
-  const patientDoctorRelations = await getAllPatientDoctorManagement(userId);
+  const patientDoctorRelations = await getPatientDoctorManagement(userId);
   const doctorIds = patientDoctorRelations.map((relation) => relation.doctorId);
 
   const doctors = await Promise.all(

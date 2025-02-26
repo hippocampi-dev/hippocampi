@@ -10,7 +10,9 @@ export default function Footer() {
             <p className="text-gray-400">Personalized post-chemo care</p>
           </div>
           <div className="mb-6 w-full md:mb-0 md:w-1/4">
-            <h4 className="mb-2 text-lg font-semibold text-gray-400">Quick Links</h4>
+            <h4 className="mb-2 text-lg font-semibold text-gray-400">
+              Quick Links
+            </h4>
             <ul>
               <li>
                 <Link href="/" className="text-gray-400 hover:text-white">
@@ -23,7 +25,10 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-gray-400 hover:text-white">
+                <Link
+                  href="/contact"
+                  className="text-gray-400 hover:text-white"
+                >
                   Contact
                 </Link>
               </li>
