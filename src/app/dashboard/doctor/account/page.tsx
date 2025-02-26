@@ -1,4 +1,4 @@
-import DoctorAccount from "~/components/doctor-account/page";
+import DoctorAccount from "~/components/doctor-dashboard/DoctorAccount";
 
 export default function AccountPage() {
   return (

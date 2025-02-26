@@ -1,4 +1,4 @@
-import InvoiceForm from "~/components/doctor-invoices/invoice-form";
+import InvoiceForm from "~/components/doctor-dashboard/DoctorInvoiceForm";
 import { getPatientDict, getPatients } from "~/server/db/queries";
 import { getUserId } from "~/utilities/get-user";
 

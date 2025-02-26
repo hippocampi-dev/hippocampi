@@ -1,4 +1,4 @@
-import { PatientList } from "./patient-list";
+import { PatientList } from "./PatientList";
 
 export default function DoctorDashboard() {
 

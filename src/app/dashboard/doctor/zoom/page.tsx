@@ -1,4 +1,4 @@
-import CreateMeeting from "~/components/meeting/create/page";
+import CreateMeeting from "~/components/meeting/CreateMeeting";
 
 interface props {
   params: Promise<{ id: string }>;

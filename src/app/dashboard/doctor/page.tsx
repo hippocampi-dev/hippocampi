@@ -1,4 +1,4 @@
-import DoctorDashboard from "~/components/doctor-dashboard/page";
+import DoctorDashboard from "~/components/doctor-dashboard/DoctorDashboard";
 
 export default function Dashboard() {
   return (

@@ -1,4 +1,4 @@
-import DoctorAppointments from "~/components/doctor-appointments/page";
+import DoctorAppointments from "~/components/doctor-dashboard/DoctorAppointments";
 import { getAppointments, getPatientDict } from "~/server/db/queries";
 import { getUserId } from "~/utilities/get-user";
 

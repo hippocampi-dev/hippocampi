@@ -1,6 +1,3 @@
-'use client'
-
-import { redirect } from "next/navigation"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
 import { AppointmentsInterface, PatientDict } from "~/server/db/type"
 
@@ -26,7 +23,7 @@ export default function DoctorAppointments({ appointments, patientDict }: props)
         </TableHeader>
         <TableBody>
           {appointments.map((appointment) => (
-            <TableRow key={appointment.id} onClick={() => redirect(`/dashboard/doctor/appointments/${appointment.id}`)}>
+            <TableRow key={appointment.id}>
               <TableCell>{`${patientDict[appointment.patientId]?.patient.firstName} ${patientDict[appointment.patientId]?.patient.lastName}`}</TableCell>
               <TableCell>{new Date(appointment.scheduledAt).toLocaleString()}</TableCell>
               <TableCell>{appointment.reason}</TableCell>

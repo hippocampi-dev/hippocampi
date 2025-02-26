@@ -1,4 +1,4 @@
-import DoctorInvoices from "~/components/doctor-invoices/page";
+import DoctorInvoices from "~/components/doctor-dashboard/DoctorInvoices";
 
 export default function InvoicesPage() {
   return (
