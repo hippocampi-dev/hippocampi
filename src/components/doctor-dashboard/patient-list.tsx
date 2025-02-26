@@ -16,7 +16,7 @@ export async function PatientList() {
       <CardContent>
         <div className="space-y-4">
           {patients.map((patient) => (
-            <PatientItem patient={patient}/>
+            <PatientItem patient={patient} key={patient.patientId}/>
           ))}
         </div>
       </CardContent>

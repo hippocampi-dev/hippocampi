@@ -222,7 +222,7 @@ export default function PatientForm() {
       if (!patientRes.ok) throw new Error("Failed to add patient basic info");
       
       const patientId = session.user.id; 
- // assume API returns the new patient's id
+      // assume API returns the new patient's id
   
       // 2. Post allergies if provided
       if (medicalInfo.allergies && medicalInfo.allergies.length > 0) {

@@ -367,15 +367,15 @@ export const getPatientHealthInformation = async (user_id: UserIdInterface) => {
   const _allergies = await db.query.allergies.findMany({
     where: eq(schema_patient.allergies.patientId, user_id)
   });
-  const _cognitiveSymptoms = await db.query.cognitiveSymptoms.findMany({
+  const _cognitiveSymptoms = await db.query.cognitiveSymptoms.findFirst({
     where: eq(schema_patient.cognitiveSymptoms.patientId, user_id)
   });
   const _diagnoses = await db.query.diagnoses.findMany({
     where: eq(schema_patient.diagnoses.patientId, user_id)
   });
-  const _emergencyContacts = await db.query.emergencyContacts.findMany({
-    where: eq(schema_patient.emergencyContacts.patientId, user_id)
-  });
+  // const _emergencyContacts = await db.query.emergencyContacts.findMany({
+  //   where: eq(schema_patient.emergencyContacts.patientId, user_id)
+  // });
   const _medications = await db.query.medications.findMany({
     where: eq(schema_patient.medications.patientId, user_id)
   });
@@ -387,11 +387,11 @@ export const getPatientHealthInformation = async (user_id: UserIdInterface) => {
   });
 
   const patientHealthInformation: PatientHealthInformationInterface = {
-    medicalHistory: _medicalHistory as PatientMedicalHistoryInterface,
+    medicalHistory: _medicalHistory!,
     allergies: _allergies,
-    cognitiveSymptoms: _cognitiveSymptoms,
+    cognitiveSymptoms: _cognitiveSymptoms!,
     diagnoses: _diagnoses,
-    emergencyContacts: _emergencyContacts,
+    // emergencyContacts: _emergencyContacts,
     medications: _medications,
     treatments: _treatments
   }

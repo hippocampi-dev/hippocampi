@@ -20,6 +20,7 @@ export default async function PatientsPage() {
         {patients.map((patient) => (
           <PatientCard
             id={patient.patientId as "string"}
+            key={patient.patientId}
           />
         ))}
       </div>

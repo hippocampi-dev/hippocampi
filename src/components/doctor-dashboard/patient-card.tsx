@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 import { Avatar, AvatarFallback } from "~/components/ui/avatar"
-import { PatientsInterface } from "~/server/db/type"
 import { Button } from "../ui/button"
 import Link from "next/link"
 import { getPatient, getPatientDoctorManagement } from "~/server/db/queries"
@@ -9,7 +8,7 @@ interface PatientCardProps {
   id: "string"
 }
 
-export async function PatientCard({ id }: PatientCardProps) {
+export async function PatientCard({ id, }: PatientCardProps) {
   const patient = await getPatient(id);
   const management = await getPatientDoctorManagement(id);
 
