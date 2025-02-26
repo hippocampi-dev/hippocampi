@@ -1,6 +1,6 @@
 "use client";
 
-import DoctorForm from "~/components/doctor-form/page";
+import DoctorForm from "~/components/doctor-dashboard/DoctorSignUpForm";
 import { useEffect, useState } from "react";
 import Loading from "~/components/loading/page";
 import PatientDashboard from "~/components/patient-dashboard/page";

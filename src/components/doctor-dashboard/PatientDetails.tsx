@@ -7,7 +7,7 @@ import { AppointmentsInterface, PatientHealthInformationInterface, PatientsInter
 import BackButton from "../buttons/BackButton"
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog"
 import { Button } from "../ui/button"
-import { AppointmentForm } from "../doctor-appointments/appointment-form"
+import { AppointmentForm } from "./DoctorAppointmentForm"
 import { useState } from "react"
 
 interface PatientDetailsProps {

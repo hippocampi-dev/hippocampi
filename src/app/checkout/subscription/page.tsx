@@ -1,4 +1,4 @@
-import SubscriptionPlans from "~/components/subscription-plans/page";
+import SubscriptionPlans from "~/components/subscription-plans/SubscriptionPlans";
 
 export default function SubscriptionPage() {
   return (

@@ -66,6 +66,14 @@ export function DoctorDashboardSidebar() {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
+              <Link href="/dashboard/doctor/zoom">
+                <Calendar className="w-4 h-4 mr-2" />
+                <span>Zoom</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
               <Link href="/dashboard/doctor/billing">
                 <Receipt className="mr-2 h-4 w-4" />
                 <span>Billing</span>

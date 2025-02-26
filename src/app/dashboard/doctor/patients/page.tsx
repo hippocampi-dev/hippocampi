@@ -1,4 +1,4 @@
-import { PatientCard } from "~/components/doctor-dashboard/patient-card"
+import { PatientCard } from "~/components/doctor-dashboard/PatientCard"
 import { getPatients } from "~/server/db/queries";
 import { getUserId } from "~/utilities/get-user";
 

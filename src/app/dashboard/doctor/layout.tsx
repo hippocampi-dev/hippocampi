@@ -1,4 +1,4 @@
-import { DoctorDashboardSidebar } from "~/components/doctor-sidebar/page";
+import { DoctorDashboardSidebar } from "~/components/doctor-dashboard/DoctorSidebar";
 import { SidebarProvider } from "~/components/ui/sidebar";
 
 export default function DoctorLayout({

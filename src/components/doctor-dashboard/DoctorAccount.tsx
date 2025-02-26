@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/com
 import Loading from "../loading/page"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select"
 import { DoctorCredentialsInterface, DoctorsInterface } from "~/server/db/type"
-import { specializations } from "../doctor-form/page"
+import { specializations } from "./DoctorSignUpForm"
 import { useSession } from "next-auth/react"
 
 const accountFormSchema = z.object({

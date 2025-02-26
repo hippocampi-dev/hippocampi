@@ -21,7 +21,6 @@ const createMeetingSchema = z.object({
   patientId: z.string({
     required_error: "Please select a patient.",
   }),
-  meetingTopic: z.string().min(1, "Meeting topic is required."),
 })
 
 export default function CreateMeeting() {
@@ -32,11 +31,11 @@ export default function CreateMeeting() {
     resolver: zodResolver(createMeetingSchema),
     defaultValues: {
       patientId: "",
-      meetingTopic: "",
     },
   })
 
   const onSubmit = async (values: z.infer<typeof createMeetingSchema>) => {
+    if (meetingUrl !== '') return;
     try {
       const response = await fetch("/api/create-meeting", {
         method: "POST",
@@ -46,8 +45,8 @@ export default function CreateMeeting() {
         body: JSON.stringify(values),
       })
       const data = await response.json()
-      setMeetingUrl(data.join_url)
-      setCreatedMeetingId(data.id)
+      setMeetingUrl(data.join_url);
+      setCreatedMeetingId(data.id);
     } catch (error) {
       console.error("Error creating meeting:", error)
     }
@@ -81,19 +80,6 @@ export default function CreateMeeting() {
                       ))}
                     </SelectContent>
                   </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="meetingTopic"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Meeting Topic</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter meeting topic" {...field} />
-                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

@@ -1,4 +1,4 @@
-import PatientInvoices from "~/components/patient-invoices/page";
+import PatientInvoices from "~/components/patient-dashboard/PatientInvoices";
 import { getInvoiceDict, getInvoices } from "~/server/db/queries";
 import { getUserId } from "~/utilities/get-user";
 
