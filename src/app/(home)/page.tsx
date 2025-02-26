@@ -10,30 +10,27 @@ export default function Home() {
     <div className="min-h-screen">
       <Header />
       {/* Hero Section */}
-      <section className="h-screen flex gap-16 py-6 px-[5%]">
-        <div className="container mx-auto flex-1 flex flex-col justify-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+      <section className="flex h-screen gap-16 px-[5%] py-6">
+        <div className="container mx-auto flex flex-1 flex-col justify-center">
+          <h1 className="mb-6 text-4xl font-bold md:text-6xl">
             Post-chemo care, quick and personalized
           </h1>
-          <p className="text-xl md:text-2xl mb-8 w-4/5">
+          <p className="mb-8 w-4/5 text-xl md:text-2xl">
             Customized cognitive and mental healthcare begins here
           </p>
           <Button asChild>
-            <Link
-              href="/about"
-              className="w-fit"
-            >
+            <Link href="/about" className="w-fit">
               Learn More
             </Link>
           </Button>
         </div>
-        <div className="flex-1 object-cover flex justify-center items-center">
+        <div className="flex flex-1 items-center justify-center object-cover">
           <Image
             className="w-2/3"
             alt="hippocampi-hero"
             width={9999}
             height={9999}
-            src={'/hero.avif'}
+            src={"/hero.avif"}
           />
         </div>
       </section>

@@ -7,10 +7,10 @@ import { Suspense } from "react";
 
 function CreateConversationPageFunction() {
   const searchParams = useSearchParams();
-  const doctorId = searchParams.get("doctorId") || "";
+  const doctorId = searchParams.get("doctor") || "";
   const { data: session } = useSession();
   const patientId = session?.user.id || "";
-  
+  console.log(doctorId.toString());
   return (
     <div className="p-8">
       <CreateConversation patientId={patientId} doctorId={doctorId} />
@@ -21,7 +21,7 @@ function CreateConversationPageFunction() {
 export default function CreateConversationPage() {
   return (
     <Suspense>
-      <CreateConversationPageFunction/>
+      <CreateConversationPageFunction />
     </Suspense>
-  )
+  );
 }
