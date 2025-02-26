@@ -15,7 +15,7 @@ export default function MessageButton({
   const router = useRouter();
 
   const handleMessageClick = async () => {
-    router.push(`/dashboard/patient/messages/create?doctor=`);
+    router.push(`/dashboard/patient/messages/create?doctor=${doctorId}`);
   };
 
   return (

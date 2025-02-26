@@ -30,7 +30,7 @@ export default function CreateConversation({
   const [messageContent, setMessageContent] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
+  console.log(initialDoctorId);
   // If no doctor is preselected, fetch the list of doctors
   useEffect(() => {
     async function fetchDoctors() {
@@ -51,7 +51,6 @@ export default function CreateConversation({
     }
     fetchDoctors();
   }, [initialDoctorId]);
-  console.log(doctors);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
