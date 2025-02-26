@@ -373,9 +373,9 @@ export const getPatientHealthInformation = async (user_id: UserIdInterface) => {
   const _diagnoses = await db.query.diagnoses.findMany({
     where: eq(schema_patient.diagnoses.patientId, user_id)
   });
-  // const _emergencyContacts = await db.query.emergencyContacts.findMany({
-  //   where: eq(schema_patient.emergencyContacts.patientId, user_id)
-  // });
+  const _emergencyContacts = await db.query.emergencyContacts.findMany({
+    where: eq(schema_patient.emergencyContacts.patientId, user_id)
+  });
   const _medications = await db.query.medications.findMany({
     where: eq(schema_patient.medications.patientId, user_id)
   });
@@ -391,7 +391,7 @@ export const getPatientHealthInformation = async (user_id: UserIdInterface) => {
     allergies: _allergies,
     cognitiveSymptoms: _cognitiveSymptoms!,
     diagnoses: _diagnoses,
-    // emergencyContacts: _emergencyContacts,
+    emergencyContacts: _emergencyContacts,
     medications: _medications,
     treatments: _treatments
   }

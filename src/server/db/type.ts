@@ -102,7 +102,7 @@ export interface PatientHealthInformationInterface {
   allergies: PatientAllergiesInterface[];
   cognitiveSymptoms: PatientCognitiveSymptomsInterface;
   diagnoses: PatientDiagnosesInterface[];
-  // emergencyContacts: PatientEmergencyContactsInterface[];
+  emergencyContacts: PatientEmergencyContactsInterface[];
   medications: PatientMedicationsInterface[];
   treatments: PatientTreatmentsInterface[];
 }

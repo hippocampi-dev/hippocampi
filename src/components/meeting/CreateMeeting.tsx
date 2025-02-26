@@ -36,8 +36,9 @@ export default function CreateMeeting() {
 
   const onSubmit = async (values: z.infer<typeof createMeetingSchema>) => {
     if (meetingUrl !== '') return;
+    
     try {
-      const response = await fetch("/api/create-meeting", {
+      const response = await fetch("/api/zoom/create-meeting", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
