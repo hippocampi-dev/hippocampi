@@ -1,21 +1,15 @@
-'use client'
-
-import { useContext } from "react";
-import { DoctorDashboardContext } from "~/app/context/DoctorDashboardContext";
 import InvoiceForm from "~/components/doctor-invoices/invoice-form";
-import Loading from "~/components/loading/page";
+import { getPatientDict, getPatients } from "~/server/db/queries";
+import { getUserId } from "~/utilities/get-user";
 
-export default function CreateInvoicePage() {
-  const context = useContext(DoctorDashboardContext);
-
-  if (!context || context.isLoading || !context.data) {
-    return <Loading />
-  }
-
+export default async function CreateInvoicePage() {
+  const doctorId = await getUserId() as "string";
+  const patients = await getPatients(doctorId);
+  const patientDict = await getPatientDict(doctorId);
   return (
     <InvoiceForm
-      patients={context.data?.patients!}
-      patientDict={context.data.patientDict!}
+      patients={patients}
+      patientDict={patientDict}
     />
   )
 }

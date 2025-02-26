@@ -1,11 +1,15 @@
-import { DoctorDashboardProvider } from "~/app/context/DoctorDashboardContext";
+import { DoctorDashboardSidebar } from "~/components/doctor-sidebar/page";
+import { SidebarProvider } from "~/components/ui/sidebar";
 
 export default function DoctorLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <DoctorDashboardProvider>
-      {children}
-    </DoctorDashboardProvider>
+    <SidebarProvider>
+      <div className="flex h-screen w-full overflow-hidden">
+        <DoctorDashboardSidebar />
+        <main className="flex-1 overflow-y-auto bg-background">{children}</main>
+      </div>
+    </SidebarProvider>
   )
 }

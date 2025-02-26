@@ -1,28 +1,24 @@
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 import { Avatar, AvatarFallback } from "~/components/ui/avatar"
-import { PatientDoctorManagementInterface, PatientsInterface, UserIdInterface } from "~/server/db/type"
-import { PatientDict } from "~/app/context/DoctorDashboardContext"
+import { PatientsInterface } from "~/server/db/type"
+import { getPatientDoctorManagement, getPatients } from "~/server/db/queries"
+import { getUserId } from "~/utilities/get-user"
 
-interface PatientListProps {
-  patients: PatientsInterface[]
-  patientDict: PatientDict
-}
+export async function PatientList() {
+  const id = await getUserId() as "string";
+  const patients = await getPatients(id);
 
-export function PatientList({ patients, patientDict }: PatientListProps) {
   return (
     <Card>
       <CardHeader>
         <CardTitle>Recent Patients</CardTitle>
       </CardHeader>
       <CardContent>
-        <ul className="space-y-4">
+        <div className="space-y-4">
           {patients.map((patient) => (
-            <PatientItem
-              patient={patient}
-              patientDict={patientDict[patient.patientId]!.management}
-            />
+            <PatientItem patient={patient}/>
           ))}
-        </ul>
+        </div>
       </CardContent>
     </Card>
   )
@@ -30,10 +26,10 @@ export function PatientList({ patients, patientDict }: PatientListProps) {
 
 interface PatientItemProps {
   patient: PatientsInterface
-  patientDict: PatientDoctorManagementInterface
 }
 
-function PatientItem({ patient, patientDict }: PatientItemProps) {
+async function PatientItem({ patient }: PatientItemProps) {
+  const management = await getPatientDoctorManagement(patient.patientId as "string");
   return (
     <li key={patient.patientId} className="flex items-center space-x-4">
       <Avatar>
@@ -44,7 +40,7 @@ function PatientItem({ patient, patientDict }: PatientItemProps) {
       <div>
         <p className="font-medium">{`${patient.firstName} ${patient.lastName}`}</p>
         <p className="text-sm text-muted-foreground">Age: {patient.age}</p>
-        <p className="text-sm text-muted-foreground">Last Visit: {patientDict.lastVisit}</p>
+        <p className="text-sm text-muted-foreground">Last Visit: {management?.lastVisit}</p>
       </div>
     </li>
   )

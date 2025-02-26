@@ -1,16 +1,20 @@
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 import { Avatar, AvatarFallback } from "~/components/ui/avatar"
 import { PatientsInterface } from "~/server/db/type"
-import { PatientDict } from "~/app/context/DoctorDashboardContext"
 import { Button } from "../ui/button"
 import Link from "next/link"
+import { getPatient, getPatientDoctorManagement } from "~/server/db/queries"
 
 interface PatientCardProps {
-  patient: PatientsInterface
-  patientDict: PatientDict
+  id: "string"
 }
 
-export function PatientCard({ patient, patientDict }: PatientCardProps) {
+export async function PatientCard({ id }: PatientCardProps) {
+  const patient = await getPatient(id);
+  const management = await getPatientDoctorManagement(id);
+
+  if (!patient || !management) return null;
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center gap-4">
@@ -28,7 +32,7 @@ export function PatientCard({ patient, patientDict }: PatientCardProps) {
         <dl className="grid grid-cols-2 gap-2 text-sm">
           <div>
             <dt className="font-medium">Last Visit</dt>
-            <dd>{patientDict[patient.patientId]?.management.lastVisit}</dd>
+            <dd>{management.lastVisit}</dd>
           </div>
           <div>
             <dt className="font-medium">Condition</dt>

@@ -116,3 +116,18 @@ export type InvoicesInterface = typeof invoices.$inferInsert;
 export type ConversationsInterface = typeof conversations.$inferInsert;
 
 export type MessagesInterface = typeof messages.$inferInsert;
+
+export type AppointmentInvoiceDict = {
+  [key: string]: AppointmentsInterface // key is invoice id
+}
+
+export interface IPatient {
+  patient: PatientsInterface;
+  management: PatientDoctorManagementInterface;
+  healthInfo: PatientHealthInformationInterface;
+  appointments: AppointmentsInterface[]
+}
+
+export type PatientDict = {
+  [key: string]: IPatient // key is patient id
+};

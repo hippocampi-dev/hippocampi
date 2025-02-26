@@ -1,16 +1,14 @@
 import Link from "next/link"
-import { AppointmentInvoiceDict, PatientDict } from "~/app/context/DoctorDashboardContext"
 import { Button } from "~/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
-import { InvoicesInterface } from "~/server/db/type"
+import { getInvoiceDict, getInvoices, getPatientDict } from "~/server/db/queries"
+import { getUserId } from "~/utilities/get-user"
 
-interface props {
-  invoices: InvoicesInterface[],
-  patientDict: PatientDict,
-  appointmentInvoiceDict: AppointmentInvoiceDict
-}
-
-export default function DoctorInvoices({ invoices, patientDict, appointmentInvoiceDict }: props) {
+export default async function DoctorInvoices() {
+  const doctorId = await getUserId() as "string";
+  const invoices = await getInvoices(doctorId);
+  const patientDict = await getPatientDict(doctorId);
+  const appointmentInvoiceDict = await getInvoiceDict(doctorId);
 
   return (
     <div className="space-y-4 p-4">
@@ -31,7 +29,10 @@ export default function DoctorInvoices({ invoices, patientDict, appointmentInvoi
         </TableHeader>
         <TableBody>
           {invoices.map((invoice) => (
-            <TableRow key={invoice.id}>
+            <TableRow 
+              key={invoice.id}
+              className={`cursor-pointer ${invoice.status === 'paid' ? 'opacity-50 pointer-events-none' : ''}`}
+            >
               <TableCell>{`${patientDict[invoice.patientId]?.patient.firstName} ${patientDict[invoice.patientId]?.patient.lastName}`}</TableCell>
               <TableCell>{new Date(appointmentInvoiceDict[invoice.id!]?.scheduledAt!).toLocaleString()}</TableCell>
               <TableCell>${invoice.hourlyRate}.00</TableCell>

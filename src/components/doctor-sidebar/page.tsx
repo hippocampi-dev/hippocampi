@@ -1,3 +1,5 @@
+'use client'
+
 import { Home, Calendar, Users, Settings, LogOut, User, Receipt, ReceiptText } from "lucide-react"
 import {
   Sidebar,
@@ -8,28 +10,16 @@ import {
   SidebarMenuButton,
 } from "~/components/ui/sidebar"
 import Link from "next/link"
-import { signOut } from "next-auth/react"
-import { useContext } from "react"
-import { DoctorDashboardContext } from "~/app/context/DoctorDashboardContext"
+import { signOut, useSession } from "next-auth/react"
 import { redirect } from "next/navigation"
 
 export function DoctorDashboardSidebar() {
-  const context = useContext(DoctorDashboardContext);
-  const handleSignOut = () => {
-    signOut({
-      redirect: true,
-      redirectTo: '/'
-    });
-  }
-
-  if (!context || context.isLoading || !context.data) {
-    return null
-  }
+  const {data: session} = useSession();
 
   return (
     <Sidebar>
       <SidebarHeader>
-        <h2 className="text-xl font-bold px-4 py-2">{context ? `Dr ${context.doctor?.lastName}`: ''}</h2>
+        <h2 className="text-xl font-bold px-4 py-2">{`Dr ${session?.user.name}`}</h2>
       </SidebarHeader>
       <SidebarContent className="px-4">
         <SidebarMenu>
@@ -54,6 +44,14 @@ export function DoctorDashboardSidebar() {
               <Link href="/dashboard/doctor/patients">
                 <Users className="w-4 h-4 mr-2" />
                 <span>Patients</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Link href="/dashboard/doctor/appointments">
+                <Calendar className="w-4 h-4 mr-2" />
+                <span>Appointments</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

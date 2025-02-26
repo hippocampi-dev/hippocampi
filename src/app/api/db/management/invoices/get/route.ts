@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getInvoice } from "~/server/db/queries";
+import { getInvoices } from "~/server/db/queries";
 import { getUserId } from "~/utilities/get-user";
 
 export const GET = async () => {
@@ -7,7 +7,7 @@ export const GET = async () => {
     const userId = await getUserId() as "string";
 
     if (userId) {
-      const response = await getInvoice(userId);
+      const response = await getInvoices(userId);
       // console.log('response', response)
       return NextResponse.json({ response })
     }

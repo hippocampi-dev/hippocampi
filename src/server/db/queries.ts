@@ -6,7 +6,7 @@ import * as schema_management from './schema/management';
 import * as schema_patient from './schema/patient';
 import * as schema_message from "./schema/message"
 import { eq } from 'drizzle-orm';
-import { DoctorCredentialsInterface, DoctorsInterface, PatientAllergiesInterface, PatientCognitiveSymptomsInterface, PatientDiagnosesInterface, PatientDoctorManagementInterface, PatientEmergencyContactsInterface, PatientHealthInformationInterface, PatientMedicationsInterface, PatientsInterface, PatientTreatmentsInterface, AppointmentsIdInterface, AppointmentsInterface, UserIdInterface, UserRolesInterface, PatientMedicalHistoryInterface, SubscriptionsInterface, InvoicesInterface, ConversationsInterface, MessagesInterface } from './type';
+import { DoctorCredentialsInterface, DoctorsInterface, PatientAllergiesInterface, PatientCognitiveSymptomsInterface, PatientDiagnosesInterface, PatientDoctorManagementInterface, PatientEmergencyContactsInterface, PatientHealthInformationInterface, PatientMedicationsInterface, PatientsInterface, PatientTreatmentsInterface, AppointmentsIdInterface, AppointmentsInterface, UserIdInterface, UserRolesInterface, PatientMedicalHistoryInterface, SubscriptionsInterface, InvoicesInterface, ConversationsInterface, MessagesInterface, IPatient, PatientDict, AppointmentInvoiceDict } from './type';
 import { db } from '.';
 import { desc, asc } from 'drizzle-orm';
 
@@ -58,6 +58,20 @@ export const getPatient = async (user_id: UserIdInterface) => {
   return db.query.patients.findFirst({
     where: eq(schema_patient.patients.patientId, user_id)
   });
+}
+// get patient
+export const getPatients = async (doctor_id: UserIdInterface) => {
+  const management = await getAllPatientDoctorManagement(doctor_id);
+  const patients: PatientsInterface[] = [];
+
+  for (const m of management) {
+    const patient = await getPatient(m.patientId as "string");
+    if (patient) {
+      patients.push(patient);
+    }
+  }
+  
+  return patients;
 }
 
 // add doctor
@@ -121,7 +135,7 @@ export const addPatientDoctorManagement = async (patientDoctorManagement: Patien
 // remove patient-doctor management
 
 // get patient-doctor management
-export const getPatientDoctorManagement = async (user_id: UserIdInterface) => {
+export const getAllPatientDoctorManagement = async (user_id: UserIdInterface) => {
   const userRole = await getUserRole(user_id);
 
   if (userRole?.userRole === 'doctor') { // if doctor, get patients
@@ -132,6 +146,20 @@ export const getPatientDoctorManagement = async (user_id: UserIdInterface) => {
 
   // other if patient
   return db.query.patientDoctorManagement.findMany({
+    where: (eq(schema_management.patientDoctorManagement.patientId, user_id))
+  })
+}
+export const getPatientDoctorManagement = async (user_id: UserIdInterface) => {
+  const userRole = await getUserRole(user_id);
+
+  if (userRole?.userRole === 'doctor') { // if doctor, get patients
+    return db.query.patientDoctorManagement.findFirst({
+      where: (eq(schema_management.patientDoctorManagement.doctorId, user_id))
+    })
+  }
+
+  // other if patient
+  return db.query.patientDoctorManagement.findFirst({
     where: (eq(schema_management.patientDoctorManagement.patientId, user_id))
   })
 }
@@ -164,6 +192,12 @@ export const getAppointments = async (user_id: UserIdInterface) => {
 
   return db.query.appointments.findMany({
     where: (eq(schema_management.appointments.patientId, user_id))
+  })
+}
+// get scheduled meeting
+export const getAppointment = async (appointment_id: string) => {
+  return db.query.appointments.findFirst({
+    where: (eq(schema_management.appointments.id, appointment_id))
   })
 }
 
@@ -300,7 +334,7 @@ export const setTreatments = async (user_id: UserIdInterface, treatment: Patient
 
 // get treatments
 export const getTreatments = async (user_id: UserIdInterface) => {
-  return db.query.medications.findMany({
+  return db.query.treatments.findMany({
     where: eq(schema_patient.treatments.patientId, user_id)
   });
 }
@@ -420,7 +454,7 @@ export const setInvoice = async (invoice: InvoicesInterface) => {
 }
 
 // get invoice
-export const getInvoice = async (user_id: UserIdInterface) => {
+export const getInvoices = async (user_id: UserIdInterface) => {
   const userRole = await getUserRole(user_id);
 
   if (userRole?.userRole === 'doctor') {
@@ -480,3 +514,63 @@ export const createMessage = async (data: {
     .values({ ...data, read: data.read ?? false })
     .returning();
 };
+
+export const getPatientDict = async (doctor_id: UserIdInterface) => {
+  const doctor = await getDoctor(doctor_id);
+  const appointments = await getAppointments(doctor_id);
+  const management = await getAllPatientDoctorManagement(doctor_id);
+  const fetchedPatients: PatientsInterface[] = [];
+  const patientDict: PatientDict = {};
+
+  // Process patients sequentially to ensure data consistency
+  for (const m of management) {
+    const patientId = m.patientId as "string"
+    const patient = await getPatient(patientId);
+    if (!patient) continue;
+    
+    fetchedPatients.push(patient);
+    const healthInfo = await getPatientHealthInformation(patientId);
+    const filteredAppointments = filterAppointments(appointments, doctor?.doctorId!, patient.patientId)
+    
+    patientDict[m.patientId] = {
+      patient,
+      management: m,
+      healthInfo,
+      appointments: filteredAppointments
+    };
+  }
+
+  return patientDict;
+}
+const filterAppointments = (appointments: AppointmentsInterface[], doctorId: string, patientId: string) => {
+  return appointments.filter(appointment => 
+    appointment.doctorId === doctorId &&
+    appointment.patientId === patientId
+  );
+}
+
+export const getInvoiceDict = async (doctor_id: UserIdInterface) => {
+  const appointments = await getAppointments(doctor_id);
+  const invoices = await getInvoices(doctor_id);
+  return createAppointmentInvoiceDictionary(appointments, invoices);
+}
+function createAppointmentInvoiceDictionary(
+  appointments: AppointmentsInterface[],
+  invoices: InvoicesInterface[]
+): AppointmentInvoiceDict {
+  const dictionary: AppointmentInvoiceDict = {};
+
+  invoices.forEach(invoice => {
+    const matchingAppointment = appointments.find(appointment => 
+      appointment.id === invoice.appointmentId
+    );
+    
+    if (matchingAppointment) {
+      dictionary[invoice.id!] = matchingAppointment;
+    } else {
+      console.warn(`Invoice ${invoice.id} has no matching appointment`);
+    }
+  });
+
+  return dictionary;
+}

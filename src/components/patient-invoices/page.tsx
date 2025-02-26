@@ -1,7 +1,6 @@
 import { loadStripe } from "@stripe/stripe-js";
-import { AppointmentInvoiceDict } from "~/app/context/DoctorDashboardContext"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
-import { InvoicesInterface } from "~/server/db/type"
+import { AppointmentInvoiceDict, InvoicesInterface } from "~/server/db/type"
 
 interface props {
   invoices: InvoicesInterface[],

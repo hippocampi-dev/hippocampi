@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getPatientDoctorManagement } from "~/server/db/queries";
+import { getAllPatientDoctorManagement } from "~/server/db/queries";
 import { getUserId } from "~/utilities/get-user";
 
 export const GET = async () => {
@@ -7,7 +7,7 @@ export const GET = async () => {
     const userId = await getUserId() as "string";;
 
     if (userId) {
-      const response = await getPatientDoctorManagement(userId);
+      const response = await getAllPatientDoctorManagement(userId);
       // console.log(response)
       return NextResponse.json({ response })
     }

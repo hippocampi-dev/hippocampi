@@ -9,9 +9,8 @@ import { Textarea } from "~/components/ui/textarea"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select"
-import type { InvoicesInterface, PatientsInterface } from "~/server/db/type"
+import type { InvoicesInterface, PatientDict, PatientsInterface } from "~/server/db/type"
 import { useSession } from "next-auth/react"
-import { PatientDict } from "~/app/context/DoctorDashboardContext"
 
 const invoiceFormSchema = z.object({
   patientId: z.string({
