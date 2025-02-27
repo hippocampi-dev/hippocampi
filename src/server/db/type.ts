@@ -19,7 +19,6 @@ import {
   treatments,
 } from "./schema/patient";
 
-
 // User ID
 export type UserIdInterface = typeof users.id.dataType;
 
@@ -41,15 +40,15 @@ export enum gender {
   "female",
   "non_binary",
   "other",
-  "prefer_not_to_say"
-};
+  "prefer_not_to_say",
+}
 
 // Doctors
 export type DoctorsInterface = typeof doctors.$inferInsert;
 
 // Specialization
 export enum specialization {
-  Oncology = "Oncology"
+  Oncology = "Oncology",
 }
 
 // Doctor Credentials
@@ -75,7 +74,8 @@ export type AppointmentsIdInterface = typeof appointments.id.dataType;
 export type UserLoginsInterface = typeof userLogins.$inferInsert;
 
 // Emergency Contacts
-export type PatientEmergencyContactsInterface = typeof emergencyContacts.$inferInsert;
+export type PatientEmergencyContactsInterface =
+  typeof emergencyContacts.$inferInsert;
 
 // Medications
 export type PatientMedicationsInterface = typeof medications.$inferInsert;
@@ -98,9 +98,9 @@ export type PatientCognitiveSymptomsInterface =
 
 // Patient Information
 export interface PatientHealthInformationInterface {
-  medicalHistory: PatientMedicalHistoryInterface
+  medicalHistory: PatientMedicalHistoryInterface;
   allergies: PatientAllergiesInterface[];
-  cognitiveSymptoms: PatientCognitiveSymptomsInterface;
+  cognitiveSymptoms: PatientCognitiveSymptomsInterface[];
   diagnoses: PatientDiagnosesInterface[];
   emergencyContacts: PatientEmergencyContactsInterface[];
   medications: PatientMedicationsInterface[];
@@ -118,16 +118,16 @@ export type ConversationsInterface = typeof conversations.$inferInsert;
 export type MessagesInterface = typeof messages.$inferInsert;
 
 export type AppointmentInvoiceDict = {
-  [key: string]: AppointmentsInterface // key is invoice id
-}
+  [key: string]: AppointmentsInterface; // key is invoice id
+};
 
 export interface IPatient {
   patient: PatientsInterface;
   management: PatientDoctorManagementInterface;
   healthInfo: PatientHealthInformationInterface;
-  appointments: AppointmentsInterface[]
+  appointments: AppointmentsInterface[];
 }
 
 export type PatientDict = {
-  [key: string]: IPatient // key is patient id
+  [key: string]: IPatient; // key is patient id
 };
