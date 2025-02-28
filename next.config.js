@@ -9,15 +9,15 @@ const config = {
   eslint: {
     ignoreDuringBuilds: true
   },
-  webpack: (config) => {
-    config.resolve.fallback = {
-      fs: false,
-      net: false,
-      tls: false,
-      child_process: false,
-    };
-    return config;
-  },
+  // webpack: (config) => {
+  //   config.resolve.fallback = {
+  //     fs: false,
+  //     net: false,
+  //     tls: false,
+  //     child_process: false,
+  //   };
+  //   return config;
+  // },
 };
 
 export default config;
