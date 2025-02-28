@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server"
-import jwt from "jsonwebtoken"
 import { getAppointment, getDoctor } from "~/server/db/queries";
-import { GenerateToken } from "../generate-token/route";
+import { GenerateToken } from "~/utilities/generateZoomToken";
 
 export async function POST(request: Request) {
   const { patientId, appointmentId } = await request.json();

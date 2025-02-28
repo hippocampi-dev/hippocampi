@@ -1,6 +1,6 @@
 import { setTreatments } from "~/server/db/queries";
 import { PatientTreatmentsInterface } from "~/server/db/type";
-import { getUserId } from "~/utilities/get-user";
+import { getUserId } from "~/utilities/getUser";
 
 // pass in PatientTreatmentsInterface json
 export const POST = async (request: Request) => {

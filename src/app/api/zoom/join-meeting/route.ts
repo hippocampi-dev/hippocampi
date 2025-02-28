@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { GenerateToken } from "../generate-token/route"
+import { GenerateToken } from "../../../../utilities/generateZoomToken"
 
 export async function POST(request: Request) {
   const { meetingId } = await request.json()

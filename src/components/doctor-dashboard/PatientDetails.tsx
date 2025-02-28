@@ -137,23 +137,29 @@ export default function PatientDetails({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {healthInfo.cognitiveSymptoms && <ul className="space-y-4">
+          <ul className="space-y-4">
+            {healthInfo.cognitiveSymptoms.map((item, index) => (
+              <>
               <li>
                 <p className="font-medium">Type</p>
-                <p className="text-sm text-muted-foreground">{healthInfo.cognitiveSymptoms.symptomType}</p>
+                <p className="text-sm text-muted-foreground">{item.symptomType}</p>
               </li>
               <li>
                 <p className="font-medium">Severity Level</p>
-                <p className="text-sm text-muted-foreground">{healthInfo.cognitiveSymptoms.severityLevel}</p>
+                <p className="text-sm text-muted-foreground">{item.severityLevel}</p>
               </li>
               <li>
                 <p className="font-medium">Onset Date</p>
-                <p className="text-sm text-muted-foreground">{new Date(healthInfo.cognitiveSymptoms.onsetDate!).toLocaleDateString()}</p>
+                <p className="text-sm text-muted-foreground">{new Date(item.onsetDate!).toLocaleDateString()}</p>
               </li>
               <li>
                 <p className="font-medium">Notes</p>
-                <p className="text-sm text-muted-foreground">{healthInfo.cognitiveSymptoms.notes}</p>
+                <p className="text-sm text-muted-foreground">{item.notes}</p>
               </li>
+              </>
+            ))}
+          </ul>
+        {healthInfo.cognitiveSymptoms && <ul className="space-y-4">
             </ul>
         }
       </CardContent>

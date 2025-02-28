@@ -1,5 +1,3 @@
-import { NextResponse } from "next/server"
-
 const ZOOM_API_KEY = process.env.ZOOM_API_KEY;
 const ZOOM_API_SECRET = process.env.ZOOM_API_SECRET;
 const ZOOM_ACCOUNT_ID = process.env.ZOOM_ACCOUNT_ID;

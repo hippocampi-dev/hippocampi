@@ -1,6 +1,6 @@
 import CreateMeeting from "~/components/meeting/CreateMeeting";
 import { getPatientDict, getPatients } from "~/server/db/queries";
-import { getUserId } from "~/utilities/get-user";
+import { getUserId } from "~/utilities/getUser";
 
 export default async function CreateMeetingPage() {
   const doctorId = await getUserId() as "string";

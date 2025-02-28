@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import Link from "next/link";
 import { getDoctor, getAllPatientDoctorManagement } from "~/server/db/queries";
-import { getUserId } from "~/utilities/get-user";
+import { getUserId } from "~/utilities/getUser";
 import { UserIdInterface } from "~/server/db/type";
 import MessageButton from "./MessageButton";
 

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { auth } from "~/server/auth";
 import { getPatient, getPatientHealthInformation } from "~/server/db/queries";
 import type { UserIdInterface, PatientHealthInformationInterface } from "~/server/db/type";
-import { getUserId } from "~/utilities/get-user";
+import { getUserId } from "~/utilities/getUser";
 
 // For a server component, you might use your own session retrieval logic.
 // For this example, we'll assume a function getUserId() returns the current user ID.

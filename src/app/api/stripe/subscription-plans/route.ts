@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { Plan } from '~/components/subscription-plans/SubscriptionPlans';
 import { getUserRole } from '~/server/db/queries';
-import { getUserId } from '~/utilities/get-user';
+import { getUserId } from '~/utilities/getUser';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 

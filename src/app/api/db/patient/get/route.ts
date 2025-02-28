@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getPatient } from "~/server/db/queries";
 import { UserIdInterface } from "~/server/db/type";
-import { getUserId } from "~/utilities/get-user";
+import { getUserId } from "~/utilities/getUser";
 
 export const GET = async () => {
   try {

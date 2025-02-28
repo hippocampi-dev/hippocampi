@@ -1,7 +1,7 @@
 import { PatientCard } from "~/components/doctor-dashboard/PatientCard"
 import PatientSearchInput from "~/components/doctor-dashboard/PatientSearchInput";
 import { getPatients } from "~/server/db/queries";
-import { getUserId } from "~/utilities/get-user";
+import { getUserId } from "~/utilities/getUser";
 
 export default async function PatientsPage() {
   const userId = await getUserId();

@@ -1,6 +1,6 @@
 import InvoiceForm from "~/components/doctor-dashboard/DoctorInvoiceForm";
 import { getPatientDict, getPatients } from "~/server/db/queries";
-import { getUserId } from "~/utilities/get-user";
+import { getUserId } from "~/utilities/getUser";
 
 export default async function CreateInvoicePage() {
   const doctorId = await getUserId() as "string";

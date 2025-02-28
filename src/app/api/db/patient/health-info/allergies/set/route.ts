@@ -1,6 +1,6 @@
 import { setAllergies } from "~/server/db/queries";
 import { PatientAllergiesInterface } from "~/server/db/type";
-import { getUserId } from "~/utilities/get-user";
+import { getUserId } from "~/utilities/getUser";
 
 // pass in PatientAllergiesInterface json
 export const POST = async (request: Request) => {

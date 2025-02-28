@@ -1,6 +1,6 @@
 import { setMedications } from "~/server/db/queries";
 import { PatientMedicationsInterface } from "~/server/db/type";
-import { getUserId } from "~/utilities/get-user";
+import { getUserId } from "~/utilities/getUser";
 
 // pass in PatientMedicationsInterface json
 export const POST = async (request: Request) => {
