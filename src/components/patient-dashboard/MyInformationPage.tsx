@@ -1,18 +1,21 @@
-'use server';
+"use server";
+import Link from "next/link";
 // app/my-information/page.tsx
 import { notFound } from "next/navigation";
 import { auth } from "~/server/auth";
 import { getPatient, getPatientHealthInformation } from "~/server/db/queries";
-import type { UserIdInterface, PatientHealthInformationInterface } from "~/server/db/type";
+import type {
+  UserIdInterface,
+  PatientHealthInformationInterface,
+} from "~/server/db/type";
 
 // For a server component, you might use your own session retrieval logic.
 // For this example, we'll assume a function getUserId() returns the current user ID.
 async function getUserId(): Promise<UserIdInterface | null> {
-    const session = await auth();
-    return (session?.user.id ?? null) as UserIdInterface | null;
-  }
-  
-  
+  const session = await auth();
+  return (session?.user.id ?? null) as UserIdInterface | null;
+}
+
 export default async function MyInformationPage() {
   const userId = await getUserId();
   if (!userId) {
@@ -41,16 +44,17 @@ export default async function MyInformationPage() {
   };
 
   return (
-    <div className="container mx-auto p-4 space-y-10">
+    <div className="container mx-auto space-y-10 p-4">
       {/* Header */}
       <header className="mb-8">
         <h1 className="text-3xl font-bold">My Information</h1>
       </header>
 
       {/* Personal Information */}
-      <section className="p-6 bg-white rounded shadow">
-        <h2 className="text-2xl font-semibold mb-4">Personal Information</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+      <section className="rounded bg-white p-6 shadow">
+        <h2 className="mb-4 text-2xl font-semibold">Personal Information</h2>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
             <p>
               <strong>Name:</strong> {patientInfo.patient.firstName}{" "}
@@ -80,16 +84,15 @@ export default async function MyInformationPage() {
               {patientInfo.patient.primaryLanguage}
             </p>
             <p>
-              <strong>Phone Number:</strong>{" "}
-              {patientInfo.patient.phoneNumber}
+              <strong>Phone Number:</strong> {patientInfo.patient.phoneNumber}
             </p>
             <p>
               <strong>Email:</strong> {patientInfo.patient.email}
             </p>
             <p>
-              <strong>Address:</strong>{" "}
-              {patientInfo.patient.streetAddress}, {patientInfo.patient.city},{" "}
-              {patientInfo.patient.state} {patientInfo.patient.zipCode}
+              <strong>Address:</strong> {patientInfo.patient.streetAddress},{" "}
+              {patientInfo.patient.city}, {patientInfo.patient.state}{" "}
+              {patientInfo.patient.zipCode}
             </p>
             <p>
               <strong>HIPAA Compliance:</strong>{" "}
@@ -98,14 +101,13 @@ export default async function MyInformationPage() {
           </div>
         </div>
       </section>
-
       {/* Emergency Contacts */}
       {patientInfo.emergencyContacts.length > 0 && (
-        <section className="p-6 bg-white rounded shadow">
-          <h2 className="text-2xl font-semibold mb-4">Emergency Contacts</h2>
+        <section className="rounded bg-white p-6 shadow">
+          <h2 className="mb-4 text-2xl font-semibold">Emergency Contacts</h2>
           <ul className="space-y-4">
             {patientInfo.emergencyContacts.map((contact) => (
-              <li key={contact.id} className="border p-4 rounded">
+              <li key={contact.id} className="rounded border p-4">
                 <p>
                   <strong>Name:</strong> {contact.firstName} {contact.lastName}
                 </p>
@@ -123,11 +125,11 @@ export default async function MyInformationPage() {
 
       {/* Treatments */}
       {patientInfo.treatments.length > 0 && (
-        <section className="p-6 bg-white rounded shadow">
-          <h2 className="text-2xl font-semibold mb-4">Treatments</h2>
+        <section className="rounded bg-white p-6 shadow">
+          <h2 className="mb-4 text-2xl font-semibold">Treatments</h2>
           <ul className="space-y-4">
             {patientInfo.treatments.map((treatment) => (
-              <li key={treatment.id} className="border p-4 rounded">
+              <li key={treatment.id} className="rounded border p-4">
                 <p>
                   <strong>Treatment:</strong> {treatment.treatmentName}
                 </p>
@@ -154,11 +156,11 @@ export default async function MyInformationPage() {
 
       {/* Medications */}
       {patientInfo.medications.length > 0 && (
-        <section className="p-6 bg-white rounded shadow">
-          <h2 className="text-2xl font-semibold mb-4">Medications</h2>
+        <section className="rounded bg-white p-6 shadow">
+          <h2 className="mb-4 text-2xl font-semibold">Medications</h2>
           <ul className="space-y-4">
             {patientInfo.medications.map((med) => (
-              <li key={med.id} className="border p-4 rounded">
+              <li key={med.id} className="rounded border p-4">
                 <p>
                   <strong>Medication:</strong> {med.medicationName}
                 </p>
@@ -188,11 +190,11 @@ export default async function MyInformationPage() {
 
       {/* Allergies */}
       {patientInfo.allergies.length > 0 && (
-        <section className="p-6 bg-white rounded shadow">
-          <h2 className="text-2xl font-semibold mb-4">Allergies</h2>
+        <section className="rounded bg-white p-6 shadow">
+          <h2 className="mb-4 text-2xl font-semibold">Allergies</h2>
           <ul className="space-y-4">
             {patientInfo.allergies.map((allergy) => (
-              <li key={allergy.id} className="border p-4 rounded">
+              <li key={allergy.id} className="rounded border p-4">
                 <p>
                   <strong>Allergen:</strong> {allergy.allergen}
                 </p>
@@ -214,11 +216,11 @@ export default async function MyInformationPage() {
 
       {/* Diagnoses */}
       {patientInfo.diagnoses.length > 0 && (
-        <section className="p-6 bg-white rounded shadow">
-          <h2 className="text-2xl font-semibold mb-4">Diagnoses</h2>
+        <section className="rounded bg-white p-6 shadow">
+          <h2 className="mb-4 text-2xl font-semibold">Diagnoses</h2>
           <ul className="space-y-4">
             {patientInfo.diagnoses.map((diag) => (
-              <li key={diag.id} className="border p-4 rounded">
+              <li key={diag.id} className="rounded border p-4">
                 <p>
                   <strong>Condition:</strong> {diag.conditionName}
                 </p>
@@ -243,19 +245,19 @@ export default async function MyInformationPage() {
 
       {/* Cognitive Symptoms */}
       {patientInfo.cognitiveSymptoms.length > 0 && (
-        <section className="p-6 bg-white rounded shadow">
-          <h2 className="text-2xl font-semibold mb-4">Cognitive Symptoms</h2>
+        <section className="rounded bg-white p-6 shadow">
+          <h2 className="mb-4 text-2xl font-semibold">Cognitive Symptoms</h2>
           <ul className="space-y-4">
             {patientInfo.cognitiveSymptoms.map((cs) => (
-              <li key={cs.id} className="border p-4 rounded">
+              <li key={cs.id} className="rounded border p-4">
                 <p>
                   <strong>Symptom Type:</strong> {cs.symptomType}
                 </p>
                 <p>
                   <strong>Onset Date:</strong>{" "}
                   {cs.onsetDate
-  ? new Date(cs.onsetDate).toLocaleDateString()
-  : "No Date Provided"}
+                    ? new Date(cs.onsetDate).toLocaleDateString()
+                    : "No Date Provided"}
                 </p>
                 {cs.severityLevel && (
                   <p>
@@ -275,17 +277,23 @@ export default async function MyInformationPage() {
 
       {/* Medical History */}
       {patientInfo.medicalHistory && (
-        <section className="p-6 bg-white rounded shadow">
-          <h2 className="text-2xl font-semibold mb-4">Medical History</h2>
-          <div className="border p-4 rounded">
+        <section className="rounded bg-white p-6 shadow">
+          <h2 className="mb-4 text-2xl font-semibold">Medical History</h2>
+          <div className="rounded border p-4">
             <p>
-              <strong>Existing Diagnoses:</strong> {patientInfo.medicalHistory.existingDiagnoses}
+              <strong>Existing Diagnoses:</strong>{" "}
+              {patientInfo.medicalHistory.existingDiagnoses}
             </p>
             <p>
-              <strong>Family History of Neurological Disorders:</strong> {patientInfo.medicalHistory.familyHistoryOfNeurologicalDisorders}
+              <strong>Family History of Neurological Disorders:</strong>{" "}
+              {patientInfo.medicalHistory.familyHistoryOfNeurologicalDisorders}
             </p>
             <p>
-              <strong>History of Chemo/Radiation Therapy:</strong> {patientInfo.medicalHistory.historyOfChemotherapyOrRadiationTherapy}
+              <strong>History of Chemo/Radiation Therapy:</strong>{" "}
+              {
+                patientInfo.medicalHistory
+                  .historyOfChemotherapyOrRadiationTherapy
+              }
             </p>
           </div>
         </section>
