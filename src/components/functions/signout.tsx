@@ -1,10 +1,12 @@
 'use client'
 
 import { signOut } from "next-auth/react";
-import { redirect, useRouter } from "next/navigation";
-import { useEffect } from "react";
-import Loading from "~/components/loading/page";
+import { redirect } from "next/navigation";
 
 export default function SignOut() {
-  return (<button onClick={() => {signOut(); redirect("/")}}> Sign Out </button>)
+  return (
+    <button onClick={() => {signOut(); redirect("/")}}>
+      Sign Out
+    </button>
+  )
 }
