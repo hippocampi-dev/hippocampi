@@ -4,7 +4,6 @@ import Link from "next/link";
 import { getDoctor, getAllPatientDoctorManagement } from "~/server/db/queries";
 import { getUserId } from "~/utilities/get-user";
 import { UserIdInterface } from "~/server/db/type";
-import MessageButton from "./MessageButton";
 
 export default async function HealthcareProviders() {
   const userId = (await getUserId()) as "string";
@@ -60,10 +59,9 @@ export default async function HealthcareProviders() {
                       </Link>
                     </Button>
                     <Button variant="default" className="flex-1" asChild>
-                      <MessageButton
-                        doctorId={doctor.doctorId}
-                        patientId={userId}
-                      />
+                      <Link href = {`/dashboard/patient/messages/create?doctor=${doctor.doctorId}`}>
+                        Message
+                      </Link>
                     </Button>
                     <Button variant="default" className="flex-1" asChild>
                       <Link

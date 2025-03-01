@@ -463,7 +463,7 @@ export const getPatientHealthInformation = async (user_id: UserIdInterface) => {
   const _allergies = await db.query.allergies.findMany({
     where: eq(schema_patient.allergies.patientId, user_id),
   });
-  const _cognitiveSymptoms = await db.query.cognitiveSymptoms.findFirst({
+  const _cognitiveSymptoms = await db.query.cognitiveSymptoms.findMany({
     where: eq(schema_patient.cognitiveSymptoms.patientId, user_id),
   });
   const _diagnoses = await db.query.diagnoses.findMany({
