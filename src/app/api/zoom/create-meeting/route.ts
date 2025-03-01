@@ -1,51 +1,49 @@
 import { NextResponse } from "next/server"
-import jwt from "jsonwebtoken"
-
-const ZOOM_API_KEY = process.env.ZOOM_API_KEY
-const ZOOM_API_SECRET = process.env.ZOOM_API_SECRET
+import { getAppointment, getDoctor } from "~/server/db/queries";
+import { GenerateToken } from "~/utilities/generateZoomToken";
 
 export async function POST(request: Request) {
-  const { topic } = await request.json()
+  const { patientId, appointmentId } = await request.json();
 
-  const payload = {
-    iss: ZOOM_API_KEY,
-    exp: new Date().getTime() + 5000,
-  }
-
-  const token = jwt.sign(payload, ZOOM_API_SECRET!)
+  const appointment = await getAppointment(appointmentId);
+  const doctor = await getDoctor(appointment?.doctorId as "string");
 
   const zoomMeetingOptions = {
-    topic: topic,
-    type: 1, // Instant meeting
-    settings: {
-      host_video: true,
-      participant_video: true,
-      join_before_host: false,
-      mute_upon_entry: false,
-      watermark: false,
-      use_pmi: false,
-      approval_type: 0,
-      audio: "both",
-      auto_recording: "none",
-    },
+    "topic": appointment?.reason,
+    "type": 1, // Instant meeting
+    "alternative_hosts": `${doctor?.email}`,
+    "settings": {
+      "host_video": true,
+      "participant_video": true,
+      "join_before_host": false,
+      "mute_upon_entry": false,
+      "watermark": false,
+      "use_pmi": false,
+      "approval_type": 0,
+      "audio": "both",
+    }
   }
 
   try {
+    const tokenReponse = await GenerateToken();
+
     const response = await fetch("https://api.zoom.us/v2/users/me/meetings", {
       method: "POST",
       headers: {
+        "Authorization": `Bearer ${tokenReponse?.access_token}`,
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(zoomMeetingOptions),
-    })
+    });
 
-    const data = await response.json()
+    // console.log(response);
+    const data = await response.json();
 
     if (response.ok) {
       return NextResponse.json({ join_url: data.join_url, id: data.id })
     } else {
-      return NextResponse.json({ error: "Failed to create Zoom meeting" }, { status: 500 })
+      console.error("Zoom API error:", data)
+      return NextResponse.json({ error: "Failed to create Zoom meeting", details: data }, { status: response.status })
     }
   } catch (error) {
     console.error("Error creating Zoom meeting:", error)

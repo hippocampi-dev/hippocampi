@@ -2,7 +2,7 @@ import Link from "next/link"
 import { Button } from "~/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
 import { getInvoiceDict, getInvoices, getPatientDict } from "~/server/db/queries"
-import { getUserId } from "~/utilities/get-user"
+import { getUserId } from "~/utilities/getUser"
 
 export default async function DoctorInvoices() {
   const doctorId = await getUserId() as "string";

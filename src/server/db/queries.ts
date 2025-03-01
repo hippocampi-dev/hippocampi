@@ -485,7 +485,7 @@ export const getPatientHealthInformation = async (user_id: UserIdInterface) => {
   const patientHealthInformation: PatientHealthInformationInterface = {
     medicalHistory: _medicalHistory!,
     allergies: _allergies,
-    cognitiveSymptoms: _cognitiveSymptoms!,
+    cognitiveSymptoms: _cognitiveSymptoms,
     diagnoses: _diagnoses,
     emergencyContacts: _emergencyContacts,
     medications: _medications,

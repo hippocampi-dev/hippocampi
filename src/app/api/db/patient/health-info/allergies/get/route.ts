@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAllergies } from "~/server/db/queries";
-import { getUserId } from "~/utilities/get-user";
+import { getUserId } from "~/utilities/getUser";
 
 export const GET = async () => {
   try {

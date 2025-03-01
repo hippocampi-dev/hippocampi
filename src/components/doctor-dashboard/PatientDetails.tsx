@@ -41,7 +41,7 @@ export default function PatientDetails({
       <div className="flex items-center space-x-4">
         <Avatar className="h-20 w-20">
           <AvatarFallback className="text-2xl">
-            {`${patient?.firstName} ${patient?.lastName}`}
+            {`${patient.firstName[0]}${patient.lastName[0]}`}
           </AvatarFallback>
         </Avatar>
         <div>
@@ -110,50 +110,59 @@ export default function PatientDetails({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <ul className="space-y-4">
-            <li>
-              <p className="font-medium">Existing Diagnoses</p>
-              <p className="text-sm text-muted-foreground">{healthInfo.medicalHistory.existingDiagnoses}</p>
-            </li>
-            <li>
-              <p className="font-medium">Family History of Neurological Disorders</p>
-              <p className="text-sm text-muted-foreground">{healthInfo.medicalHistory.familyHistoryOfNeurologicalDisorders}</p>
-            </li>
-            <li>
-              <p className="font-medium">History of Chemotherapy or Radiation Therapy</p>
-              <p className="text-sm text-muted-foreground">{healthInfo.medicalHistory.historyOfChemotherapyOrRadiationTherapy}</p>
-            </li>
-          </ul>
+          { healthInfo.medicalHistory &&
+            <ul className="space-y-4">
+              <li>
+                <p className="font-medium">Existing Diagnoses</p>
+                <p className="text-sm text-muted-foreground">{healthInfo.medicalHistory.existingDiagnoses}</p>
+              </li>
+              <li>
+                <p className="font-medium">Family History of Neurological Disorders</p>
+                <p className="text-sm text-muted-foreground">{healthInfo.medicalHistory.familyHistoryOfNeurologicalDisorders}</p>
+              </li>
+              <li>
+                <p className="font-medium">History of Chemotherapy or Radiation Therapy</p>
+                <p className="text-sm text-muted-foreground">{healthInfo.medicalHistory.historyOfChemotherapyOrRadiationTherapy}</p>
+              </li>
+            </ul>
+          }
         </CardContent>
       </Card>
+      
 
-      {/* Cognitive Symptoms */}
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            <FileText className="inline-block mr-2" /> Cognitive Symptoms
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+      {/* Cognitive Symptoms */}<Card>
+      <CardHeader>
+        <CardTitle>
+          <FileText className="inline-block mr-2" /> Cognitive Symptoms
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
           <ul className="space-y-4">
-            <li>
-              <p className="font-medium">Type</p>
-              <p className="text-sm text-muted-foreground">{healthInfo.cognitiveSymptoms.symptomType}</p>
-            </li>
-            <li>
-              <p className="font-medium">Severity Level</p>
-              <p className="text-sm text-muted-foreground">{healthInfo.cognitiveSymptoms.severityLevel}</p>
-            </li>
-            <li>
-              <p className="font-medium">Onset Date</p>
-              <p className="text-sm text-muted-foreground">{new Date(healthInfo.cognitiveSymptoms.onsetDate!).toLocaleDateString()}</p>
-            </li>
-            <li>
-              <p className="font-medium">Notes</p>
-              <p className="text-sm text-muted-foreground">{healthInfo.cognitiveSymptoms.notes}</p>
-            </li>
+            {healthInfo.cognitiveSymptoms.map((item, index) => (
+              <>
+              <li>
+                <p className="font-medium">Type</p>
+                <p className="text-sm text-muted-foreground">{item.symptomType}</p>
+              </li>
+              <li>
+                <p className="font-medium">Severity Level</p>
+                <p className="text-sm text-muted-foreground">{item.severityLevel}</p>
+              </li>
+              <li>
+                <p className="font-medium">Onset Date</p>
+                <p className="text-sm text-muted-foreground">{new Date(item.onsetDate!).toLocaleDateString()}</p>
+              </li>
+              <li>
+                <p className="font-medium">Notes</p>
+                <p className="text-sm text-muted-foreground">{item.notes}</p>
+              </li>
+              </>
+            ))}
           </ul>
-        </CardContent>
+        {healthInfo.cognitiveSymptoms && <ul className="space-y-4">
+            </ul>
+        }
+      </CardContent>
       </Card>
 
       {/* Allergies */}

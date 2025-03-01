@@ -1,6 +1,6 @@
 import PatientDetails from "~/components/doctor-dashboard/PatientDetails";
 import { getAppointments, getPatient, getPatientHealthInformation, getPatients } from "~/server/db/queries";
-import { getUserId } from "~/utilities/get-user";
+import { getUserId } from "~/utilities/getUser";
 
 interface props {
   params: Promise<{ id: string }>;

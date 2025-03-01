@@ -11,6 +11,12 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ CREATE TYPE "public"."user_role" AS ENUM('patient', 'doctor', 'admin');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  CREATE TYPE "public"."subscription_status" AS ENUM('subscribed', 'unsubscribed');
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -125,20 +131,9 @@ CREATE TABLE IF NOT EXISTS "hippocampi_appointments" (
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "hippocampi_doctor_subscriptions" (
-	"doctor_id" varchar(255) PRIMARY KEY NOT NULL,
-	"stripe_customer_id" varchar(255),
-	"subscription_id" varchar(255),
-	"subscription_status" "subscription_status" DEFAULT 'unsubscribed' NOT NULL,
-	"start_date" timestamp,
-	"end_date" timestamp,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL
-);
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "hippocampi_invoices" (
 	"id" varchar(255) PRIMARY KEY NOT NULL,
-	"stripe_customer_id" varchar(255),
+	"stripe_payment_id" varchar(255),
 	"invoice_status" "invoice_status" DEFAULT 'unpaid' NOT NULL,
 	"appointment_id" varchar(255) NOT NULL,
 	"patient_id" varchar(255) NOT NULL,
@@ -159,9 +154,20 @@ CREATE TABLE IF NOT EXISTS "hippocampi_patient_doctor_management" (
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "hippocampi_subscriptions" (
+	"doctor_id" varchar(255) PRIMARY KEY NOT NULL,
+	"stripe_customer_id" varchar(255),
+	"subscription_id" varchar(255),
+	"subscription_status" "subscription_status" DEFAULT 'unsubscribed' NOT NULL,
+	"start_date" timestamp,
+	"end_date" timestamp,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "hippocampi_user_roles" (
 	"user_id" varchar(255) PRIMARY KEY NOT NULL,
-	"user_role" varchar(255) NOT NULL,
+	"user_role" "user_role" NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
@@ -334,18 +340,6 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "hippocampi_doctor_subscriptions" ADD CONSTRAINT "hippocampi_doctor_subscriptions_doctor_id_hippocampi_doctors_doctor_id_fk" FOREIGN KEY ("doctor_id") REFERENCES "public"."hippocampi_doctors"("doctor_id") ON DELETE cascade ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "hippocampi_invoices" ADD CONSTRAINT "hippocampi_invoices_stripe_customer_id_hippocampi_patients_stripe_customer_id_fk" FOREIGN KEY ("stripe_customer_id") REFERENCES "public"."hippocampi_patients"("stripe_customer_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  ALTER TABLE "hippocampi_invoices" ADD CONSTRAINT "hippocampi_invoices_appointment_id_hippocampi_appointments_id_fk" FOREIGN KEY ("appointment_id") REFERENCES "public"."hippocampi_appointments"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -371,6 +365,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "hippocampi_patient_doctor_management" ADD CONSTRAINT "hippocampi_patient_doctor_management_patient_id_hippocampi_patients_patient_id_fk" FOREIGN KEY ("patient_id") REFERENCES "public"."hippocampi_patients"("patient_id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "hippocampi_subscriptions" ADD CONSTRAINT "hippocampi_subscriptions_doctor_id_hippocampi_users_id_fk" FOREIGN KEY ("doctor_id") REFERENCES "public"."hippocampi_users"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

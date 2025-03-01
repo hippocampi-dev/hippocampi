@@ -1,6 +1,6 @@
 import { setEmergencyContacts } from "~/server/db/queries";
 import { PatientEmergencyContactsInterface } from "~/server/db/type";
-import { getUserId } from "~/utilities/get-user";
+import { getUserId } from "~/utilities/getUser";
 
 // pass in PatientEmergencyContactsInterface json
 export const POST = async (request: Request) => {

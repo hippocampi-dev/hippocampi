@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
@@ -9,23 +9,26 @@ import { Input } from "~/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form"
-
-// Mock patient data (replace with actual data fetching in a real application)
-const patients = [
-  { id: "1", name: "John Doe" },
-  { id: "2", name: "Jane Smith" },
-  { id: "3", name: "Alice Johnson" },
-]
+import { PatientDict, PatientsInterface } from "~/server/db/type"
 
 const createMeetingSchema = z.object({
   patientId: z.string({
     required_error: "Please select a patient.",
   }),
+  appointmentId: z.string({
+    required_error: "Please select the appropriate meeting"
+  })
 })
 
-export default function CreateMeeting() {
-  const [meetingUrl, setMeetingUrl] = useState("")
-  const [createdMeetingId, setCreatedMeetingId] = useState("")
+interface props {
+  patients: PatientsInterface[]
+  patientDict: PatientDict
+}
+
+export default function CreateMeeting({ patients, patientDict }: props) {
+  const [meetingUrl, setMeetingUrl] = useState("");
+  const [createdMeetingId, setCreatedMeetingId] = useState("");
+  const [selectedPatientId, setSelectedPatientId] = useState('');
 
   const form = useForm<z.infer<typeof createMeetingSchema>>({
     resolver: zodResolver(createMeetingSchema),
@@ -36,7 +39,7 @@ export default function CreateMeeting() {
 
   const onSubmit = async (values: z.infer<typeof createMeetingSchema>) => {
     if (meetingUrl !== '') return;
-    
+
     try {
       const response = await fetch("/api/zoom/create-meeting", {
         method: "POST",
@@ -75,8 +78,8 @@ export default function CreateMeeting() {
                     </FormControl>
                     <SelectContent>
                       {patients.map((patient) => (
-                        <SelectItem key={patient.id} value={patient.id}>
-                          {patient.name}
+                        <SelectItem key={patient.patientId} value={patient.patientId}>
+                          {`${patient.firstName} ${patient.lastName}`}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -84,13 +87,56 @@ export default function CreateMeeting() {
                   <FormMessage />
                 </FormItem>
               )}
+            /><FormField
+              control={form.control}
+              name="appointmentId"
+              render={({ field }) => {
+                const patientId = form.watch('patientId');
+                
+                // Use selectedPatientId instead of patientId for consistent state
+                useEffect(() => {
+                  setSelectedPatientId(patientId);
+                }, [patientId]);
+                return (
+                  <FormItem>
+                    <FormLabel>Appointment</FormLabel>
+                    <Select 
+                      onValueChange={field.onChange} 
+                      value={field.value}
+                      disabled={!patientId}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder={
+                            !patientId 
+                              ? "Please select a patient first" 
+                              : "Select an appointment"
+                          } />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {patientId && patientDict[patientId]?.appointments.map((appointment) => (
+                          <SelectItem key={appointment.id} value={appointment.id!}>
+                            {`${new Date(appointment.scheduledAt).toLocaleString()} ${
+                              appointment.status === 'Completed' ? '(Completed)' : ''
+                            }`}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
+            
             <Button type="submit">Create Meeting</Button>
           </form>
         </Form>
         {meetingUrl && (
           <div className="mt-4">
-            <p className="text-sm mb-2">Meeting ID: {createdMeetingId}</p>
+            {/* <p className="text-sm mb-2">Meeting ID: {createdMeetingId}</p> */}
+            <p className="text-sm mb-2">Meeting Link: {meetingUrl}</p>
             <Button variant="outline" className="w-full" onClick={() => window.open(meetingUrl, "_blank")}>
               Join Created Meeting
             </Button>

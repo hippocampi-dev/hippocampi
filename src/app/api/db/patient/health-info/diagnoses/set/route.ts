@@ -1,6 +1,6 @@
 import { setDiagnoses } from "~/server/db/queries";
 import { PatientDiagnosesInterface } from "~/server/db/type";
-import { getUserId } from "~/utilities/get-user";
+import { getUserId } from "~/utilities/getUser";
 
 // pass in PatientDiagnosesInterface json
 export const POST = async (request: Request) => {

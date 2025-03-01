@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 import { Avatar, AvatarFallback } from "~/components/ui/avatar"
 import { PatientsInterface } from "~/server/db/type"
 import { getPatientDoctorManagement, getPatients } from "~/server/db/queries"
-import { getUserId } from "~/utilities/get-user"
+import { getUserId } from "~/utilities/getUser"
 
 export async function PatientList() {
   const id = await getUserId() as "string";

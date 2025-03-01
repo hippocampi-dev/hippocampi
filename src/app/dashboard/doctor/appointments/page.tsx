@@ -1,6 +1,6 @@
 import DoctorAppointments from "~/components/doctor-dashboard/DoctorAppointments";
 import { getAppointments, getPatientDict } from "~/server/db/queries";
-import { getUserId } from "~/utilities/get-user";
+import { getUserId } from "~/utilities/getUser";
 
 export default async function AppointmentsPage() {
   const doctorId = await getUserId() as "string";

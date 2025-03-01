@@ -1,24 +1,16 @@
 import { NextResponse } from "next/server"
-import jwt from "jsonwebtoken"
-
-const ZOOM_API_KEY = process.env.ZOOM_API_KEY
-const ZOOM_API_SECRET = process.env.ZOOM_API_SECRET
+import { GenerateToken } from "../../../../utilities/generateZoomToken"
 
 export async function POST(request: Request) {
   const { meetingId } = await request.json()
 
-  const payload = {
-    iss: ZOOM_API_KEY,
-    exp: new Date().getTime() + 5000,
-  }
-
-  const token = jwt.sign(payload, ZOOM_API_SECRET!)
-
   try {
+    const tokenReponse = await GenerateToken();
+
     const response = await fetch(`https://api.zoom.us/v2/meetings/${meetingId}`, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${tokenReponse}`,
       },
     })
 
