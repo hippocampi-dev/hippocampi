@@ -1,10 +1,6 @@
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
 import GoogleProvider from "next-auth/providers/google"
-import FacebookProvider from "next-auth/providers/facebook";
-import TwitterProvider from "next-auth/providers/twitter";
-
 import { db } from "~/server/db";
 import {
   accounts,
@@ -12,6 +8,7 @@ import {
   users,
   verificationTokens,
 } from "~/server/db/schema/auth";
+import { eq } from "drizzle-orm";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -24,8 +21,8 @@ declare module "next-auth" {
     user: {
       id: string;
       name: string;
-      // ...other properties
-      // role: UserRole;
+      mfaEnabled: boolean,
+      mfaVerified: boolean,
     } & DefaultSession["user"];
   }
 
@@ -37,27 +34,14 @@ declare module "next-auth" {
 
 export const authConfig = {
   providers: [
-    // DiscordProvider({
-    //   clientId: process.env.DISCORD_CLIENT_ID,
-    //   clientSecret: process.env.DISCORD_CLIENT_SECRET
-    // }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      authorization: {
-        params: {
-          prompt: "select_account",
-        },
-      },
     }),
     // FacebookProvider({
     //   clientId: process.env.FACEBOOK_CLIENT_ID,
     //   clientSecret: process.env.FACEBOOK_CLIENT_SECRET
     // }),
-    // TwitterProvider({
-    //   clientId: process.env.TWITTER_CLIENT_ID,
-    //   clientSecret: process.env.TWITTER_CLIENT_SECRET
-    // })
   ],
   adapter: DrizzleAdapter(db, {
     usersTable: users,
@@ -66,16 +50,43 @@ export const authConfig = {
     verificationTokensTable: verificationTokens,
   }),
   callbacks: {
-    session: ({ session, user }) => ({
+    jwt: async ({ token, user }) => {
+      if (user) {
+        token.id = user.id
+        token.name = user.name
+        // Fetch MFA status from the database
+        const dbUser = await db.query.users.findFirst({
+          where: eq(users.id, user.id as "string"),
+          columns: {
+            mfaEnabled: true,
+            mfaVerified: true,
+          },
+        })
+        if (dbUser) {
+          token.mfaEnabled = dbUser.mfaEnabled
+          token.mfaVerified = dbUser.mfaVerified
+        }
+      }
+      return token
+    },
+    session: ({ session, token }) => ({
       ...session,
       user: {
         ...session.user,
-        id: user.id,
+        id: token.id as string,
+        mfaEnabled: token.mfaEnabled as boolean,
+        mfaVerified: token.mfaVerified as boolean,
       },
     }),
   },
   session: {
+    strategy: "jwt",
     maxAge: 24 * 60 * 60, // in seconds, 1 day limit
   },
   secret: process.env.SECRET, // Required for security
+  pages: {
+    signIn: "/auth/signin",
+    error: "/auth/error",
+    verifyRequest: "/auth/verify-request",
+  },
 } satisfies NextAuthConfig;

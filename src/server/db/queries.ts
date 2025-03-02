@@ -696,3 +696,11 @@ function createAppointmentInvoiceDictionary(
 
   return dictionary;
 }
+
+
+// get user
+export const getUser = async (user_id: UserIdInterface) => {
+  return db.query.users.findFirst({
+    where: eq(schema_auth.users.id, user_id),
+  });
+};

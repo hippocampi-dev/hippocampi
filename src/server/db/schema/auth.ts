@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  boolean,
   index,
   integer,
   pgTableCreator,
@@ -26,6 +27,10 @@ export const users = createTable("users", {
     withTimezone: true,
   }).default(sql`CURRENT_TIMESTAMP`),
   image: varchar("image", { length: 255 }),
+  mfaEnabled: boolean("mfa_enabled").default(false).notNull(),
+  mfaVerified: boolean("mfa_verified").default(false).notNull(),
+  mfaSecret: varchar("mfa_secret", { length: 255 }),
+  mfaTempSecret: varchar("mfa_temp_secret", { length: 255 }),
   ...timestamps
 });
 

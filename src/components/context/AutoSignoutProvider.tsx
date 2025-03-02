@@ -40,7 +40,7 @@ export function AutoSignoutProvider({
   const countdownInterval = useRef<NodeJS.Timeout | null>(null)
 
   const handleSignout = async () => {
-    await signOut({ redirect: true, callbackUrl: "/login" })
+    await signOut({ redirect: true, callbackUrl: "/auth/signin" })
   }
 
   const handleIdle = () => {

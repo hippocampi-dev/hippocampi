@@ -10,10 +10,9 @@ import { ArrowLeft } from "lucide-react"
 export default function SignIn() {
   const handleSignIn = () => {
     signIn("google", {
-      callbackUrl: `${window.location.origin}/dashboard`,
+      callbackUrl: `${window.location.origin}/auth/check-mfa`,
     })
   }
-  console.log()
   return (
     <main className="flex items-center justify-center min-h-screen bg-background">
       <Card className="w-[350px]">

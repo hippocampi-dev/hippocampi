@@ -1,43 +1,13 @@
-
-"use client";
-import { ConsoleLogWriter } from "drizzle-orm";
 import { redirect } from "next/navigation";
-import { useEffect, useState } from "react";
-import Loading from "~/components/loading/page";
+import { auth } from "~/server/auth";
+import { hasUserRole } from "~/server/db/queries";
 
-export default function Middle() {
-  const [data, setData] = useState({ loading: true, content: null });
+export default async function Middle() {
+  const session = await auth();
+  const hasRole = await hasUserRole(session?.user.id as "string");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("/api/db/management/user-role/has");
-
-        const result = await response.json();
-        setData({
-          loading: false,
-          content: result.response,
-        });
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setData({
-          loading: false,
-          content: null,
-        });
-      }
-    };
-
-    fetchData();
-  }, []);
-  if (data.loading) {
-    return (
-      <main className="w-screen h-screen">
-        <Loading />
-      </main>
-    )
+  if (hasRole) {
+    redirect('/dashboard');
   }
-  if (!data.content) redirect("/select-role");
-  else {
-    redirect('/dashboard')
-  }
+  redirect('/select-role');
 }

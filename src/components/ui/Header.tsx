@@ -37,7 +37,7 @@ export function Header() {
             )}
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
-                onClick={session ? () => signOut({ redirect: true, callbackUrl: "/" }) : () => redirect("/login")}
+                onClick={session ? () => signOut({ redirect: true, callbackUrl: "/" }) : () => redirect("/auth/signin")}
                 className="bg-blue-600 text-white hover:bg-blue-700"
               >
                 {session ? `Sign Out` : `Sign Up`}
