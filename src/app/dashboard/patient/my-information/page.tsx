@@ -1,11 +1,15 @@
 
 // app/my-information/page.tsx
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Button } from "~/components/ui/button";
+import { Card, CardContent } from "~/components/ui/card";
 import { auth } from "~/server/auth";
 import { getPatient, getPatientHealthInformation } from "~/server/db/queries";
 import type { UserIdInterface, PatientHealthInformationInterface } from "~/server/db/type";
 import { getUserId } from "~/utilities/getUser";
-
+import {PatientInfoSections, InfoItem} from "~/components/patient-dashboard/PatientsInfoSections";
 // For a server component, you might use your own session retrieval logic.
 // For this example, we'll assume a function getUserId() returns the current user ID.
 
@@ -44,248 +48,65 @@ export default async function MyInformationPage() {
       </header>
 
       {/* Personal Information */}
-      <section className="p-6 bg-white rounded shadow">
-        <h2 className="text-2xl font-semibold mb-4">Personal Information</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <p>
-              <strong>Name:</strong> {patientInfo.patient.firstName}{" "}
-              {patientInfo.patient.lastName}
-              {patientInfo.patient.middle_initial && (
-                <> ({patientInfo.patient.middle_initial})</>
-              )}
-            </p>
-            <p>
-              <strong>Date of Birth:</strong>{" "}
-              {new Date(patientInfo.patient.dateOfBirth).toLocaleDateString()}
-            </p>
-            <p>
-              <strong>Age:</strong> {patientInfo.patient.age}
-            </p>
-            <p>
-              <strong>Gender:</strong> {patientInfo.patient.gender}
-            </p>
-            <p>
-              <strong>Condition:</strong>{" "}
-              {patientInfo.patient.condition || "N/A"}
-            </p>
+      <Card className="overflow-hidden shadow-md">
+      {/* Clickable header */}
+      <Link href="/dashboard/patient/my-information/personal-information" className="block">
+        <Button
+          variant="ghost"
+          className="w-full justify-between rounded-none border-b px-6 py-5 text-left hover:bg-gray-100 focus:bg-gray-100 active:bg-gray-200"
+        >
+          <h2 className="text-xl font-semibold">Personal Information</h2>
+          <ChevronRight className="h-5 w-5 text-muted-foreground" />
+        </Button>
+      </Link>
+
+      <CardContent className="p-6">
+        <div className="grid grid-cols-1 gap-y-6 md:grid-cols-2 md:gap-x-8">
+          {/* Left column */}
+          <div className="space-y-4">
+            <InfoItem label="Name">
+              {patientInfo.patient.firstName} {patientInfo.patient.lastName}
+              {patientInfo.patient.middle_initial && ` (${patientInfo.patient.middle_initial})`}
+            </InfoItem>
+
+            <InfoItem label="Date of Birth">{new Date(patientInfo.patient.dateOfBirth).toLocaleDateString()}</InfoItem>
+
+            <InfoItem label="Age">{patientInfo.patient.age}</InfoItem>
+
+            <InfoItem label="Gender">{patientInfo.patient.gender}</InfoItem>
+
+            <InfoItem label="Condition">{patientInfo.patient.condition || "N/A"}</InfoItem>
           </div>
-          <div>
-            <p>
-              <strong>Primary Language:</strong>{" "}
-              {patientInfo.patient.primaryLanguage}
-            </p>
-            <p>
-              <strong>Phone Number:</strong>{" "}
-              {patientInfo.patient.phoneNumber}
-            </p>
-            <p>
-              <strong>Email:</strong> {patientInfo.patient.email}
-            </p>
-            <p>
-              <strong>Address:</strong>{" "}
-              {patientInfo.patient.streetAddress}, {patientInfo.patient.city},{" "}
-              {patientInfo.patient.state} {patientInfo.patient.zipCode}
-            </p>
-            <p>
-              <strong>HIPAA Compliance:</strong>{" "}
-              {patientInfo.patient.hipaaCompliance ? "Agreed" : "Not Agreed"}
-            </p>
+
+          {/* Right column */}
+          <div className="space-y-4">
+            <InfoItem label="Primary Language">{patientInfo.patient.primaryLanguage}</InfoItem>
+
+            <InfoItem label="Phone Number">{patientInfo.patient.phoneNumber}</InfoItem>
+
+            <InfoItem label="Email">{patientInfo.patient.email}</InfoItem>
+
+            <InfoItem label="Address">
+              {patientInfo.patient.streetAddress}, {patientInfo.patient.city}, {patientInfo.patient.state}{" "}
+              {patientInfo.patient.zipCode}
+            </InfoItem>
+
+            <InfoItem label="HIPAA Compliance">
+              <span
+                className={
+                  patientInfo.patient.hipaaCompliance ? "text-green-600 font-medium" : "text-amber-600 font-medium"
+                }
+              >
+                {patientInfo.patient.hipaaCompliance ? "Agreed" : "Not Agreed"}
+              </span>
+            </InfoItem>
           </div>
         </div>
-      </section>
-
-      {/* Emergency Contacts */}
-      {patientInfo.emergencyContacts.length > 0 && (
-        <section className="p-6 bg-white rounded shadow">
-          <h2 className="text-2xl font-semibold mb-4">Emergency Contacts</h2>
-          <ul className="space-y-4">
-            {patientInfo.emergencyContacts.map((contact) => (
-              <li key={contact.id} className="border p-4 rounded">
-                <p>
-                  <strong>Name:</strong> {contact.firstName} {contact.lastName}
-                </p>
-                <p>
-                  <strong>Relationship:</strong> {contact.relationship}
-                </p>
-                <p>
-                  <strong>Phone:</strong> {contact.phoneNumber}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {/* Treatments */}
-      {patientInfo.treatments.length > 0 && (
-        <section className="p-6 bg-white rounded shadow">
-          <h2 className="text-2xl font-semibold mb-4">Treatments</h2>
-          <ul className="space-y-4">
-            {patientInfo.treatments.map((treatment) => (
-              <li key={treatment.id} className="border p-4 rounded">
-                <p>
-                  <strong>Treatment:</strong> {treatment.treatmentName}
-                </p>
-                <p>
-                  <strong>Start Date:</strong>{" "}
-                  {new Date(treatment.start_date).toLocaleDateString()}
-                </p>
-                {treatment.endDate && (
-                  <p>
-                    <strong>End Date:</strong>{" "}
-                    {new Date(treatment.endDate).toLocaleDateString()}
-                  </p>
-                )}
-                {treatment.notes && (
-                  <p>
-                    <strong>Notes:</strong> {treatment.notes}
-                  </p>
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {/* Medications */}
-      {patientInfo.medications.length > 0 && (
-        <section className="p-6 bg-white rounded shadow">
-          <h2 className="text-2xl font-semibold mb-4">Medications</h2>
-          <ul className="space-y-4">
-            {patientInfo.medications.map((med) => (
-              <li key={med.id} className="border p-4 rounded">
-                <p>
-                  <strong>Medication:</strong> {med.medicationName}
-                </p>
-                <p>
-                  <strong>Dosage:</strong> {med.dosage}
-                </p>
-                <p>
-                  <strong>Frequency:</strong> {med.frequency}
-                </p>
-                {med.startDate && (
-                  <p>
-                    <strong>Start Date:</strong>{" "}
-                    {new Date(med.startDate).toLocaleDateString()}
-                  </p>
-                )}
-                {med.endDate && (
-                  <p>
-                    <strong>End Date:</strong>{" "}
-                    {new Date(med.endDate).toLocaleDateString()}
-                  </p>
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {/* Allergies */}
-      {patientInfo.allergies.length > 0 && (
-        <section className="p-6 bg-white rounded shadow">
-          <h2 className="text-2xl font-semibold mb-4">Allergies</h2>
-          <ul className="space-y-4">
-            {patientInfo.allergies.map((allergy) => (
-              <li key={allergy.id} className="border p-4 rounded">
-                <p>
-                  <strong>Allergen:</strong> {allergy.allergen}
-                </p>
-                {allergy.reactionDescription && (
-                  <p>
-                    <strong>Reaction:</strong> {allergy.reactionDescription}
-                  </p>
-                )}
-                {allergy.severityLevel && (
-                  <p>
-                    <strong>Severity:</strong> {allergy.severityLevel}
-                  </p>
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {/* Diagnoses */}
-      {patientInfo.diagnoses.length > 0 && (
-        <section className="p-6 bg-white rounded shadow">
-          <h2 className="text-2xl font-semibold mb-4">Diagnoses</h2>
-          <ul className="space-y-4">
-            {patientInfo.diagnoses.map((diag) => (
-              <li key={diag.id} className="border p-4 rounded">
-                <p>
-                  <strong>Condition:</strong> {diag.conditionName}
-                </p>
-                <p>
-                  <strong>Diagnosis Date:</strong>{" "}
-                  {new Date(diag.diagnosisDate).toLocaleDateString()}
-                </p>
-                <p>
-                  <strong>Self Reported:</strong>{" "}
-                  {diag.selfReported ? "Yes" : "No"}
-                </p>
-                {diag.notes && (
-                  <p>
-                    <strong>Notes:</strong> {diag.notes}
-                  </p>
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {/* Cognitive Symptoms */}
-      {patientInfo.cognitiveSymptoms.length > 0 && (
-        <section className="p-6 bg-white rounded shadow">
-          <h2 className="text-2xl font-semibold mb-4">Cognitive Symptoms</h2>
-          <ul className="space-y-4">
-            {patientInfo.cognitiveSymptoms.map((cs) => (
-              <li key={cs.id} className="border p-4 rounded">
-                <p>
-                  <strong>Symptom Type:</strong> {cs.symptomType}
-                </p>
-                <p>
-                  <strong>Onset Date:</strong>{" "}
-                  {cs.onsetDate
-  ? new Date(cs.onsetDate).toLocaleDateString()
-  : "No Date Provided"}
-                </p>
-                {cs.severityLevel && (
-                  <p>
-                    <strong>Severity:</strong> {cs.severityLevel}
-                  </p>
-                )}
-                {cs.notes && (
-                  <p>
-                    <strong>Notes:</strong> {cs.notes}
-                  </p>
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {/* Medical History */}
-      {patientInfo.medicalHistory && (
-        <section className="p-6 bg-white rounded shadow">
-          <h2 className="text-2xl font-semibold mb-4">Medical History</h2>
-          <div className="border p-4 rounded">
-            <p>
-              <strong>Existing Diagnoses:</strong> {patientInfo.medicalHistory.existingDiagnoses}
-            </p>
-            <p>
-              <strong>Family History of Neurological Disorders:</strong> {patientInfo.medicalHistory.familyHistoryOfNeurologicalDisorders}
-            </p>
-            <p>
-              <strong>History of Chemo/Radiation Therapy:</strong> {patientInfo.medicalHistory.historyOfChemotherapyOrRadiationTherapy}
-            </p>
-          </div>
-        </section>
-      )}
+      </CardContent>
+    </Card>
+    <PatientInfoSections patientInfo = {patientInfo}></PatientInfoSections>
+      
     </div>
   );
 }
+

@@ -11,52 +11,14 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { PatientsInterface, SubscriptionsInterface } from "~/server/db/type";
 import { cognitiveSymptoms } from "~/server/db/schema/patient";
+import { personalInfoSchema, validatePastDate } from "~/lib/schemas/patients";
 
 // Helper function to format Zod errors
 const formatZodErrors = (issues: z.ZodIssue[]): string =>
   issues.map(issue => `${issue.path.join(".")}: ${issue.message}`).join("\n");
 
 // Zod schema for step 1 – Personal Information
-const validatePastDate = (val: string) => {
-  const d = new Date(val);
-  const today = new Date();
-  return d <= today;
-};
 
-export const personalInfoSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  middle_initial: z.string().max(1).optional(),
-  condition: z.string().nonempty("Condition is required"),
-  dateOfBirth: z
-    .string()
-    .nonempty("Date of birth is required")
-    .refine(
-      (val) => {
-        const date = new Date(val);
-        if (isNaN(date.getTime())) return false;
-        if (!validatePastDate(val)) return false;
-        const today = new Date();
-        let age = today.getFullYear() - date.getFullYear();
-        const m = today.getMonth() - date.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < date.getDate())) {
-          age--;
-        }
-        return age >= 18 && age <= 130;
-      },
-      { message: "You must be older than 18 and your birth date cannot be in the future" }
-    ),
-  gender: z.enum(["male", "female", "other", "prefer_not_to_say"]),
-  primaryLanguage: z.string().min(1, "Primary language is required"),
-  phoneNumber: z.string().regex(/^\d{10,15}$/, "Invalid phone number"),
-  email: z.string().email("Invalid email"),
-  streetAddress: z.string().min(1, "Street address is required"),
-  city: z.string().min(1, "City is required"),
-  state: z.string().min(1, "State is required"),
-  zipCode: z.string().min(1, "ZIP code is required").max(10, "ZIP code must be at most 10 characters"),
-  termsOfService: z.boolean().refine(val => val, { message: "You must agree to the Terms of Service" }),
-  hipaaCompliance: z.boolean().refine(val => val, { message: "You must confirm HIPAA compliance" }),
-});
 
 // Zod schema for diagnosis
 export const diagnosisSchema = z.object({
