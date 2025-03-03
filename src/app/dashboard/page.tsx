@@ -20,7 +20,7 @@ export default function Dashboard() {
 
         const userRoleData = await userRoleResponse.json();
 
-        if (!userRoleData.response) redirect('/select-role')
+        if (!userRoleData.response) redirect('/select-role');
 
         const role = userRoleData.response.userRole;
         // console.log(role)
@@ -30,10 +30,21 @@ export default function Dashboard() {
           const doctor = doctorData.response;
 
           if (!doctor) {
-            router.push('/dashboard/get-started');
-          } else {
-            router.push('/dashboard/doctor');
+            router.push('/dashboard/get-started'); // redirect to doctor signup form
+            return;
           }
+          
+          const subscription = await fetch('api/db/management/subscription/get')
+            .then(r => r.json())
+            .then(r => r.response);
+          console.log(subscription.status === 'unsubscribed');
+          
+          if (subscription.status === 'unsubscribed') { // redirect to subscription
+            router.push('/checkout/subscription');
+            return;
+          }
+
+          router.push('/dashboard/doctor');
         } else if (role === 'patient') {
           const patientResponse = await fetch('api/db/patient/get');
           const patientData = await patientResponse.json();

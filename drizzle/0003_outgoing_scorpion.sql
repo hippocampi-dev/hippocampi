@@ -1,0 +1,2 @@
+ALTER TABLE "hippocampi_users" ALTER COLUMN "email_verified" SET DATA TYPE timestamp with time zone;--> statement-breakpoint
+ALTER TABLE "hippocampi_doctors" ADD COLUMN "profile_url" varchar(255) NOT NULL;

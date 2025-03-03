@@ -30,6 +30,7 @@ export const doctors = createTable(
     specialization: varchar("specialization"),
     ratings: varchar("ratings", { length: 20 }),
     bio: text('bio').notNull(),
+    profileUrl: varchar('profile_url', { length: 255 }).notNull(),
     ...timestamps
   }
 )

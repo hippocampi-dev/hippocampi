@@ -27,6 +27,9 @@ const formSchema = z.object({
   bio: z.string().min(50, { message: 'Bio must be at least 50 characters' }).max(500, {
     message: "Bio must not exceed 500 characters.",
   }),
+  profileUrl: z.string({
+    required_error: "Please enter a url link to your doctor bio on an external 3rd Party Website"
+  })
 })
 
 export const specializations = [
@@ -59,7 +62,8 @@ export default function DoctorForm() {
       medicalSchool: "",
       residency: "",
       medicalApproach: "",
-      bio: ""
+      bio: "",
+      profileUrl: ""
     },
   })
   
@@ -76,7 +80,8 @@ export default function DoctorForm() {
       email: values.email,
       location: values.location,
       specialization: values.specialization,
-      bio: values.bio
+      bio: values.bio,
+      profileUrl: values.profileUrl
     }
 
     const credentials: DoctorCredentialsInterface = {
@@ -306,6 +311,19 @@ export default function DoctorForm() {
                       className="resize-none"
                       {...field}
                     />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="profileUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Doctor profile (3rd Party Website)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://www.healthgrades.com/physician/dr-vikas-jayadeva-xyn7qkh" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
