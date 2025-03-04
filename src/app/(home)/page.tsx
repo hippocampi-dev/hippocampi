@@ -54,17 +54,6 @@ export default function LandingPage() {
                   />
                 </div>
                 <div
-                  className="animate-float absolute right-12 top-12 h-[300px] w-[80%] overflow-hidden rounded-lg shadow-xl transition-all duration-500 hover:-translate-y-2 hover:translate-x-2"
-                  style={{ animationDelay: "0.2s" }}
-                >
-                  <Image
-                    src="/placeholder.svg?height=600&width=800"
-                    alt="Advanced medical technology"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div
                   className="animate-float absolute right-24 top-24 h-[300px] w-[80%] overflow-hidden rounded-lg shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:translate-x-2"
                   style={{ animationDelay: "0.4s" }}
                 >
@@ -189,20 +178,12 @@ export default function LandingPage() {
           <div className="container mx-auto px-4 md:px-6">
             <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
               <div className="animate-slide-in-left relative h-[400px]">
-                <div className="animate-float absolute right-0 top-0 h-[250px] w-[80%] overflow-hidden rounded-lg shadow-lg transition-all duration-500 hover:-translate-y-2 hover:translate-x-2">
-                  <Image
-                    src="/placeholder.svg?height=500&width=800"
-                    alt="Streamlined administrative processes"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
                 <div
                   className="animate-float absolute right-8 top-8 h-[250px] w-[80%] overflow-hidden rounded-lg shadow-xl transition-all duration-500 hover:-translate-y-2 hover:translate-x-2"
                   style={{ animationDelay: "0.2s" }}
                 >
                   <Image
-                    src="/placeholder.svg?height=500&width=800"
+                    src="/Invoices.PNG?height=500&width=800"
                     alt="AI-powered paperwork automation"
                     fill
                     className="object-cover"
@@ -213,7 +194,7 @@ export default function LandingPage() {
                   style={{ animationDelay: "0.4s" }}
                 >
                   <Image
-                    src="/placeholder.svg?height=500&width=800"
+                    src="/ViewPatientInformation.PNG?height=500&width=800"
                     alt="Efficient healthcare management"
                     fill
                     className="object-cover"
@@ -259,31 +240,12 @@ export default function LandingPage() {
                 </p>
               </div>
               <div className="animate-slide-in-right relative h-[400px]">
-                <div className="animate-float absolute left-0 top-0 h-[250px] w-[80%] overflow-hidden rounded-lg shadow-lg transition-all duration-500 hover:-translate-y-2 hover:translate-x-2">
-                  <Image
-                    src="/placeholder.svg?height=500&width=800"
-                    alt="Patient acquisition strategies"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div
-                  className="animate-float absolute left-8 top-8 h-[250px] w-[80%] overflow-hidden rounded-lg shadow-xl transition-all duration-500 hover:-translate-y-2 hover:translate-x-2"
-                  style={{ animationDelay: "0.2s" }}
-                >
-                  <Image
-                    src="/placeholder.svg?height=500&width=800"
-                    alt="Healthcare networking"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
                 <div
                   className="animate-float absolute left-16 top-16 h-[250px] w-[80%] overflow-hidden rounded-lg shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:translate-x-2"
                   style={{ animationDelay: "0.4s" }}
                 >
                   <Image
-                    src="/placeholder.svg?height=500&width=800"
+                    src="/ZoomLink.PNG?height=500&width=800"
                     alt="Patient referral system"
                     fill
                     className="object-cover"
@@ -336,7 +298,6 @@ export default function LandingPage() {
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <Brain className="h-6 w-6 text-primary" />
                 <span className="text-xl font-bold">Hippocampi</span>
               </div>
               <p className="text-sm text-muted-foreground">

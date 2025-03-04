@@ -67,6 +67,7 @@ const accountFormSchema = z.object({
     .max(500, {
       message: "Bio must not exceed 500 characters.",
     }),
+  profileUrl: z.string().url()
 });
 
 type AccountFormValues = z.infer<typeof accountFormSchema>;
@@ -86,6 +87,7 @@ export default function DoctorAccount() {
     residency: "",
     medicalApproach: "",
     bio: "",
+    profileUrl: "",
   });
 
   const form = useForm<AccountFormValues>({
@@ -118,6 +120,7 @@ export default function DoctorAccount() {
             residency: doctorCredentials.residency || "",
             medicalApproach: doctorCredentials.approach || "",
             bio: doctorInfo.bio || "",
+            profileUrl: doctorInfo.profileUrl || "",
           };
           setDefaultValues(values);
           form.reset(values);
@@ -143,7 +146,7 @@ export default function DoctorAccount() {
         bio: data.bio,
         doctorId: session?.user.id!,
         specialization: data.specialization,
-        profileUrl: "hippocampi.co",
+        profileUrl: data.profileUrl,
       };
 
       const credentials: DoctorCredentialsInterface = {
