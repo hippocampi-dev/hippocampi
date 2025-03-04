@@ -1,193 +1,489 @@
-import Image from "next/image";
-import { Brain, Info, Zap, TrendingUp } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "~/components/ui/button";
-import Footer from "~/components/ui/Footer";
+import { ArrowRight, Brain, ChevronRight } from "lucide-react";
 import { Header } from "~/components/ui/Header";
 
-export default function Home() {
+export default function LandingPage() {
   return (
-    <div className="min-h-screen">
+    <div className="flex min-h-screen w-full flex-col">
+      {/* Header */}
       <Header />
-      {/* Hero Section */}
-      <section className="flex h-screen gap-16 px-[5%] py-6">
-        <div className="container mx-auto flex flex-1 flex-col justify-center">
-          <h1 className="mb-6 text-4xl font-bold md:text-6xl">
-            Post-chemo care, quick and personalized
-          </h1>
-          <p className="mb-8 w-4/5 text-xl md:text-2xl">
-            Customized cognitive and mental healthcare begins here
-          </p>
-          <Button asChild>
-            <Link href="/about" className="w-fit">
-              Learn More
-            </Link>
-          </Button>
-        </div>
-        <div className="flex flex-1 items-center justify-center object-cover">
-          <Image
-            className="w-2/3"
-            alt="hippocampi-hero"
-            width={9999}
-            height={9999}
-            src={"/hero.avif"}
-          />
-        </div>
-      </section>
 
-      {/* Mission Section */}
-      <section className="bg-gray-100 py-20">
-        <div className="container mx-auto px-6 text-center">
-          <h2 className="mb-4 text-3xl font-bold">Our Mission</h2>
-          <p className="mb-6 text-xl">
-            Bringing modern healthcare solutions to chemobrain
-          </p>
-          <p className="mx-auto mb-8 max-w-3xl text-lg">
-            Life after cancer is never the same. Over compensation in the work
-            force and a decline in cognitive abilities is never easy, so we seek
-            to invigorate our patients, instilling hopefulness and information
-            with peak efficiency and expertise.
-          </p>
-          <Button asChild>
-            <Link href="/about">Learn more</Link>
-          </Button>
-        </div>
-      </section>
+      <main className="flex-1">
+        {/* Hero Section with Synapse Background */}
+        <section className="relative flex min-h-screen w-full items-center justify-center overflow-hidden">
+          <div className="absolute inset-0 z-0">
+            <Image
+              src="/highresneuronbackground.jpeg"
+              alt="Neural synapse background"
+              fill
+              className="object-cover opacity-40"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-background/90 to-background/70"></div>
+          </div>
 
-      {/* What We Offer Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-6">
-          <h2 className="mb-12 text-center text-3xl font-bold">
-            What We Offer
-          </h2>
-
-          {/* Accessibility */}
-          <div className="mb-20">
-            <div className="flex flex-col items-center md:flex-row">
-              <div className="mb-8 md:mb-0 md:w-1/2">
-                <Image
-                  src="/Accessibility-card.png"
-                  alt="Accessibility"
-                  width={500}
-                  height={300}
-                  className="rounded-lg shadow-lg"
-                />
+          <div className="container relative z-10 mx-auto px-4 pt-24 md:px-6">
+            <div className="grid gap-6 lg:grid-cols-[1fr_500px] lg:gap-12 xl:grid-cols-[1fr_600px]">
+              <div className="flex flex-col justify-center space-y-6">
+                <div className="space-y-4">
+                  <h1 className="animate-fade-in text-4xl font-bold tracking-tighter sm:text-6xl xl:text-7xl/none">
+                    Transform Your Cancer Journey
+                  </h1>
+                  <div className="animate-grow-width h-1 w-24 rounded-full bg-primary"></div>
+                  <Button
+                    size="lg"
+                    className="animate-fade-in-up mt-4 w-fit transition-all duration-300 hover:scale-105"
+                  >
+                    Learn More
+                    <ArrowRight className="ml-2 h-5 w-5 animate-bounce" />
+                  </Button>
+                </div>
               </div>
-              <div className="md:w-1/2 md:pl-12">
-                <Brain className="mb-4 h-12 w-12 text-blue-600" />
-                <h3 className="mb-4 text-2xl font-bold">
-                  "To get in touch with a good psychologist somewhere along the
-                  way, is just a matter of luck."
+
+              {/* Staggered and Offset Cards */}
+              <div className="animate-fade-in-up relative h-[500px] w-full">
+                <div className="animate-float absolute right-0 top-0 h-[300px] w-[80%] overflow-hidden rounded-lg shadow-lg transition-all duration-500 hover:-translate-y-2 hover:translate-x-2">
+                  <Image
+                    src="/HeroPatient.png
+"
+                    alt="Innovative healthcare platform"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div
+                  className="animate-float absolute right-12 top-12 h-[300px] w-[80%] overflow-hidden rounded-lg shadow-xl transition-all duration-500 hover:-translate-y-2 hover:translate-x-2"
+                  style={{ animationDelay: "0.2s" }}
+                >
+                  <Image
+                    src="/placeholder.svg?height=600&width=800"
+                    alt="Advanced medical technology"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div
+                  className="animate-float absolute right-24 top-24 h-[300px] w-[80%] overflow-hidden rounded-lg shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:translate-x-2"
+                  style={{ animationDelay: "0.4s" }}
+                >
+                  <Image
+                    src="/aiChat.png?height=600&width=800"
+                    alt="Patient-centered care"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Platform Overview Section */}
+        <section id="platform" className="w-full bg-muted/50 py-20 md:py-28">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="mx-auto flex max-w-3xl flex-col items-center justify-center space-y-4 text-center">
+              <h2 className="animate-fade-in text-3xl font-bold tracking-tighter md:text-4xl/tight">
+                Explore our inventive health platform
+              </h2>
+              <p className="animate-fade-in-up text-muted-foreground md:text-lg">
+                We connect patients with specialized cognitive and mental care
+                today, while developing solutions that empower doctors and
+                patients to navigate tomorrow's challenges together. Here are 4
+                important keystones of our company:
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* AI Screening Section */}
+        <section className="w-full py-16 md:py-24">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+              <div className="animate-slide-in-left space-y-4">
+                <div className="inline-flex items-center rounded-full border border-transparent bg-primary px-2.5 py-0.5 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+                  For Patients
+                </div>
+                <h3 className="text-2xl font-bold tracking-tighter sm:text-3xl">
+                  AI driven chemo-brain and depression screening
                 </h3>
-                <p className="mb-4 text-lg">
-                  We integrate over 5 different practitioners to provide a
-                  holistic and articulate analysis of your situation. Our
-                  integrative oncological approach ensures you receive
-                  comprehensive care tailored to your unique needs.
+                <p className="text-muted-foreground md:text-lg">
+                  Experience our streamlined assessment process—report personal
+                  information, complete cancer-specific mental and cognitive
+                  health tests (FACT COG + HADS), and receive automatic
+                  referrals to appropriate care providers in 1-2 weeks, instead
+                  of up to 90 days.
+                </p>
+              </div>
+              <div className="animate-slide-in-right relative h-[400px]">
+                <div className="animate-float absolute left-0 top-0 h-[250px] w-[80%] overflow-hidden rounded-lg shadow-lg transition-all duration-500 hover:-translate-y-2 hover:translate-x-2">
+                  <Image
+                    src="/PlaceholderInfo.png?height=500&width=800"
+                    alt="AI-driven screening process"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div
+                  className="animate-float absolute left-8 top-8 h-[250px] w-[80%] overflow-hidden rounded-lg shadow-xl transition-all duration-500 hover:-translate-y-2 hover:translate-x-2"
+                  style={{ animationDelay: "0.2s" }}
+                >
+                  <Image
+                    src="/Assessment.png?height=500&width=800"
+                    alt="Mental health assessment"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div
+                  className="animate-float absolute left-16 top-16 h-[250px] w-[80%] overflow-hidden rounded-lg shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:translate-x-2"
+                  style={{ animationDelay: "0.4s" }}
+                >
+                  <Image
+                    src="/landingSurvey.png?height=500&width=800"
+                    alt="Personalized care recommendations"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Comprehensive Care Network Section */}
+        <section className="w-full bg-muted/30 py-16 md:py-24">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="flex flex-col space-y-10">
+              <div className="animate-fade-in-up relative h-[400px] w-full overflow-hidden rounded-xl">
+                <Image
+                  src="/HeroPatient.png?height=800&width=1600"
+                  alt="Comprehensive care network"
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
+              </div>
+              <div className="animate-fade-in mx-auto max-w-3xl space-y-4 text-center">
+                <div className="inline-flex items-center rounded-full border border-transparent bg-primary px-2.5 py-0.5 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+                  For Patients
+                </div>
+                <h3 className="text-2xl font-bold tracking-tighter sm:text-3xl">
+                  Comprehensive Care Network
+                </h3>
+                <p className="text-muted-foreground md:text-lg">
+                  Post-chemotherapy challenges REQUIRES robust, comprehensive
+                  care. We connect you with a personalized team of oncologists,
+                  neuropsychiatrists, integrative medicine specialists, and
+                  speech pathologists—all accessible through our upcoming app
+                  featuring both group and private messaging capabilities.
                 </p>
               </div>
             </div>
           </div>
+        </section>
 
-          {/* Information */}
-          <div className="mb-20">
-            <div className="flex flex-col items-center md:flex-row-reverse">
-              <div className="mb-8 md:mb-0 md:w-1/2">
-                <Image
-                  src="/Knowledgeissecurity.jpg"
-                  alt="Information"
-                  width={500}
-                  height={300}
-                  className="rounded-lg shadow-lg"
-                />
+        {/* Administrative Burdens Section */}
+        <section className="w-full py-16 md:py-24">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+              <div className="animate-slide-in-left relative h-[400px]">
+                <div className="animate-float absolute right-0 top-0 h-[250px] w-[80%] overflow-hidden rounded-lg shadow-lg transition-all duration-500 hover:-translate-y-2 hover:translate-x-2">
+                  <Image
+                    src="/placeholder.svg?height=500&width=800"
+                    alt="Streamlined administrative processes"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div
+                  className="animate-float absolute right-8 top-8 h-[250px] w-[80%] overflow-hidden rounded-lg shadow-xl transition-all duration-500 hover:-translate-y-2 hover:translate-x-2"
+                  style={{ animationDelay: "0.2s" }}
+                >
+                  <Image
+                    src="/placeholder.svg?height=500&width=800"
+                    alt="AI-powered paperwork automation"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div
+                  className="animate-float absolute right-16 top-16 h-[250px] w-[80%] overflow-hidden rounded-lg shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:translate-x-2"
+                  style={{ animationDelay: "0.4s" }}
+                >
+                  <Image
+                    src="/placeholder.svg?height=500&width=800"
+                    alt="Efficient healthcare management"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
               </div>
-              <div className="md:w-1/2 md:pr-12">
-                <Info className="mb-4 h-12 w-12 text-blue-600" />
-                <h3 className="mb-4 text-2xl font-bold">
-                  "Knowledge is security"
+              <div className="animate-slide-in-right space-y-4">
+                <div className="inline-flex items-center rounded-full border border-transparent bg-primary px-2.5 py-0.5 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+                  For Providers
+                </div>
+                <h3 className="text-2xl font-bold tracking-tighter sm:text-3xl">
+                  Eliminating Administrative Burdens for Care Providers
                 </h3>
-                <p className="mb-4 text-lg">
-                  Knowing what is happening to you isn't a service, it's a
-                  right. We're focusing our funds into the forefront of AI,
-                  equipping you for your consultations, future, and proper
-                  decision making. Our large language model attends to your user
-                  information, complemented by our research blogs.
-                </p>
-                <p className="mb-4 text-lg">
-                  Allocentrically, we provide research and spread awareness to
-                  employers, family members, and the general population. This
-                  means greater connections with those who matter most, as well
-                  as access to shared experiences in our community-based healing
-                  approach.
+                <p className="text-muted-foreground md:text-lg">
+                  Doctors, we've got you covered! Hippocampi eliminates
+                  administrative burdens through our dedicated billing and
+                  coding teams today, while developing specialized AI to
+                  automate cancer-related paperwork tomorrow—letting you focus
+                  entirely on patient care.
                 </p>
               </div>
             </div>
           </div>
+        </section>
 
-          {/* Efficiency */}
-          <div className="mb-20">
-            <div className="flex flex-col items-center md:flex-row">
-              <div className="mb-8 md:mb-0 md:w-1/2">
-                <Image
-                  src="/stateofthearttechnology.png"
-                  alt="Efficiency"
-                  width={500}
-                  height={300}
-                  className="rounded-lg shadow-lg"
-                />
-              </div>
-              <div className="md:w-1/2 md:pl-12">
-                <Zap className="mb-4 h-12 w-12 text-blue-600" />
-                <h3 className="mb-4 text-2xl font-bold">
-                  "Leveraging state-of-the-art technology"
+        {/* Patient Acquisition Section */}
+        <section className="w-full bg-muted/30 py-16 md:py-24">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+              <div className="animate-slide-in-left space-y-4">
+                <div className="inline-flex items-center rounded-full border border-transparent bg-primary px-2.5 py-0.5 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+                  For Providers
+                </div>
+                <h3 className="text-2xl font-bold tracking-tighter sm:text-3xl">
+                  Streamlining Patient Acquisition
                 </h3>
-                <p className="mb-4 text-lg">
-                  We automate all the insurance coding and billing for you.
-                  Where it once took months, you can now get a consultation
-                  booked within weeks, or days. And soon at no cost.
+                <p className="text-muted-foreground md:text-lg">
+                  We connect doctors with patients by handling all marketing
+                  efforts and building strategic referral partnerships, starting
+                  with smaller cancer centers before expanding to major
+                  institutions (MD Anderson), ensuring every chemotherapy
+                  patient receives immediate referrals to your specialized care.
                 </p>
-                <p className="mb-4 text-lg">
-                  For doctors, that means no more organizational obstacles---
-                  you can focus on your expertise and we handle the rest.
-                </p>
+              </div>
+              <div className="animate-slide-in-right relative h-[400px]">
+                <div className="animate-float absolute left-0 top-0 h-[250px] w-[80%] overflow-hidden rounded-lg shadow-lg transition-all duration-500 hover:-translate-y-2 hover:translate-x-2">
+                  <Image
+                    src="/placeholder.svg?height=500&width=800"
+                    alt="Patient acquisition strategies"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div
+                  className="animate-float absolute left-8 top-8 h-[250px] w-[80%] overflow-hidden rounded-lg shadow-xl transition-all duration-500 hover:-translate-y-2 hover:translate-x-2"
+                  style={{ animationDelay: "0.2s" }}
+                >
+                  <Image
+                    src="/placeholder.svg?height=500&width=800"
+                    alt="Healthcare networking"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div
+                  className="animate-float absolute left-16 top-16 h-[250px] w-[80%] overflow-hidden rounded-lg shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:translate-x-2"
+                  style={{ animationDelay: "0.4s" }}
+                >
+                  <Image
+                    src="/placeholder.svg?height=500&width=800"
+                    alt="Patient referral system"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
               </div>
             </div>
           </div>
+        </section>
 
-          {/* Future Goals */}
-          <div>
-            <div className="flex flex-col items-center md:flex-row-reverse">
-              <div className="mb-8 md:mb-0 md:w-1/2">
-                <Image
-                  src="/futuregoals.webp"
-                  alt="Future Goals"
-                  width={500}
-                  height={300}
-                  className="rounded-lg shadow-lg"
-                />
-              </div>
-              <div className="md:w-1/2 md:pr-12">
-                <TrendingUp className="mb-4 h-12 w-12 text-blue-600" />
-                <h3 className="mb-4 text-2xl font-bold">
-                  "The next big name in healthcare."
-                </h3>
-                <p className="mb-4 text-lg">
-                  We are researching predictive screening and genome encoding,
-                  to discount the exorbitant medical prices you currently face.
-                  We are gaining momentum, following the pendulum of this
-                  ever-growing industry in service to society.
-                </p>
-                <Button asChild>
-                  <Link href="/about#upcoming-implementations">
-                    Upcoming Implementations
-                  </Link>
+        {/* Final CTA Section */}
+        <section
+          id="contact"
+          className="w-full bg-gradient-to-b from-background to-muted py-20 md:py-32"
+        >
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="animate-fade-in mx-auto flex max-w-3xl flex-col items-center justify-center space-y-8 text-center">
+              <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
+                Ready to transform cancer care together?
+              </h2>
+              <p className="text-muted-foreground md:text-lg">
+                Join our network of patients and providers creating a new
+                standard for post-chemotherapy cognitive and mental health care.
+              </p>
+              <div className="flex flex-col gap-4 sm:flex-row">
+                <Button
+                  size="lg"
+                  className="transition-all duration-300 hover:scale-105"
+                >
+                  For Patients
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="transition-all duration-300 hover:scale-105"
+                >
+                  For Providers
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </div>
             </div>
           </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="w-full border-t bg-background py-8 md:py-12">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Brain className="h-6 w-6 text-primary" />
+                <span className="text-xl font-bold">Hippocampi</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Transforming cognitive and mental health care for cancer
+                patients through innovation and compassion.
+              </p>
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-sm font-medium">Platform</h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    How It Works
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    Our Approach
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    Research
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    Technology
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-sm font-medium">Company</h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    About
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    Team
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    Careers
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    Press
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-sm font-medium">Connect</h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    Contact
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    Support
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    Twitter
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    LinkedIn
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="mt-8 flex flex-col items-center justify-between border-t pt-8 md:flex-row">
+            <p className="text-xs text-muted-foreground">
+              &copy; {new Date().getFullYear()} Hippocampi, Inc. All rights
+              reserved.
+            </p>
+            <div className="mt-4 flex gap-4 md:mt-0">
+              <Link
+                href="#"
+                className="text-xs text-muted-foreground transition-colors hover:text-primary"
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                href="#"
+                className="text-xs text-muted-foreground transition-colors hover:text-primary"
+              >
+                Terms of Service
+              </Link>
+              <Link
+                href="#"
+                className="text-xs text-muted-foreground transition-colors hover:text-primary"
+              >
+                Accessibility
+              </Link>
+            </div>
+          </div>
         </div>
-      </section>
-      <Footer></Footer>
+      </footer>
     </div>
   );
 }

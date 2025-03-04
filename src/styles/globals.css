@@ -64,9 +64,6 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
-  /* * {
-    @apply border-border;
-  } */
   body {
     @apply bg-background text-foreground;
   }
@@ -83,8 +80,118 @@
   h6 {
     @apply text-gray-900;
   }
-
-  /* a {
-    @apply text-blue-600 hover:text-blue-800;
-  } */
 }
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 1s ease-in-out forwards;
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 1s ease-in-out forwards;
+  }
+
+  .animate-slide-in-left {
+    animation: slideInLeft 1s ease-in-out forwards;
+  }
+
+  .animate-slide-in-right {
+    animation: slideInRight 1s ease-in-out forwards;
+  }
+
+  .animate-grow-width {
+    animation: growWidth 1.5s ease-in-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes growWidth {
+    from {
+      width: 0;
+    }
+    to {
+      width: 6rem;
+    }
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes fadeInStagger {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-fade-in-stagger > * {
+  opacity: 0;
+  animation: fadeInStagger 0.5s ease-out forwards;
+}
+
+.animate-fade-in-stagger > *:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.animate-fade-in-stagger > *:nth-child(2) {
+  animation-delay: 0.3s;
+}
+.animate-fade-in-stagger > *:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
