@@ -6,7 +6,7 @@ import { Button } from "~/components/ui/button";
 import { PatientSchemaType } from "~/lib/schemas/patients";
 import { getPatient } from "~/server/db/queries";
 import { PatientsInterface } from "~/server/db/type";
-import { getUserId } from "~/utilities/get-user"
+import { getUserId } from "~/utilities/getUser"
 
 
 

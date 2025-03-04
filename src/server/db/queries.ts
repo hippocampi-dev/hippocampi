@@ -1,5 +1,6 @@
 // this is where we'll have our query functions for the db
 
+import { ilike, or, count, and } from "drizzle-orm"; // Assuming these helpers are available
 import * as schema_auth from "./schema/auth";
 import * as schema_doctor from "./schema/doctor";
 import * as schema_management from "./schema/management";
@@ -131,6 +132,68 @@ export const getDoctor = async (user_id: UserIdInterface) => {
     where: eq(schema_doctor.doctors.doctorId, user_id),
   });
 };
+
+
+export const fetchFilteredDoctors = async (
+  specialization: string,
+  term: string,
+  currentPage: number
+) => {
+  const offset = (currentPage - 1) * 6;
+
+  try {
+    const filteredDoctors = await db.query.doctors.findMany({
+      where:
+        specialization
+          ? and(
+              eq(schema_doctor.doctors.specialization, specialization),
+              or(
+                ilike(schema_doctor.doctors.firstName, `%${term}%`),
+                ilike(schema_doctor.doctors.lastName, `%${term}%`),
+                ilike(schema_doctor.doctors.email, `%${term}%`),
+                ilike(schema_doctor.doctors.location, `%${term}%`)
+              )
+            )
+          : or(
+              ilike(schema_doctor.doctors.firstName, `%${term}%`),
+              ilike(schema_doctor.doctors.lastName, `%${term}%`),
+              ilike(schema_doctor.doctors.email, `%${term}%`),
+              ilike(schema_doctor.doctors.specialization, `%${term}%`),
+              ilike(schema_doctor.doctors.location, `%${term}%`)
+            ),
+      limit: 6,
+      offset: offset,
+    });
+    return filteredDoctors;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch doctors.");
+  }
+};
+
+export async function fetchDoctorsPages(query: string) {
+  try {
+    const result = await db
+      .select({ total: count(schema_doctor.doctors.doctorId) })
+      .from(schema_doctor.doctors)
+      .where(
+        or(
+          ilike(schema_doctor.doctors.firstName, `%${query}%`),
+          ilike(schema_doctor.doctors.lastName, `%${query}%`),
+          ilike(schema_doctor.doctors.email, `%${query}%`),
+          ilike(schema_doctor.doctors.specialization, `%${query}%`),
+          ilike(schema_doctor.doctors.location, `%${query}%`)
+        )
+      );
+
+    const total = result[0]?.total as number;
+    const totalPages = Math.ceil(total / 6);
+    return totalPages;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch total number of doctors.");
+  }
+}
 
 export const getAllDoctors = async () => {
   return db.query.doctors.findMany();
