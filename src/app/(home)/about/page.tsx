@@ -51,15 +51,15 @@ export default function AboutPage() {
       <Header />
       <main className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
         {/* Mission Section */}
-        <section className="mb-24">
-          <h1 className="text-4xl font-bold text-gray-900 mb-8 text-center animate-fade-in">Our Mission</h1>
-          <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 relative overflow-hidden animate-fade-in-up">
-            <div className="absolute top-0 left-0 w-full h-2 bg-blue-600"></div>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Post-Chemo Care, Quick and Personalized.</h2>
-            <p className="text-lg text-gray-700 mb-4">
+        <section className="mb-32">
+          <h1 className="text-5xl font-bold text-gray-900 mb-12 text-center animate-fade-in">Our Mission</h1>
+          <div className="bg-white rounded-3xl shadow-2xl p-10 md:p-16 relative overflow-hidden animate-fade-in-up">
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-600 to-purple-600"></div>
+            <h2 className="text-3xl font-semibold text-gray-900 mb-6">Post-Chemo Care, Quick and Personalized.</h2>
+            <p className="text-xl text-gray-700 mb-6 leading-relaxed">
               Our cancer care systems demand immediate transformation, as its impact reaches far beyond a single tumor.
             </p>
-            <p className="text-lg text-gray-700">
+            <p className="text-xl text-gray-700 leading-relaxed">
               Hippocampi leads this innovation by prioritizing personalized care, pioneering the first-ever platform
               connecting cancer patients suffering cognitive and mental impairments with readily available healthcare
               providers.
@@ -69,23 +69,30 @@ export default function AboutPage() {
 
         {/* Team Section */}
         <section>
-          <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center animate-fade-in">Our Team</h2>
+          <h2 className="text-5xl font-bold text-gray-900 mb-16 text-center animate-fade-in">Our Team</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 animate-fade-in-stagger">
             {teamMembers.map((member, index) => (
               <div
                 key={member.name}
-                className="bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+                className="bg-white rounded-3xl shadow-xl overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl"
               >
-                <Link href={member.link} className="block relative h-[560px] overflow-hidden" target="_blank">
-                  <Image src={member.image || "/placeholder.svg"} alt={member.name} fill className="object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-300 opacity-0 hover:opacity-100 flex items-end justify-center pb-4">
-                    <span className="text-white text-lg font-semibold">View Profile</span>
+                <Link href={member.link} className="block relative h-[400px] overflow-hidden" target="_blank">
+                  <Image
+                    src={member.image || "/placeholder.svg"}
+                    alt={member.name}
+                    fill
+                    className="object-cover object-top"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent transition-opacity duration-300 opacity-0 hover:opacity-100 flex items-end justify-center pb-6">
+                    <span className="text-white text-lg font-semibold bg-blue-600 px-4 py-2 rounded-full">
+                      View Profile
+                    </span>
                   </div>
                 </Link>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-1">{member.name}</h3>
-                  <p className="text-sm font-medium text-blue-600 mb-3">{member.role}</p>
-                  <p className="text-gray-700 text-sm line-clamp-4">{member.description}</p>
+                <div className="p-8">
+                  <h3 className="text-2xl font-semibold text-gray-900 mb-2">{member.name}</h3>
+                  <p className="text-lg font-medium text-blue-600 mb-4">{member.role}</p>
+                  <p className="text-gray-700 text-base line-clamp-4">{member.description}</p>
                 </div>
               </div>
             ))}
