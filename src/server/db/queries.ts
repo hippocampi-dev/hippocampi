@@ -31,6 +31,8 @@ import {
   IPatient,
   PatientDict,
   AppointmentInvoiceDict,
+  cognitiveAssessmentInterface,
+  // Add the missing import here
 } from "./type";
 import { db } from ".";
 import { desc, asc } from "drizzle-orm";
@@ -691,6 +693,35 @@ export const createMessage = async (data: {
     .values({ ...data, read: data.read ?? false })
     .returning();
 };
+
+export const createAssessment = async (data: cognitiveAssessmentInterface) => {
+  try {
+    const result = await db.insert(schema_patient.cognitiveAssessments)
+      .values(data)
+      .returning();
+    return result;
+  } catch (error) {
+    console.error("Failed to create assessment:", error);
+    throw error;
+  }
+};
+
+export const getAssessment = async (userId: UserIdInterface): Promise<cognitiveAssessmentInterface> => {
+  try {
+    const assessment = await db.query.cognitiveAssessments.findFirst({
+      where: eq(schema_patient.cognitiveAssessments.patientId, userId)
+    });
+    if (!assessment) {
+      throw new Error("Assessment not found");
+    }
+    return assessment;
+  } catch (error) {
+    console.error("Failed to get assessment", error);
+    throw error;
+  }
+}
+
+
 
 export const getPatientDict = async (doctor_id: UserIdInterface) => {
   const doctor = await getDoctor(doctor_id);

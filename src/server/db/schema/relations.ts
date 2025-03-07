@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm";
 import { accounts, sessions, userLogins, users } from "./auth";
 import { doctors, doctorCredentials } from "./doctor";
-import { allergies, cognitiveSymptoms, diagnoses, emergencyContacts, medicalHistory, medications, patients, treatments } from "./patient";
+import { allergies, cognitiveAssessments, cognitiveSymptoms, diagnoses, emergencyContacts, medicalHistory, medications, patients, treatments } from "./patient";
 import { patientDoctorManagement, appointments, userRoles, subscriptions } from "./management";
 import { conversations, messages } from "./message";
 
@@ -157,6 +157,13 @@ export const doctorsCredentialsRelations = relations(doctorCredentials, ({ one }
     references: [doctors.doctorId]
   })
 }));
+
+export const assessmentRelations = relations(cognitiveAssessments, ({one}) => ({
+  patient: one(patients, {
+    fields: [cognitiveAssessments.patientId],
+    references: [patients.patientId]
+  })
+}))
 
 export const conversationsRelations = relations(conversations, ({ one, many }) => ({
   patient: one(patients, {

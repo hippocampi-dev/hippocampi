@@ -1,3 +1,5 @@
+'use client'
+
 export default function ProgressBar({ currentStep, totalSteps }: { currentStep: number; totalSteps: number }) {
     return (
       <div className="relative">

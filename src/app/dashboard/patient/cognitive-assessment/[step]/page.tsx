@@ -1,26 +1,20 @@
 "use client"
 
-import { useState } from "react"
+import { use, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { motion, AnimatePresence } from "framer-motion"
-import { Loader2, ArrowLeft, ArrowRight, Check, Brain } from "lucide-react"
+import { motion } from "framer-motion"
 import { Button } from "~/components/ui/button"
-import { generateText } from "ai"
-import { openai } from "@ai-sdk/openai"
+import { ArrowLeft, ArrowRight } from "lucide-react"
+import ProgressBar from "~/components/patient-dashboard/cognitive-assessment-form/progressbar"
+import WelcomeStep from "~/components/patient-dashboard/cognitive-assessment-form/steps/welcomestep"
+import PrimaryConcernsStep from "~/components/patient-dashboard/cognitive-assessment-form/steps/primaryconcerns"
+import AdditionalSupportStep from "~/components/patient-dashboard/cognitive-assessment-form/steps/additionalsupport"
+import MentalDemandsStep from "~/components/patient-dashboard/cognitive-assessment-form/steps/mentaldemands"
+import CognitiveChangesStep from "~/components/patient-dashboard/cognitive-assessment-form/steps/cognitivechanges"
+import AreasForHelpStep from "~/components/patient-dashboard/cognitive-assessment-form/steps/areasforhelp"
+import AdditionalInfoStep from "~/components/patient-dashboard/cognitive-assessment-form/steps/additionalinfo"
+import ReviewStep from "~/components/patient-dashboard/cognitive-assessment-form/steps/reviewstep"
 
-// Import step components
-import WelcomeStep from "./steps/welcomestep"
-import PrimaryConcernsStep from "./steps/primaryconcerns"
-import AdditionalSupportStep from "./steps/additionalsupport"
-import MentalDemandsStep from "./steps/mentaldemands"
-import CognitiveChangesStep from "./steps/cognitivechanges"
-import AreasForHelpStep from "./steps/areasforhelp"
-import AdditionalInfoStep from "./steps/additionalinfo"
-import ReviewStep from "./steps/reviewstep"
-import ProgressBar from "./progressbar"
-import { POST } from "~/app/api/chat/route"
-
-// Define the form steps
 const steps = [
   "Welcome",
   "Primary Concerns",
@@ -32,21 +26,50 @@ const steps = [
   "Review",
 ]
 
-export default function CognitiveAssessmentForm() {
+export default function AssessmentStep({ params }: { params: Promise<{ step: string }> }) {
   const router = useRouter()
-  const [currentStep, setCurrentStep] = useState(0)
-  const [formData, setFormData] = useState({
-    primaryConcerns: [] as string[],
-    additionalSupport: [] as string[],
-    mentalDemands: "",
-    cognitiveChanges: "",
-    areasForHelp: [] as string[],
-    additionalInfo: "",
+  const { step } = use(params);
+  const currentStep = Number.parseInt(step) - 1
+  type FormData = {
+    primaryConcerns: string[];
+    additionalSupport: string[];
+    mentalDemands: string;
+    cognitiveChanges: string;
+    areasForHelp: string[];
+    additionalInfo: string;
+    [key: string]: string | string[];
+  };
+
+  const [formData, setFormData] = useState<FormData>(() => {
+    if (typeof window !== "undefined") {
+      const savedData = localStorage.getItem("assessmentData")
+      return savedData
+        ? JSON.parse(savedData)
+        : {
+            primaryConcerns: [],
+            additionalSupport: [],
+            mentalDemands: "",
+            cognitiveChanges: "",
+            areasForHelp: [],
+            additionalInfo: "",
+          }
+    }
+    return {
+      primaryConcerns: [],
+      additionalSupport: [],
+      mentalDemands: "",
+      cognitiveChanges: "",
+      areasForHelp: [],
+      additionalInfo: "",
+    }
   })
-  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  useEffect(() => {
+    localStorage.setItem("assessmentData", JSON.stringify(formData))
+  }, [formData])
 
   const handleCheckboxChange = (field: keyof typeof formData, value: string) => {
-    setFormData((prev) => {
+    setFormData((prev: FormData) => {
       const currentValues = prev[field] as string[]
       if (currentValues.includes(value)) {
         return {
@@ -78,61 +101,23 @@ export default function CognitiveAssessmentForm() {
 
   const nextStep = () => {
     if (currentStep < steps.length - 1) {
-      setCurrentStep((prev) => prev + 1)
+      router.push(`/dashboard/patient/cognitive-assessment/${currentStep + 2}`)
     }
   }
 
   const prevStep = () => {
     if (currentStep > 0) {
-      setCurrentStep((prev) => prev - 1)
+      router.push(`/dashboard/patient/cognitive-assessment/${currentStep}`)
     }
   }
 
   const handleSubmit = async () => {
-    setIsSubmitting(true)
-    try {
-      const res = await fetch("/api/db/patient/cognitive-assessment", {
+    const res = await fetch("/api/db/patient/cognitive-assessment", {
         method: "POST",
-        headers: {"Content-type": "application/json"},
-        body: JSON.stringify(formData)
-      })
-
-
-      // Format the data for the AI prompt
-      const prompt = `
-        Cognitive Assessment Results:
-        
-        Primary Concerns: ${formData.primaryConcerns.join(", ")}
-        
-        Additional Support Areas: ${formData.additionalSupport.join(", ")}
-        
-        Mental Demands: ${formData.mentalDemands}
-        
-        Cognitive Changes: ${formData.cognitiveChanges}
-        
-        Areas for Help: ${formData.areasForHelp.join(", ")}
-        
-        Additional Information: ${formData.additionalInfo}
-        
-        Based on this assessment, please provide the ideal characteristics of a doctor suited for this patient, including their name and specialty.
-      `
-
-      
-      // Store the result in localStorage for the results page to access
-      localStorage.setItem("assessmentData", JSON.stringify(formData))
-
-      // Navigate to the results page
-    router.push("/dashboard/patient/select-doctor/results")
-    } catch (error) {
-      console.error("Error submitting form:", error)
-      localStorage.setItem(
-        "assessmentResults",
-        "There was an error processing your assessment. Please try again later.",
-      )
-    //   router.push("/results")
-    } finally {
-      setIsSubmitting(false)
-    }
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    })
+    router.push("/dashboard/patient/cognitive-assessment/loading")
   }
 
   const isStepValid = () => {
@@ -203,21 +188,17 @@ export default function CognitiveAssessmentForm() {
 
   return (
     <div className="space-y-8">
-      
-
       <ProgressBar currentStep={currentStep} totalSteps={steps.length} />
 
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentStep}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.3 }}
-        >
-          {renderStepContent()}
-        </motion.div>
-      </AnimatePresence>
+      <motion.div
+        key={currentStep}
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -20 }}
+        transition={{ duration: 0.3 }}
+      >
+        {renderStepContent()}
+      </motion.div>
 
       <div className="flex justify-between mt-8">
         <Button variant="outline" onClick={prevStep} disabled={currentStep === 0} className="flex items-center gap-2">
@@ -229,16 +210,8 @@ export default function CognitiveAssessmentForm() {
             Next <ArrowRight className="h-4 w-4" />
           </Button>
         ) : (
-          <Button onClick={handleSubmit} disabled={isSubmitting} className="flex items-center gap-2">
-            {isSubmitting ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" /> Processing
-              </>
-            ) : (
-              <>
-                Submit <Check className="h-4 w-4" />
-              </>
-            )}
+          <Button onClick={handleSubmit} className="flex items-center gap-2">
+            Submit
           </Button>
         )}
       </div>

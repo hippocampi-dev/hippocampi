@@ -1,61 +1,16 @@
-"use server"
-
+import { Loader2 } from "lucide-react";
 import { generateObject, generateText } from "ai";
 import { openai } from "@ai-sdk/openai";
 import {
   getAllDoctors,
   getAssessment,
+  getDoctorSubscription,
 } from "~/server/db/queries";
 import { auth } from "~/server/auth";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { setPatient } from "~/server/db/queries";
-import { PatientAllergiesInterface, PatientCognitiveSymptomsInterface, PatientDiagnosesInterface, PatientEmergencyContactsInterface, PatientMedicationsInterface, PatientsInterface, PatientTreatmentsInterface, UserIdInterface } from "~/server/db/type";
-import { patientSchema, PatientSchemaType, PersonalInfoSchemaType } from "../schemas/patients";
 
-interface PatientHealthInfo {
-    patient: {
-      patientId: string;
-      firstName: string;
-      lastName: string;
-      middle_initial?: string;
-      condition?: string;
-      dateOfBirth: string;
-      age: number;
-      gender: string;
-      primaryLanguage: string;
-      phoneNumber: string;
-      email: string;
-      streetAddress: string;
-      city: string;
-      state: string;
-      zipCode: string;
-    };
-    emergencyContacts: PatientEmergencyContactsInterface[];
-    treatments: PatientTreatmentsInterface[];
-    medications: PatientMedicationsInterface[];
-    allergies: PatientAllergiesInterface[];
-    diagnoses: PatientDiagnosesInterface[];
-    cognitiveSymptoms: PatientCognitiveSymptomsInterface[];
-  }
-  
-
-export async function updatePatientInfo(userIdString: UserIdInterface,
-  patient: PatientSchemaType) {
-  const validatedData = patientSchema.parse(patient);
-  const data = await setPatient(userIdString, {
-    ...validatedData,
-    created_at: validatedData.created_at?.toISOString(),
-    updated_at: validatedData.updated_at?.toISOString()
-  });
-
-
-  // If the update is successful, you might want to return the updated data
-  return data
-}
-
-
-export async function processAssessment() {
+export default async function LoadingPage() {
   const session = await auth();
   if (!session) {
     redirect("/");
@@ -71,7 +26,9 @@ export async function processAssessment() {
   }
 
   const assessment = (await getAssessment(userId)) as Assessment;
+  console.log(JSON.stringify(assessment));
   const doctors = await getAllDoctors();
+  console.log(JSON.stringify(doctors));
   const prompt = `
   Cognitive Assessment Results:
 
@@ -92,6 +49,7 @@ Identify the 4 best doctors suited for this patient (if there are less, identify
 
 Please ensure that the returned doctor IDs match exactly what is provided in the JSON array.
     `;
+  console.log(prompt);
 
   const result = await generateObject({
     model: openai("gpt-4o", {
@@ -118,10 +76,6 @@ Please ensure that the returned doctor IDs match exactly what is provided in the
     }),
     prompt: prompt,
   });
-  const returner = {
-    recommendations: result.object.recommendations,
-    selectedDoctors: result.object.selectedDoctors
-  }
-  console.log(JSON.stringify(returner))
-  return returner;
+  localStorage.setItem("Doctors and Explanation", JSON.stringify(result))
+  redirect("/dashboard/patient/cognitive-assessment/results")
 }

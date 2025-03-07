@@ -3,6 +3,7 @@ import {
   boolean,
   date,
   integer,
+  json,
   numeric,
   pgEnum,
   primaryKey,
@@ -195,3 +196,20 @@ export const cognitiveSymptoms = createTable('cognitive_symptoms', {
   notes: text('notes'),
   ...timestamps
 })
+
+export const cognitiveAssessments = createTable('cognitive_assessments', {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  patientId: varchar("patient_id", { length: 255 })
+    .notNull()
+    .references(() => patients.patientId, { onDelete: 'cascade' }),
+  primaryConcerns: json("primary_concerns").notNull(), // stored as a JSON array of strings
+  additionalSupport: json("additional_support").default(null), // JSON array, optional
+  mentalDemands: text("mental_demands").notNull(),
+  cognitiveChanges: text("cognitive_changes").notNull(),
+  areasForHelp: json("areas_for_help").default(null), // JSON array, optional
+  additionalInfo: text("additional_info").default(''),
+  ...timestamps
+});

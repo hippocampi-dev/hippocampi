@@ -17,7 +17,11 @@ import {
   medications,
   patients,
   treatments,
+  cognitiveAssessments
 } from "./schema/patient";
+
+
+export type cognitiveAssessmentInterface = typeof cognitiveAssessments.$inferInsert;
 
 // User ID
 export type UserIdInterface = typeof users.id.dataType;
