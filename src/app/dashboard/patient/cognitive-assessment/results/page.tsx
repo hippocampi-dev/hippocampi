@@ -1,17 +1,15 @@
 "use client";
+
 import { Card, CardContent } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
-import { ExternalLink, Star, ArrowLeft, } from "lucide-react";
+import { ExternalLink, Star, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { redirect, } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { DoctorsInterface, UserIdInterface } from "~/server/db/type";
+import { DoctorsInterface } from "~/server/db/type";
 import ChooseDoctorButton from "~/components/patient-dashboard/ChooseDoctorButton";
 import { getUserId } from "~/utilities/getUser";
 import { useSession } from "next-auth/react";
-
-// Assuming ChooseDoctorButton is a component from their codebase
-// If this component doesn't exist, they'll need to implement it
 
 interface Doctor {
   doctorId: string;
@@ -25,43 +23,48 @@ interface Doctor {
 }
 
 export default function DoctorDisplay() {
-  const { data: session, status } = useSession()
+  const { data: session } = useSession();
+  const router = useRouter();
   const [doctors, setDoctors] = useState<Doctor[]>([]);
-  // Ensure filteredDoctors exists before slicing
-  if (!localStorage.getItem("assessment results")) {
-    redirect("/dashboard/patient/select-doctor")
-  }
-  const storageResults = localStorage.getItem("assessment results");
-  if (!storageResults) {
-    redirect("/dashboard/patient");
-  }
-  const storageJSON = JSON.parse(storageResults);
-  console.log("storage" + JSON.stringify(storageJSON));
+  const [storageJSON, setStorageJSON] = useState<any>(null);
+
+  // Access localStorage in useEffect (browser only)
   useEffect(() => {
+    const storageResults = localStorage.getItem("assessment results");
+    if (!storageResults) {
+      router.push("/dashboard/patient");
+    } else {
+      setStorageJSON(JSON.parse(storageResults));
+    }
+  }, [router]);
+
+  // Fetch doctors once we have the stored data
+  useEffect(() => {
+    if (!storageJSON) return;
     interface DoctorId {
       doctorId: string;
     }
-    
+
     const fetchDoctors = async () => {
       const doctorObjects: Doctor[] = await Promise.all(
-        storageJSON.selectedDoctors?.map(async (doctorId: DoctorId) => {
-          console.log("doctorId =" + doctorId.doctorId);
+        storageJSON.selectedDoctors?.map(async (doctorIdObj: DoctorId) => {
+          console.log("Fetching doctor with id =", doctorIdObj.doctorId);
           const response = await fetch("/api/db/doctor/get/docId", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(doctorId),
+            body: JSON.stringify(doctorIdObj),
           });
           const doctor: Doctor = await response.json();
-          console.log("doctor is " + JSON.stringify(doctor));
           return doctor;
-        }),
+        })
       );
-      console.log("doctorObjects + ", JSON.stringify(doctorObjects));
+      console.log("Fetched doctor objects:", doctorObjects);
       setDoctors(doctorObjects);
     };
     fetchDoctors();
-    console.log("doctors are " + JSON.stringify(doctors));
-  }, [storageResults]);
+  }, [storageJSON]);
+
+  if (!storageJSON) return <p>Loading...</p>;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -85,7 +88,7 @@ export default function DoctorDisplay() {
 
         {doctors.length === 0 ? (
           <div className="py-12 text-center">
-            <h3 className="mb-2 text-lg font-medium">No doctors found</h3>
+            <h3 className="text-lg font-medium mb-2">No doctors found</h3>
             <p className="text-gray-600">
               Try adjusting your search or filters
             </p>
@@ -95,7 +98,6 @@ export default function DoctorDisplay() {
             {/* Top row */}
             <Card className="relative overflow-hidden transition-shadow hover:shadow-lg">
               <CardContent className="p-6">
-                {/* External link to doctor's full profile */}
                 <a
                   href={doctors[0]?.profileUrl}
                   target="_blank"
@@ -136,7 +138,10 @@ export default function DoctorDisplay() {
                   </p>
                 </div>
 
-                <ChooseDoctorButton iDoctorId={doctors[0]?.doctorId || ""} patientId={session?.user.id as "string"} />
+                <ChooseDoctorButton
+                  iDoctorId={doctors[0]?.doctorId || ""}
+                  patientId={session?.user.id as string}
+                />
               </CardContent>
             </Card>
 
@@ -199,7 +204,7 @@ export default function DoctorDisplay() {
 
                   <ChooseDoctorButton
                     iDoctorId={doctor.doctorId}
-                    patientId={session?.user.id as "string"}
+                    patientId={session?.user.id as string}
                   />
                 </CardContent>
               </Card>

@@ -22,7 +22,10 @@ export default function Results() {
   }
   fetchData();
   })
-  localStorage.setItem("assessment results", JSON.stringify(data))
+  if (global?.window !== undefined) {
+    // Now it's safe to access window and localStorage
+    localStorage.setItem("assessment results", JSON.stringify(data))
+  }
   router.push("/dashboard/patient/cognitive-assessment/results")
   return (
     <div className="flex min-h-[50vh] flex-col items-center justify-center">
