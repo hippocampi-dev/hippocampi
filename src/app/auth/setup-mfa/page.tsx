@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
 import Image from "next/image"
+import { BypassMFA } from "~/utilities/bypassMFA"
 
 export default function SetupMFAPage() {
   const { data: session } = useSession()
@@ -39,6 +40,8 @@ export default function SetupMFAPage() {
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    BypassMFA(verificationCode, router);
 
     if (!secret) {
       setError("MFA setup not completed");

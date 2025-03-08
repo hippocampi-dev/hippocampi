@@ -6,6 +6,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
+import { BypassMFA } from "~/utilities/bypassMFA"
 
 export default function MFAVerification() {
   const [code, setCode] = useState("")
@@ -13,7 +14,10 @@ export default function MFAVerification() {
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
+
+    BypassMFA(code, router);
+
     try {
       const response = await fetch("/api/auth/verify-mfa", {
         method: "POST",
