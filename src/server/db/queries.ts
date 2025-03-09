@@ -1,6 +1,6 @@
 // this is where we'll have our query functions for the db
 
-import { ilike, or, count, and } from "drizzle-orm"; // Assuming these helpers are available
+import { ilike, or, count, and, sql } from "drizzle-orm"; // Assuming these helpers are available
 import * as schema_auth from "./schema/auth";
 import * as schema_doctor from "./schema/doctor";
 import * as schema_management from "./schema/management";
@@ -739,6 +739,22 @@ export const createMessage = async (message: MessagesInterface) => {
     .values(message)
     .returning();
 };
+
+export const setMessagesRead = async (conversationId: string, senderId: string) => {
+  return db
+    .update(schema_message.messages)
+    .set({
+      read: true,
+      updated_at: sql`NOW()`
+    })
+    .where(
+      and(
+        eq(schema_message.messages.conversationId, conversationId),
+        eq(schema_message.messages.senderId, senderId)
+      )
+    )
+    .returning();
+}
 
 export const createAssessment = async (data: cognitiveAssessmentInterface) => {
   try {

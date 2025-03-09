@@ -14,6 +14,11 @@ export function MessagesList({ conversationDict, dashboard }: props) {
       {Object.keys(conversationDict).map(key => {
         const conversation = conversationDict[key];
         const lastMessageUser = conversation?.lastMessageUser;
+        const isYou = conversation?.lastMessage?.senderId === 
+        (dashboard === 'doctor' 
+          ? conversation?.conversation.doctorId 
+          : conversation?.conversation.patientId);
+        const hasUnread = !conversation?.lastMessage?.read && !isYou;
 
         return (
           <Link
@@ -30,17 +35,16 @@ export function MessagesList({ conversationDict, dashboard }: props) {
             </Avatar>
             <div className="flex-1 min-w-0">
               <div className="flex justify-between items-baseline">
-                <h3 className="text-base font-semibold truncate">{`${lastMessageUser?.firstName} ${lastMessageUser?.lastName}`}</h3>
-                <span className="text-xs text-gray-500">{formatMessageTime(conversation?.lastMessage?.time.toString()!)}</span>
+                {/* If last message is from other person and not read --> bold */}
+                <h3 className={`text-base ${hasUnread ? "font-bold" : "font-semibold"} truncate`}>
+                  {`${lastMessageUser?.firstName} ${lastMessageUser?.lastName}`}
+                </h3>
+                <span className={`text-xs ${hasUnread ? "text-black font-semibold" : "text-gray-500"}`}>
+                  {formatMessageTime(conversation?.lastMessage?.time.toString()!)}
+                </span>
               </div>
-              <p className="text-sm text-gray-500 truncate">
-                {
-                  conversation?.lastMessage?.senderId === 
-                  (dashboard === 'doctor' 
-                    ? conversation?.conversation.doctorId 
-                    : conversation?.conversation.patientId)
-                  && "You: "
-                }
+              <p className={`text-sm truncate ${hasUnread ? "text-black font-semibold" : "text-gray-500"}`}>
+                {isYou && "You: "}
                 {conversation?.lastMessage?.content}
               </p>
             </div>

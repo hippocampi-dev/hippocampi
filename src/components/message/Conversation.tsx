@@ -10,16 +10,16 @@ import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
 import { MessageBubble } from "../ui/message-bubble"
 import { ConversationsInterface, MessagesInterface, UserInterface } from "~/server/db/type"
-import { sendMessage } from "~/app/_actions/message/actions"
+import { sendMessage, setMessagesReadServerAction } from "~/app/_actions/message/actions"
 
 interface props {
   conversation: ConversationsInterface
-  sender: UserInterface
-  receiver: UserInterface
+  sender: UserInterface // you
+  receiver: UserInterface // other person
   currentMessages: MessagesInterface[]
 }
 
-export default function Conversation({ conversation ,sender, receiver, currentMessages }: props) {
+export default function Conversation({ conversation, sender, receiver, currentMessages }: props) {
   const router = useRouter()
   const [message, setMessage] = useState("")
   const [messages, setMessages] = useState<MessagesInterface[]>(currentMessages)
@@ -27,6 +27,8 @@ export default function Conversation({ conversation ,sender, receiver, currentMe
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    
+    setMessagesReadServerAction(conversation.conversationId!, receiver.id!)
   }, [messages])
 
   const handleSendMessage = async (e: React.FormEvent) => {
