@@ -35,6 +35,8 @@ export const conversations = createTable('conversations', {
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
     content: text("content").notNull(),
-    read: boolean("read").notNull(),
+    read: boolean("read").notNull().default(false),
+    time: timestamp('time', { withTimezone: true, mode: 'date' })
+      .notNull(),
     ...timestamps,
   });

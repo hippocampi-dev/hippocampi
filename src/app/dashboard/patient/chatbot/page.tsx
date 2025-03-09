@@ -5,7 +5,7 @@ import { useChat } from "@ai-sdk/react";
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
   return (
-    <div className="stretch mx-auto flex w-full max-w-md flex-col py-24">
+    <div className="stretch mx-auto flex w-full max-w-md flex-col py-24 px-8">
       {messages.map((m) => (
         <div key={m.id} className="whitespace-pre-wrap">
           {m.role === "user" ? "User: " : "AI: "}

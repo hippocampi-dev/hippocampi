@@ -14,7 +14,7 @@ export default async function DashboardHome() {
   }
 
   return (
-    <div>
+    <div className='p-8'>
       <TitleCard name={session.user.name} />
       <div className="grid flex-1 gap-8 overflow-hidden md:grid-cols-3">
         <PatientNotifications />

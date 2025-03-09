@@ -21,9 +21,9 @@ export default async function Page(props: {
 
   const totalPages = await fetchDoctorsPages(term);
 
-  console.log(term);
-  console.log(specialization);
-  console.log(currentPage);
+  // console.log(term);
+  // console.log(specialization);
+  // console.log(currentPage);
 
   return (
     <div className="min-h-screen bg-gray-50">

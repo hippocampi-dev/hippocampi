@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import Link from "next/link";
-import { getDoctor, getAllPatientDoctorManagement } from "~/server/db/queries";
+import { getDoctor, getAllPatientDoctorManagement, getConversation } from "~/server/db/queries";
 import { getUserId } from "~/utilities/getUser";
 import { UserIdInterface } from "~/server/db/type";
 
@@ -59,7 +59,7 @@ export default async function HealthcareProviders() {
                       </Link>
                     </Button>
                     <Button variant="default" className="flex-1" asChild>
-                      <Link href = {`/dashboard/patient/messages/create?doctor=${doctor.doctorId}`}>
+                      <Link href = {`/dashboard/patient/messages/`}>
                         Message
                       </Link>
                     </Button>

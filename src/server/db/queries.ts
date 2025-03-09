@@ -32,6 +32,7 @@ import {
   PatientDict,
   AppointmentInvoiceDict,
   cognitiveAssessmentInterface,
+  ConversationDict,
   // Add the missing import here
 } from "./type";
 import { db } from ".";
@@ -652,8 +653,8 @@ export const getTargetInvoice = async (invoice_id: string) => {
 export const getConversation = async (
   patientId: string,
   doctorId: string,
-): Promise<ConversationsInterface | null> => {
-  const conversation = await db.query.conversations.findFirst({
+) => {
+  const conversation = await db.query.conversations.findMany({
     where:
       eq(schema_message.conversations.patientId, patientId) &&
       eq(schema_message.conversations.doctorId, doctorId),
@@ -661,14 +662,64 @@ export const getConversation = async (
   return conversation ?? null;
 };
 
-export const createConversation = async (data: {
-  patientId: string;
-  doctorId: string;
-  subject?: string;
-}): Promise<ConversationsInterface[]> => {
+export const getTargetConversation = async (conversation_id: string) => {
+  const conversation = await db.query.conversations.findFirst({
+    where:
+      eq(schema_message.conversations.conversationId, conversation_id)
+  });
+  return conversation;
+};
+
+export const getConversations = async (userId: string) => {
+  const role = await getUserRole(userId as "string");
+
+  if (role?.userRole === 'patient') {
+    const conversationsWithDoctors =  await db.query.conversations.findMany({
+      where: eq(schema_message.conversations.patientId, userId)
+    });
+
+    return conversationsWithDoctors;
+  }
+  if (role?.userRole === 'doctor') {
+    const conversationsWithPateints =  await db.query.conversations.findMany({
+      where: eq(schema_message.conversations.doctorId, userId),
+    });
+
+    return conversationsWithPateints;
+  }
+  return [];
+};
+
+export const getConversationDict = async (userId: string) => {
+  const conversations = await getConversations(userId);
+  const userRole = await getUserRole(userId as "string");
+  const dict: ConversationDict = {};
+  const isDoctor = userRole?.userRole === 'doctor'; // is the current user a doctor
+
+  for (const c of conversations) {
+    const lastMessage = await db.query.messages.findMany({
+      orderBy: [desc(schema_message.messages.created_at)],
+      where: eq(schema_message.messages.conversationId, c.conversationId),
+      limit: 1,
+    });
+
+    const lastMessageUserRole = await getUserRole(lastMessage[0]?.senderId as "string");
+    const lastMessageUser = lastMessageUserRole?.userRole === 'patient' ? await getPatient(lastMessage[0]?.senderId as "string") : await getDoctor(lastMessage[0]?.senderId as "string");
+
+    dict[c.conversationId] = {
+      conversation: c,
+      lastMessage: lastMessage[0],
+      lastMessageUser: lastMessageUser
+    }
+  }
+
+  return dict;
+}
+
+export const createConversation = async (conversation: ConversationsInterface) => {
   return db
     .insert(schema_message.conversations)
-    .values(data)
+    .values(conversation)
     .onConflictDoNothing()
     .returning();
 };
@@ -682,15 +733,10 @@ export const getMessages = async (
   });
 };
 
-export const createMessage = async (data: {
-  conversationId: string;
-  senderId: string;
-  content: string;
-  read?: boolean;
-}): Promise<MessagesInterface[]> => {
+export const createMessage = async (message: MessagesInterface) => {
   return db
     .insert(schema_message.messages)
-    .values({ ...data, read: data.read ?? false })
+    .values(message)
     .returning();
 };
 

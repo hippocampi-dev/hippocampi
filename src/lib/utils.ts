@@ -45,3 +45,26 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
+
+export function formatMessageTime(timestamp: string): string {
+  const date = new Date(timestamp)
+  const now = new Date()
+
+  // If today, show time
+  if (date.toDateString() === now.toDateString()) {
+    return date.toLocaleTimeString('en-US',
+    {
+      hour: "numeric",
+      minute: "2-digit",
+    })
+  }
+
+  // If this week, show day name
+  const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24))
+  if (diffDays < 7) {
+    return date.toLocaleDateString([], { weekday: "short" })
+  }
+
+  // Otherwise show date
+  return date.toLocaleDateString([], { month: "short", day: "numeric" })
+}

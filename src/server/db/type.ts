@@ -135,3 +135,11 @@ export interface IPatient {
 export type PatientDict = {
   [key: string]: IPatient; // key is patient id
 };
+
+export type ConversationDict = {
+  [key: string]: {
+    conversation: ConversationsInterface
+    lastMessage: MessagesInterface | undefined
+    lastMessageUser: DoctorsInterface | PatientsInterface | undefined
+  }
+};

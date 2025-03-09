@@ -24,7 +24,6 @@ export default async function DoctorsTable({
   // Fetch filtered doctors
   const filteredDoctors: DoctorsInterface[] = await fetchFilteredDoctors(specialization, term, currentPage);
 
-
   return (
     <div className="mt-6 flow-root">
       <p className="text-gray-600 mb-6">

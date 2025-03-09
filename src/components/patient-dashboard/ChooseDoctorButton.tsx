@@ -3,6 +3,8 @@
 import { redirect, useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import { Router } from "lucide-react";
+import { ConversationsInterface } from "~/server/db/type";
+import { createConversationServerAction } from "~/app/_actions/message/actions";
 
 interface ChooseDoctorButtonProps {
     iDoctorId: string;
@@ -34,6 +36,11 @@ interface ChooseDoctorButtonProps {
             // Add any other required fields here.
           };
 
+          const conversation: ConversationsInterface = {
+            patientId: patientId,
+            doctorId: doctorId,
+          }
+
           const res: Response = await fetch("/api/db/management/patient-doctor-management/add", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -41,6 +48,7 @@ interface ChooseDoctorButtonProps {
           });
           
           if (res.ok) {
+            const result = await createConversationServerAction(conversation);
             router.push("/dashboard");
           } else {
             throw new Error("Failed to assign doctor");

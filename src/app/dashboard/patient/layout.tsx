@@ -141,7 +141,7 @@ export default function DashboardLayout({
             </DropdownMenu>
           </SidebarFooter>
         </Sidebar>
-        <main className="flex flex-1 flex-col bg-background p-8">
+        <main className="flex flex-1 flex-col bg-background">
           {children}
         </main>
       </div>

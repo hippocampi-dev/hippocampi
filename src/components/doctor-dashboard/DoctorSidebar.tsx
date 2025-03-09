@@ -9,6 +9,7 @@ import {
   User,
   Receipt,
   ReceiptText,
+  FileText,
 } from "lucide-react";
 import {
   Sidebar,
@@ -64,6 +65,14 @@ export function DoctorDashboardSidebar() {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
+          <SidebarMenuItem>
+                <Link href="/dashboard/doctor/messages">
+                  <SidebarMenuButton>
+                    <FileText className="mr-2 h-4 w-4" />
+                    Messages
+                  </SidebarMenuButton>
+                </Link>
+              </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href="/dashboard/doctor/zoom">
