@@ -25,7 +25,7 @@ export default function Dashboard() {
         const role = userRoleData.response.userRole;
         // console.log(role)
         if (role === 'doctor') {
-          const doctorResponse = await fetch('api/db/doctor/get');
+          const doctorResponse = await fetch('/api/db/doctor/get');
           const doctorData = await doctorResponse.json();
           const doctor = doctorData.response;
 
@@ -34,7 +34,7 @@ export default function Dashboard() {
             return;
           }
           
-          const subscription = await fetch('api/db/management/subscription/get')
+          const subscription = await fetch('/api/db/management/subscription/get')
             .then(r => r.json())
             .then(r => r.response);
           console.log(subscription.status === 'unsubscribed');
