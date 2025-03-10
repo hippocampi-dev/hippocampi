@@ -3,8 +3,6 @@
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
-import { AutoSignoutProvider } from "~/components/context/AutoSignoutProvider"
-
 export default function RootLayout({
   children,
 }: {
@@ -20,10 +18,8 @@ export default function RootLayout({
   }, [status, router]);
 
   return (
-    // <AutoSignoutProvider>
     <>
       {children}
     </>
-    // </AutoSignoutProvider>
   )
 }
