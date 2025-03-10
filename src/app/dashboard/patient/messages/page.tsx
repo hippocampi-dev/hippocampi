@@ -5,7 +5,6 @@ import { getUserId } from "~/utilities/getUser"
 export default async function PatientMessages() {
   const userId = await getUserId();
   const conversationDict = await getConversationDict(userId as string);
-  // console.log(conversationDict)
 
   return (
     <Messages conversationDict={conversationDict} dashboard={'patient'} />

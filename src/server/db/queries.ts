@@ -33,6 +33,7 @@ import {
   AppointmentInvoiceDict,
   cognitiveAssessmentInterface,
   ConversationDict,
+  DoctorAvailabilitiesInterface
   // Add the missing import here
 } from "./type";
 import { db } from ".";
@@ -702,7 +703,6 @@ export const getConversationDict = async (userId: string) => {
       where: eq(schema_message.messages.conversationId, c.conversationId),
       limit: 1,
     });
-
     const lastMessageUserRole = await getUserRole(lastMessage[0]?.senderId as "string");
     const lastMessageUser = lastMessageUserRole?.userRole === 'patient' ? await getPatient(lastMessage[0]?.senderId as "string") : await getDoctor(lastMessage[0]?.senderId as "string");
 
@@ -712,8 +712,18 @@ export const getConversationDict = async (userId: string) => {
       lastMessageUser: lastMessageUser
     }
   }
-
   return dict;
+}
+
+export const getDoctorAvailabilities = async(doctorId: string) => {
+  const doctorAvailabilities = await db.query.doctorAvailabilities.findMany({
+    where: eq(schema_doctor.doctorAvailabilities.doctorId, doctorId)
+  })
+  return doctorAvailabilities;
+}
+
+export const addDoctorAvailabilities = async(availability: DoctorAvailabilitiesInterface) => {
+  return db.insert(schema_doctor.doctorAvailabilities).values(availability).onConflictDoNothing().returning();
 }
 
 export const createConversation = async (conversation: ConversationsInterface) => {

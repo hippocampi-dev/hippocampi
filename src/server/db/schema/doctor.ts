@@ -1,7 +1,9 @@
 import { relations, sql } from "drizzle-orm";
 import {
+  date,
   index,
   integer,
+  pgEnum,
   pgTableCreator,
   primaryKey,
   text,
@@ -47,6 +49,27 @@ export const doctorCredentials = createTable(
     medicalSchool: varchar("medical_school", { length: 255 }).notNull(),
     residency: varchar("residency", { length: 255 }).notNull(),
     approach: text("approach").notNull(),
+    ...timestamps
+  }
+)
+
+export const daysOfWeekEnum = pgEnum("day_of_week", [
+  "mon", "tue", "wed", "thu", "fri", "sat", "sun"
+]);
+
+export const doctorAvailabilities = createTable(
+  "doctor_availabilities",
+  {
+    recurringId: varchar("recurring_id", { length: 255 })
+      .notNull()
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    doctorId: varchar('doctor_id', { length: 255 })
+      .notNull()
+      .references(() => doctors.doctorId),
+    dayOfWeek: daysOfWeekEnum("day_of_week").notNull(),
+    startTime: date("start_time").notNull(),
+    endTime: date("end_time").notNull(),
     ...timestamps
   }
 )

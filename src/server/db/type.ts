@@ -1,5 +1,5 @@
 import { users, userLogins } from "./schema/auth";
-import { doctorCredentials, doctors } from "./schema/doctor";
+import { doctorAvailabilities, doctorCredentials, doctors } from "./schema/doctor";
 import {
   patientDoctorManagement,
   appointments,
@@ -20,6 +20,8 @@ import {
   cognitiveAssessments
 } from "./schema/patient";
 
+
+export type DoctorAvailabilitiesInterface = typeof doctorAvailabilities.$inferInsert;
 
 export type cognitiveAssessmentInterface = typeof cognitiveAssessments.$inferInsert;
 
