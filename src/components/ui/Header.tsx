@@ -53,7 +53,7 @@ export function Header() {
                 onClick={
                   session
                     ? () => signOut({ redirect: true, callbackUrl: "/" })
-                    : () => redirect("/auth/signin")
+                    : () => redirect("/auth/sign-in")
                 }
                 className="bg-blue-600 text-white hover:bg-blue-700"
               >
