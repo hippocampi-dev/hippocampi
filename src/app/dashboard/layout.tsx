@@ -13,7 +13,7 @@ export default function RootLayout({
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/sign-up")
+      router.push("/auth/sign-up")
     }
   }, [status, router]);
 

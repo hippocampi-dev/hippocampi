@@ -44,7 +44,7 @@ export function Header() {
                   asChild
                   className="border-blue-600 text-blue-600 hover:bg-blue-50"
                 >
-                  <Link href="/dashboard">Go to Dashboard</Link>
+                  <Link href="/auth/check-mfa">Go to Dashboard</Link>
                 </Button>
               </motion.div>
             )}
