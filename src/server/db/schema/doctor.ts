@@ -9,6 +9,7 @@ import {
   text,
   timestamp,
   varchar,
+  time,
 } from "drizzle-orm/pg-core";
 import { users } from "./auth";
 import { timestamps } from "./utils";
@@ -54,7 +55,7 @@ export const doctorCredentials = createTable(
 )
 
 export const daysOfWeekEnum = pgEnum("day_of_week", [
-  "mon", "tue", "wed", "thu", "fri", "sat", "sun"
+  "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
 ]);
 
 export const doctorAvailabilities = createTable(
@@ -68,8 +69,8 @@ export const doctorAvailabilities = createTable(
       .notNull()
       .references(() => doctors.doctorId),
     dayOfWeek: daysOfWeekEnum("day_of_week").notNull(),
-    startTime: date("start_time").notNull(),
-    endTime: date("end_time").notNull(),
+    startTime: varchar("start_time").notNull(),
+    endTime: varchar("end_time").notNull(),
     ...timestamps
   }
 )

@@ -723,6 +723,7 @@ export const getDoctorAvailabilities = async(doctorId: string) => {
 }
 
 export const addDoctorAvailabilities = async(availability: DoctorAvailabilitiesInterface) => {
+  console.log("Add doctor availabilities: " + JSON.stringify(availability))
   return db.insert(schema_doctor.doctorAvailabilities).values(availability).onConflictDoNothing().returning();
 }
 

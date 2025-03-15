@@ -49,6 +49,8 @@ export enum gender {
   "prefer_not_to_say",
 }
 
+
+
 // Doctors
 export type DoctorsInterface = typeof doctors.$inferInsert;
 

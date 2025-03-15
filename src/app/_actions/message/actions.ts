@@ -1,4 +1,4 @@
-'use server'
+'server-only'
 
 import { createConversation, createMessage, setMessagesRead } from "~/server/db/queries";
 import { ConversationsInterface, MessagesInterface } from "~/server/db/type";
@@ -14,3 +14,4 @@ export async function createConversationServerAction(conversation: Conversations
 export async function setMessagesReadServerAction(conversationId: string, otherUserId: string) {
   return await setMessagesRead(conversationId, otherUserId);
 }
+
