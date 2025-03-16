@@ -1,6 +1,11 @@
 {
+<<<<<<< HEAD
   "id": "9cd3901f-613b-4756-8e64-3abe97d8cf28",
   "prevId": "c7ee527f-d09a-4537-9304-3f8606acabc5",
+=======
+  "id": "d55b220c-4750-480d-a352-c8435b6aabe5",
+  "prevId": "1734f767-ce32-48e4-96a4-50f9adb350e9",
+>>>>>>> 9b248a6 (doctor onboarding (need to implement saving to google drive), fix dynamic server usage error)
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -427,6 +432,7 @@
       },
       "uniqueConstraints": {}
     },
+<<<<<<< HEAD
     "public.hippocampi_doctor_availabilities": {
       "name": "hippocampi_doctor_availabilities",
       "schema": "",
@@ -496,6 +502,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+=======
+>>>>>>> 9b248a6 (doctor onboarding (need to implement saving to google drive), fix dynamic server usage error)
     "public.hippocampi_doctor_credentials": {
       "name": "hippocampi_doctor_credentials",
       "schema": "",
@@ -530,6 +538,15 @@
           "primaryKey": false,
           "notNull": true
         },
+<<<<<<< HEAD
+=======
+        "files": {
+          "name": "files",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false
+        },
+>>>>>>> 9b248a6 (doctor onboarding (need to implement saving to google drive), fix dynamic server usage error)
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -586,6 +603,7 @@
           "primaryKey": false,
           "notNull": true
         },
+<<<<<<< HEAD
         "email": {
           "name": "email",
           "type": "varchar(255)",
@@ -595,6 +613,41 @@
         "location": {
           "name": "location",
           "type": "text",
+=======
+        "date_of_birth": {
+          "name": "date_of_birth",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "age": {
+          "name": "age",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gender": {
+          "name": "gender",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "primary_language": {
+          "name": "primary_language",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "phone_number": {
+          "name": "phone_number",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(255)",
+>>>>>>> 9b248a6 (doctor onboarding (need to implement saving to google drive), fix dynamic server usage error)
           "primaryKey": false,
           "notNull": true
         },
@@ -622,6 +675,17 @@
           "primaryKey": false,
           "notNull": true
         },
+<<<<<<< HEAD
+=======
+        "onboarding_status": {
+          "name": "onboarding_status",
+          "type": "onboarding_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'not-started'"
+        },
+>>>>>>> 9b248a6 (doctor onboarding (need to implement saving to google drive), fix dynamic server usage error)
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -2057,6 +2121,7 @@
     }
   },
   "enums": {
+<<<<<<< HEAD
     "public.day_of_week": {
       "name": "day_of_week",
       "schema": "public",
@@ -2068,6 +2133,17 @@
         "Friday",
         "Saturday",
         "Sunday"
+=======
+    "public.onboarding_status": {
+      "name": "onboarding_status",
+      "schema": "public",
+      "values": [
+        "not-started",
+        "profile",
+        "credentials",
+        "pending-approval",
+        "approved"
+>>>>>>> 9b248a6 (doctor onboarding (need to implement saving to google drive), fix dynamic server usage error)
       ]
     },
     "public.appointment_status": {

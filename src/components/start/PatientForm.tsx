@@ -12,6 +12,7 @@ import { useSession } from "next-auth/react";
 import { PatientsInterface, SubscriptionsInterface } from "~/server/db/type";
 import { cognitiveSymptoms } from "~/server/db/schema/patient";
 import { personalInfoSchema, validatePastDate } from "~/lib/schemas/patients";
+import { calculateAge } from "~/utilities/calculateAge";
 
 // Helper function to format Zod errors
 const formatZodErrors = (issues: z.ZodIssue[]): string =>
@@ -148,11 +149,7 @@ export default function PatientForm() {
 
     // Convert dateOfBirth to Date and calculate age
     const parsedDOB = new Date(basicParse.data.dateOfBirth);
-    let calculatedAge = new Date().getFullYear() - parsedDOB.getFullYear();
-    const monthDiff = new Date().getMonth() - parsedDOB.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && new Date().getDate() < parsedDOB.getDate())) {
-      calculatedAge--;
-    }
+    const calculatedAge = calculateAge(parsedDOB);
 
     // Create the patient object ensuring proper types
     const patient: PatientsInterface = {

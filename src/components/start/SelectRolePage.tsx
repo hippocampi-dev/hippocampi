@@ -20,7 +20,7 @@ export default function SelectRolePage() {
       return;
     }
     if (selectedRole) {
-      setUserRole(selectedRole).then(redirect("/dashboard"));
+      setUserRole(selectedRole).then(() => setTimeout(() => redirect("/middle"), 100));
     }
   };
 
