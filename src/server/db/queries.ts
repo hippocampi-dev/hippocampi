@@ -321,6 +321,20 @@ export const getAppointment = async (appointment_id: string) => {
   });
 };
 
+// update appointment status
+export const updateAppointmentStatus = async (
+  appointment_id: string,
+  status: "Scheduled" | "Completed" | "Canceled" | "No-Show"
+) => {
+  return db
+    .update(schema_management.appointments)
+    .set({
+      status: status,
+    })
+    .where(eq(schema_management.appointments.id, appointment_id))
+    .returning();
+};
+
 // add allergies
 export const addAllergies = async (allergy: PatientAllergiesInterface) => {
   return db
@@ -484,7 +498,7 @@ export const setTreatments = async (
   return db
     .update(schema_patient.treatments)
     .set(treatment)
-    .where(eq(schema_patient.medications.patientId, user_id))
+    .where(eq(schema_patient.treatments.patientId, user_id))
     .returning();
 };
 
@@ -722,9 +736,102 @@ export const getDoctorAvailabilities = async(doctorId: string) => {
   return doctorAvailabilities;
 }
 
+export const checkOverlappingAvailability = async(doctorId: string, dayOfWeek: string, startTime: string, endTime: string) => {
+  const availabilities = await getDoctorAvailabilities(doctorId);
+  // Filter availabilities by day
+  const sameDayAvailabilities = availabilities.filter(a => a.dayOfWeek === dayOfWeek);
+  
+  if (sameDayAvailabilities.length === 0) return null;
+  console.log("sameDayAvailabilities", sameDayAvailabilities)
+  // Check for overlaps
+  for (const availability of sameDayAvailabilities) {
+    console.log('availability', availability)
+    // Convert times to minutes for easier comparison
+    const newStartMinutes = convertTimeToMinutes(startTime);
+    const newEndMinutes = convertTimeToMinutes(endTime);
+    const existingStartMinutes = convertTimeToMinutes(availability.startTime);
+    const existingEndMinutes = convertTimeToMinutes(availability.endTime);
+    console.log("hi" + newStartMinutes, newEndMinutes, existingStartMinutes, existingEndMinutes) 
+    // Check for overlap
+    if (
+      (newStartMinutes >= existingStartMinutes && newStartMinutes < existingEndMinutes) ||
+      (newEndMinutes > existingStartMinutes && newEndMinutes <= existingEndMinutes) ||
+      (newStartMinutes <= existingStartMinutes && newEndMinutes >= existingEndMinutes)
+    ) {
+      console.log("overlapped?")
+      return {
+        overlap: true,
+        existingTime: formatTimeWithAMPM(availability.startTime) + " - " + formatTimeWithAMPM(availability.endTime)
+      };
+    }
+  }
+  
+  return null;
+}
+
+// Helper function to convert HH:MM to minutes
+const convertTimeToMinutes = (time: string): number => {
+  const [hours, minutes] = time.split(':').map(Number);
+  if ((hours)==null || (minutes)==null) {
+    throw new Error(`Invalid time format: ${time}`);
+  }
+  return hours * 60 + minutes;
+};
+
+// Helper function to format time with AM/PM
+export const formatTimeWithAMPM = (time: string): string => {
+  const [hours, minutes] = time.split(':').map(Number);
+  if ((hours)==null || (minutes)==null) {
+    throw new Error(`Invalid time format: ${time}`);
+  }
+  const period = hours >= 12 ? 'PM' : 'AM';
+  
+  // Convert hours for 12-hour format display
+  let displayHours = hours % 12;
+  if (displayHours === 0) displayHours = 12; // Convert 0 to 12 for display
+  
+  // Format string with special indications for noon and midnight
+  let formattedTime = `${displayHours}:${minutes.toString().padStart(2, '0')} ${period}`;
+  
+  // Add clarity for specific times - optional, remove if it clutters the UI
+  if (hours === 0 && minutes === 0) formattedTime += " (Midnight)";
+  if (hours === 12 && minutes === 0) formattedTime += " (Noon)";
+  
+  return formattedTime;
+};
+
 export const addDoctorAvailabilities = async(availability: DoctorAvailabilitiesInterface) => {
-  console.log("Add doctor availabilities: " + JSON.stringify(availability))
+  // Check for overlapping availabilities before adding
+  const overlap = await checkOverlappingAvailability(
+    availability.doctorId, 
+    availability.dayOfWeek, 
+    availability.startTime,
+    availability.endTime
+  );
+  
+  if (overlap) {
+    throw new Error(`Overlaps with existing availability at ${overlap.existingTime}`);
+  }
+  
   return db.insert(schema_doctor.doctorAvailabilities).values(availability).onConflictDoNothing().returning();
+}
+
+export const deleteDoctorAvailability = async(availabilityId: string, doctorId: string) => {
+  // First check if this availability belongs to the doctor making the request
+  const availability = await db.query.doctorAvailabilities.findFirst({
+    where: and(
+      eq(schema_doctor.doctorAvailabilities.recurringId, availabilityId),
+      eq(schema_doctor.doctorAvailabilities.doctorId, doctorId)
+    ),
+  });
+  
+  if (!availability) {
+    throw new Error("Availability not found or you don't have permission to delete it");
+  }
+  
+  return db.delete(schema_doctor.doctorAvailabilities)
+    .where(eq(schema_doctor.doctorAvailabilities.recurringId, availabilityId))
+    .returning();
 }
 
 export const createConversation = async (conversation: ConversationsInterface) => {

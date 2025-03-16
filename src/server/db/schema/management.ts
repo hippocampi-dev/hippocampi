@@ -59,7 +59,8 @@ export const patientDoctorManagement = createTable(
 export const appointmentStatusEnum = pgEnum('appointment_status', [
   'Scheduled',
   'Canceled',
-  'Completed'
+  'Completed',
+  'No-Show'
 ]);
 
 export const appointments = createTable(

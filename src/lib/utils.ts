@@ -72,6 +72,21 @@ export function formatMessageTime(timestamp: string): string {
   return date.toLocaleDateString([], { month: "short", day: "numeric" })
 }
 
+/**
+ * Format a time string (HH:MM) with AM/PM
+ */
+export function formatTimeWithAMPM(time: string): string {
+  const [hours, minutes] = time.split(':').map(Number);
+  if ((hours) == null || minutes == null) {
+    return time;
+  }
+  
+  const period = hours >= 12 ? 'PM' : 'AM';
+  const formattedHours = hours % 12 || 12; // Convert 0 to 12 for 12 AM
+  const formattedMinutes = minutes.toString().padStart(2, '0');
+  
+  return `${formattedHours}:${formattedMinutes} ${period}`;
+}
 
 export const availabilitySchema = z
   .object({

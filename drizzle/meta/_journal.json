@@ -50,6 +50,34 @@
       "when": 1741978155358,
       "tag": "0006_smooth_korg",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1742010535032,
+      "tag": "0007_lonely_doomsday",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1742082762898,
+      "tag": "0008_spotty_gateway",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1742082820998,
+      "tag": "0009_cheerful_hawkeye",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1742083264817,
+      "tag": "0010_true_warhawk",
+      "breakpoints": true
     }
   ]
 }
