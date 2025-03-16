@@ -33,7 +33,8 @@ import {
   AppointmentInvoiceDict,
   cognitiveAssessmentInterface,
   ConversationDict,
-  DoctorAvailabilitiesInterface
+  DoctorAvailabilitiesInterface,
+
   // Add the missing import here
 } from "./type";
 import { db } from ".";
@@ -282,6 +283,7 @@ export const getPatientDoctorManagement = async (user_id: UserIdInterface) => {
 
 // add scheduled meeting
 export const addAppointment = async (meeting: AppointmentsInterface) => {
+  console.log("Meeting is scheduled at " + meeting.scheduledAt);
   return db
     .insert(schema_management.appointments)
     .values(meeting)
@@ -295,7 +297,7 @@ export const cancelAppointment = async (
 ) => {
   return db
     .update(schema_management.appointments)
-    .set({ status: "Canceled" })
+    .set({ status: "Canceled", scheduledAt: new Date().toISOString() }) 
     .where(eq(schema_management.appointments.id, meeting_id))
     .returning();
 };
@@ -326,13 +328,16 @@ export const updateAppointmentStatus = async (
   appointment_id: string,
   status: "Scheduled" | "Completed" | "Canceled" | "No-Show"
 ) => {
-  return db
-    .update(schema_management.appointments)
-    .set({
-      status: status,
-    })
-    .where(eq(schema_management.appointments.id, appointment_id))
-    .returning();
+  const dateToStore = new Date().toISOString();
+  if (isNaN(Date.parse(dateToStore))) {
+    console.log("Invalid date");
+    throw new Error('Invalid date');
+  }
+await db
+  .update(schema_management.appointments)
+  .set({ status, scheduledAt: dateToStore })
+  .where(eq(schema_management.appointments.id, appointment_id))
+  .returning();
 };
 
 // add allergies

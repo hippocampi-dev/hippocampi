@@ -1,0 +1,2 @@
+ALTER TABLE "hippocampi_appointments" ADD COLUMN "scheduled_at" timestamp with time zone NOT NULL;--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "meeting_date_idx" ON "hippocampi_appointments" USING btree ("scheduled_at");

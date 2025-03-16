@@ -76,7 +76,7 @@ export const appointments = createTable(
     patientId: varchar('patient_id', { length: 255 })
       .notNull()
       .references(() => patients.patientId),
-    scheduledAt: timestamp('scheduled_at', { withTimezone: true, mode: 'date' })
+    scheduledAt: timestamp('scheduled_at', { mode: 'string' })
       .notNull(),
     reason: text('reason'),
     notes: text('notes'), // Optional field for additional info

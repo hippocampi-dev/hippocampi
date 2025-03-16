@@ -27,13 +27,13 @@ export function CurrentAppointments({ appointments }: CurrentAppointmentsProps) 
               return {
                 ...appointment,
                 doctor: data.doctor,
-                scheduledAt: new Date(appointment.scheduledAt)
+                scheduledAt: new Date(appointment.scheduledAt).toISOString()
               };
             } catch (error) {
               console.error("Error fetching doctor details:", error);
               return {
                 ...appointment,
-                scheduledAt: new Date(appointment.scheduledAt)
+                scheduledAt: new Date(appointment.scheduledAt).toISOString()
               };
             }
           })
@@ -81,8 +81,31 @@ export function CurrentAppointments({ appointments }: CurrentAppointmentsProps) 
     }
   };
 
-  const handleCancelAppointment = (id: string) => {
-    updateAppointmentStatus(id, "Canceled");
+  const handleCancelAppointment = async (id: string) => {
+    try {
+      const response = await fetch('/api/db/management/appointments/cancel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to cancel appointment");
+      }
+      
+      // Update local state
+      setAppointmentData(prev => 
+        prev.map(apt => apt.id === id ? { ...apt, status: "Canceled" } : apt)
+      );
+      
+      toast.success("Appointment cancelled successfully");
+    } catch (error) {
+      toast.error(`Failed to cancel appointment: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error(error);
+    }
   };
 
   if (loading) {
