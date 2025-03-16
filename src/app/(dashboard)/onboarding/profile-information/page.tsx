@@ -1,169 +1,137 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { Textarea } from "~/components/ui/textarea";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/ui/form";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
-import Loading from "../loading/page";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
-import { DoctorCredentialsInterface, DoctorsInterface } from "~/server/db/type";
-import { useSession } from "next-auth/react";
-import { convertGender, ProfileFormData, ProfileFormSchema } from "../doctor-onboarding/ProfileFormSchema";
-import { calculateAge } from "~/utilities/calculateAge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
-import { useToast } from "~/hooks/useToaster";
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { Button } from "~/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~/components/ui/card"
+import { Input } from "~/components/ui/input"
+import { Textarea } from "~/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select"
+import { useToast } from "~/hooks/useToaster"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form"
+import { ProfileFormSchema, type ProfileFormData } from '~/components/doctor-onboarding/ProfileFormSchema'
+import { calculateAge } from "~/utilities/calculateAge"
+import { addDoctorCredentialsOnboarding, addDoctorOnboarding, addDoctorSubscriptionOnboarding, updateDoctorOnboardingStatus } from "~/app/_actions/onboarding/actions"
+import { DoctorCredentialsInterface, DoctorsInterface, SubscriptionsInterface } from "~/server/db/type"
+import { useSession } from "next-auth/react"
+import { isLocalHost } from "~/utilities/isLocalHost"
 
-export default function DoctorAccount() {
-  const { data: session } = useSession();
+export default function ProfileInformation() {
+  const {data: session} = useSession();
+  const router = useRouter()
+  const { toast } = useToast()
   const [activeTab, setActiveTab] = useState("personal")
   const [loading, setLoading] = useState(false)
-  const { toast } = useToast();
-  const [isSaving, setIsSaving] = useState(false);
-  const [defaultValues, setDefaultValues] = useState<ProfileFormData>({
-    profile: {
-      firstName: "",
-      lastName: "",
-      dateOfBirth: "",
-      gender: "prefer-not-to-say",
-      primaryLanguage: "English",
-      phoneNumber: "",
-      email: "",
-      specialization: "",
-      bio: "",
-      profileUrl: ""
-    },
-    credentials: {
-      degree: "",
-      medicalSchool: "",
-      residency: "",
-      approach: "",
-    },
-  });
 
+  // Initialize the form with React Hook Form and Zod validation
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(ProfileFormSchema),
-    defaultValues,
-  });
+    defaultValues: {
+      profile: {
+        firstName: "",
+        lastName: "",
+        dateOfBirth: "",
+        gender: "prefer-not-to-say",
+        primaryLanguage: "",
+        phoneNumber: "",
+        email: "",
+        specialization: "",
+        bio: "",
+        profileUrl: ""
+      },
+      credentials: {
+        degree: "",
+        medicalSchool: "",
+        residency: "",
+        approach: "",
+      },
+    },
+  })
 
-  useEffect(() => {
-    const fetchDoctorInformation = async () => {
-      try {
-        setLoading(true);
-        const doctorInfo: DoctorsInterface = await fetch("/api/db/doctor/get")
-          .then((r) => r.json())
-          .then((r) => r.response);
-        const doctorCredentials: DoctorCredentialsInterface = await fetch(
-          "/api/db/doctor/credentials/get",
-        )
-          .then((r) => r.json())
-          .then((r) => r.response);
+  const {
+    formState: { errors },
+  } = form
 
-        if (doctorInfo && doctorCredentials) {
-          const values: ProfileFormData = {
-            profile: {
-              firstName: doctorInfo.firstName,
-              lastName: doctorInfo.lastName,
-              email: doctorInfo.email,
-              specialization: doctorInfo.specialization!,
-              bio: doctorInfo.bio,
-              profileUrl: doctorInfo.profileUrl,
-              dateOfBirth: doctorInfo.dateOfBirth.toDateString(),
-              gender: convertGender(doctorInfo.gender),
-              // age
-              primaryLanguage: doctorInfo.primaryLanguage,
-              phoneNumber: doctorInfo.phoneNumber
-            },
-            credentials: {
-              degree: doctorCredentials.degree,
-              medicalSchool: doctorCredentials.medicalSchool,
-              residency: doctorCredentials.residency,
-              approach: doctorCredentials.approach,
-            }
-          };
-          setDefaultValues(values);
-          form.reset(values);
-        }
-      } catch (error) {
-        console.error("Failed to fetch doctor information:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDoctorInformation();
-  }, [form]);
-
-  async function onSubmit(data: ProfileFormData) {
-    setIsSaving(true);
-    try {
-      const doctor: DoctorsInterface = {
-        firstName: data.profile.firstName,
-        lastName: data.profile.lastName,
-        email: data.profile.email,
-        bio: data.profile.bio,
-        doctorId: session?.user.id!,
-        specialization: data.profile.specialization,
-        profileUrl: data.profile.profileUrl,
-        dateOfBirth: new Date(data.profile.dateOfBirth),
-        gender: data.profile.gender,
-        age: calculateAge(new Date(data.profile.dateOfBirth)),
-        primaryLanguage: data.profile.primaryLanguage,
-        phoneNumber: data.profile.phoneNumber
-      };
-
-      const credentials: DoctorCredentialsInterface = {
-        degree: data.credentials.degree,
-        medicalSchool: data.credentials.medicalSchool,
-        residency: data.credentials.residency,
-        doctorId: session?.user.id!,
-        approach: data.credentials.approach,
-      };
-
-      // In a real application, you would send this data to your API
-      await fetch("/api/db/doctor/set", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(doctor),
-      });
-      await fetch("/api/db/doctor/credentials/set", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(credentials),
-      });
-      console.log("Account information updated successfully");
-    } catch (error) {
-      console.error("Failed to update account information:", error);
-    } finally {
-      setIsSaving(false);
+  // Check if a tab has errors
+  const hasTabErrors = (tab: string) => {
+    if (tab === "personal") {
+      return (
+        !!errors.profile?.firstName ||
+        !!errors.profile?.lastName ||
+        !!errors.profile?.dateOfBirth ||
+        !!errors.profile?.gender ||
+        !!errors.profile?.primaryLanguage ||
+        !!errors.profile?.phoneNumber ||
+        !!errors.profile?.email
+      )
+    } else if (tab === "professional") {
+      return (
+        !!errors.profile?.specialization ||
+        !!errors.profile?.bio ||
+        !!errors.credentials?.degree ||
+        !!errors.credentials?.medicalSchool ||
+        !!errors.credentials?.residency ||
+        !!errors.credentials?.approach ||
+        !!errors.profile?.profileUrl
+      )
     }
+    return false
   }
 
-  if (loading) return <Loading />;
+  const onSubmit = async (data: ProfileFormData) => {
+    if (activeTab === 'personal' || hasTabErrors("personal") || hasTabErrors("professional")) return;
+
+    try {
+      setLoading(true)
+
+      // Calculate age from date of birth
+      const age = calculateAge(new Date(data.profile.dateOfBirth));
+
+      // Prepare the data for submission
+      const doctorData: DoctorsInterface = {
+        ...data.profile,
+        doctorId: session?.user.id!,
+        dateOfBirth: new Date(data.profile.dateOfBirth),
+        age,
+        onboardingStatus: "credentials"
+      }
+
+      const credentialsData: DoctorCredentialsInterface = {
+        ...data.credentials,
+        doctorId: session?.user.id!
+      }
+
+      const subscriptionData: SubscriptionsInterface = {
+        userId: session?.user.id!,
+        status: isLocalHost() ? 'subscribed' : 'unsubscribed'
+      }
+
+      // API call to save profile information
+      // await addDoctorOnboarding(doctorData);
+      // await addDoctorCredentialsOnboarding(credentialsData);
+      // await addDoctorSubscriptionOnboarding(subscriptionData);
+
+      toast({
+        title: "Profile Information Saved",
+        description: "Your profile information has been saved successfully.",
+        variant: "success",
+      })
+      
+      router.push("/onboarding/credentials")
+    } catch (error) {
+      console.error("Error saving profile:", error)
+      toast({
+        title: "Error",
+        description: "There was an error saving your profile information. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="container py-12">
@@ -461,7 +429,9 @@ export default function DoctorAccount() {
                   type="button"
                   variant="outline"
                   onClick={() => {
-                    if (activeTab === "professional") {
+                    if (activeTab === "personal") {
+                      router.push("/onboarding/start")
+                    } else if (activeTab === "professional") {
                       setActiveTab("personal")
                     }
                   }}
@@ -504,7 +474,7 @@ export default function DoctorAccount() {
                   </Button>
                 ) : (
                   <Button type="submit" disabled={loading}>
-                    {isSaving ? "Saving..." : "Save and Continue"}
+                    {loading ? "Saving..." : "Save and Continue"}
                   </Button>
                 )}
               </CardFooter>

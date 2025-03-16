@@ -1,7 +1,10 @@
 import { relations, sql } from "drizzle-orm";
 import {
+  date,
   index,
   integer,
+  json,
+  pgEnum,
   pgTableCreator,
   primaryKey,
   text,
@@ -13,6 +16,14 @@ import { timestamps } from "./utils";
 import { createTable } from "./schema";
 
 // Doctors
+export const onboardingStatusEnum = pgEnum('onboarding_status', [
+  'not-started',
+  'profile',
+  'credentials',
+  'pending-approval',
+  'approved'
+]);
+
 export const doctors = createTable(
   "doctors",
   {
@@ -22,20 +33,24 @@ export const doctors = createTable(
       .references(() => users.id, {onDelete: 'cascade'}),
     firstName: varchar('first_name').notNull(),
     lastName: varchar('last_name').notNull(),
+    dateOfBirth: date("date_of_birth", { mode: "date" }).notNull(),
+    age: integer("age").notNull(),
+    gender: varchar('gender').notNull(),
+    primaryLanguage: varchar('primary_language').notNull(),
+    phoneNumber: varchar('phone_number').notNull(),
     email: varchar("email", { length: 255 })
       .notNull()
       .unique(),
-    location: text("location")
-      .notNull(),
     specialization: varchar("specialization"),
     ratings: varchar("ratings", { length: 20 }),
     bio: text('bio').notNull(),
     profileUrl: varchar('profile_url', { length: 255 }).notNull(),
+    onboardingStatus: onboardingStatusEnum("onboarding_status").default('not-started'),
     ...timestamps
   }
 )
 
-// other info
+// general credentials
 export const doctorCredentials = createTable(
   "doctor_credentials",
   {
@@ -47,6 +62,7 @@ export const doctorCredentials = createTable(
     medicalSchool: varchar("medical_school", { length: 255 }).notNull(),
     residency: varchar("residency", { length: 255 }).notNull(),
     approach: text("approach").notNull(),
+    files: json('files'),
     ...timestamps
   }
 )

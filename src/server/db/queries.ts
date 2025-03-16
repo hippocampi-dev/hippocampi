@@ -37,6 +37,7 @@ import {
 } from "./type";
 import { db } from ".";
 import { desc, asc } from "drizzle-orm";
+import { CredentialsInterface } from "~/app/(dashboard)/onboarding/credentials/page";
 
 // add user role
 export const addUserRole = async (user: UserRolesInterface) => {
@@ -82,7 +83,10 @@ export const setPatient = async (
 ) => {
   return db
     .update(schema_patient.patients)
-    .set(patient)
+    .set({
+      ...patient,
+      updated_at: sql`NOW()`
+    })
     .where(eq(schema_patient.patients.patientId, user_id))
     .returning();
 };
@@ -124,7 +128,10 @@ export const setDoctor = async (
 ) => {
   return db
     .update(schema_doctor.doctors)
-    .set(doctor)
+    .set({
+      ...doctor,
+      updated_at: sql`NOW()`
+    })
     .where(eq(schema_doctor.doctors.doctorId, user_id))
     .returning();
 };
@@ -154,7 +161,7 @@ export const fetchFilteredDoctors = async (
                 ilike(schema_doctor.doctors.firstName, `%${term}%`),
                 ilike(schema_doctor.doctors.lastName, `%${term}%`),
                 ilike(schema_doctor.doctors.email, `%${term}%`),
-                ilike(schema_doctor.doctors.location, `%${term}%`)
+                // ilike(schema_doctor.doctors.location, `%${term}%`)
               )
             )
           : or(
@@ -162,7 +169,7 @@ export const fetchFilteredDoctors = async (
               ilike(schema_doctor.doctors.lastName, `%${term}%`),
               ilike(schema_doctor.doctors.email, `%${term}%`),
               ilike(schema_doctor.doctors.specialization, `%${term}%`),
-              ilike(schema_doctor.doctors.location, `%${term}%`)
+              // ilike(schema_doctor.doctors.location, `%${term}%`)
             ),
       limit: 6,
       offset: offset,
@@ -185,7 +192,7 @@ export async function fetchDoctorsPages(query: string) {
           ilike(schema_doctor.doctors.lastName, `%${query}%`),
           ilike(schema_doctor.doctors.email, `%${query}%`),
           ilike(schema_doctor.doctors.specialization, `%${query}%`),
-          ilike(schema_doctor.doctors.location, `%${query}%`)
+          // ilike(schema_doctor.doctors.location, `%${query}%`)
         )
       );
 
@@ -220,10 +227,27 @@ export const setDoctorCredentials = async (
 ) => {
   return db
     .update(schema_doctor.doctorCredentials)
-    .set(doctorCredential)
+    .set({
+      ...doctorCredential,
+      updated_at: sql`NOW()`
+    })
     .where(eq(schema_doctor.doctorCredentials.doctorId, user_id))
     .returning();
 };
+
+export const setDoctorCredentialLinks  = async (
+  user_id: UserIdInterface,
+  credentialLinks: CredentialsInterface
+) => {
+  return db
+    .update(schema_doctor.doctorCredentials)
+    .set({
+      files: credentialLinks,
+      updated_at: sql`NOW()`
+    })
+    .where(eq(schema_doctor.doctorCredentials.doctorId, user_id))
+    .returning();
+}
 
 // get doctor credentials
 export const getDoctorCredentials = async (user_id: UserIdInterface) => {
@@ -294,7 +318,10 @@ export const cancelAppointment = async (
 ) => {
   return db
     .update(schema_management.appointments)
-    .set({ status: "Canceled" })
+    .set({
+      status: "Canceled",
+      updated_at: sql`NOW()`
+    })
     .where(eq(schema_management.appointments.id, meeting_id))
     .returning();
 };
@@ -336,7 +363,10 @@ export const setAllergies = async (
 ) => {
   return db
     .update(schema_patient.allergies)
-    .set(allergy)
+    .set({
+      ...allergy,
+      updated_at: sql`NOW()`
+    })
     .where(eq(schema_patient.allergies.patientId, user_id))
     .returning();
 };
@@ -366,7 +396,10 @@ export const setCognitiveSymptoms = async (
 ) => {
   return db
     .update(schema_patient.cognitiveSymptoms)
-    .set(cognitiveSymptom)
+    .set({
+      ...cognitiveSymptom,
+      updated_at: sql`NOW()`
+    })
     .where(eq(schema_patient.cognitiveSymptoms.patientId, user_id))
     .returning();
 };
@@ -394,7 +427,10 @@ export const setDiagnoses = async (
 ) => {
   return db
     .update(schema_patient.diagnoses)
-    .set(dianosis)
+    .set({
+      ...dianosis,
+      updated_at: sql`NOW()`
+    })
     .where(eq(schema_patient.diagnoses.patientId, user_id))
     .returning();
 };
@@ -424,7 +460,10 @@ export const setEmergencyContacts = async (
 ) => {
   return db
     .update(schema_patient.emergencyContacts)
-    .set(emergencyContact)
+    .set({
+      ...emergencyContact,
+      updated_at: sql`NOW()`
+    })
     .where(eq(schema_patient.emergencyContacts.patientId, user_id))
     .returning();
 };
@@ -454,7 +493,10 @@ export const setMedications = async (
 ) => {
   return db
     .update(schema_patient.medications)
-    .set(medication)
+    .set({
+      ...medication,
+      updated_at: sql`NOW()`
+    })
     .where(eq(schema_patient.medications.patientId, user_id))
     .returning();
 };
@@ -482,7 +524,10 @@ export const setTreatments = async (
 ) => {
   return db
     .update(schema_patient.treatments)
-    .set(treatment)
+    .set({
+      ...treatment,
+      updated_at: sql`NOW()`
+    })
     .where(eq(schema_patient.medications.patientId, user_id))
     .returning();
 };
@@ -512,7 +557,10 @@ export const setMedicalHistory = async (
 ) => {
   return db
     .update(schema_patient.medicalHistory)
-    .set(medicalHistory)
+    .set({
+      ...medicalHistory,
+      updated_at: sql`NOW()`
+    })
     .where(eq(schema_patient.medications.patientId, user_id))
     .returning();
 };
@@ -579,7 +627,10 @@ export const setDoctorSubscription = async (
 ) => {
   return db
     .update(schema_management.subscriptions)
-    .set(subscription)
+    .set({
+      ...subscription,
+      updated_at: sql`NOW()`
+    })
     .where(eq(schema_management.subscriptions.userId, user_id))
     .returning();
 };
@@ -624,7 +675,10 @@ export const addInvoice = async (invoice: InvoicesInterface) => {
 export const setInvoice = async (invoice: InvoicesInterface) => {
   return db
     .update(schema_management.invoices)
-    .set(invoice)
+    .set({
+      ...invoice,
+      updated_at: sql`NOW()`
+    })
     .where(eq(schema_management.invoices.id, invoice.id!))
     .returning();
 };

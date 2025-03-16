@@ -8,7 +8,7 @@ export default function useSetUserRole() {
   const { data: session } = useSession();
 
   const setUserRole = async (userRole: role) => {
-    console.log(session);
+    // console.log(session);
     if (!session) {
       console.error("Session is null");
       return;

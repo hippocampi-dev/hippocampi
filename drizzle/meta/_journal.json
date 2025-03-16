@@ -43,6 +43,20 @@
       "when": 1741553553326,
       "tag": "0005_typical_mimic",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1741817371481,
+      "tag": "0006_loose_calypso",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1742083439799,
+      "tag": "0007_shocking_goblin_queen",
+      "breakpoints": true
     }
   ]
 }
