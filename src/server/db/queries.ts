@@ -316,6 +316,7 @@ export const getAppointments = async (user_id: UserIdInterface) => {
     where: eq(schema_management.appointments.patientId, user_id),
   });
 };
+
 // get scheduled meeting
 export const getAppointment = async (appointment_id: string) => {
   return db.query.appointments.findFirst({
@@ -333,11 +334,29 @@ export const updateAppointmentStatus = async (
     console.log("Invalid date");
     throw new Error('Invalid date');
   }
-await db
-  .update(schema_management.appointments)
-  .set({ status, scheduledAt: dateToStore })
-  .where(eq(schema_management.appointments.id, appointment_id))
-  .returning();
+  const currentAppointment = await getAppointment(appointment_id);
+  
+  if (!currentAppointment || !currentAppointment.patientId || !currentAppointment.doctorId) {
+    throw new Error('Invalid appointment data: missing required fields');
+  }
+
+  const addingAppointment: AppointmentsInterface = {
+    ...currentAppointment,
+    patientId: currentAppointment.patientId,
+    doctorId: currentAppointment.doctorId,
+    status,
+    scheduledAt: dateToStore,
+  }
+  return db
+    .insert(schema_management.appointments)
+    .values(addingAppointment)
+    .onConflictDoNothing()
+    .returning();
+  // await db
+  // .update(schema_management.appointments)
+  // .set({ status, scheduledAt: dateToStore })
+  // .where(eq(schema_management.appointments.id, appointment_id))
+  // .returning();
 };
 
 // add allergies
