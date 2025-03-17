@@ -110,9 +110,9 @@ export default function ProfileInformation() {
       }
 
       // API call to save profile information
-      // await addDoctorOnboarding(doctorData);
-      // await addDoctorCredentialsOnboarding(credentialsData);
-      // await addDoctorSubscriptionOnboarding(subscriptionData);
+      await addDoctorOnboarding(doctorData);
+      await addDoctorCredentialsOnboarding(credentialsData);
+      await addDoctorSubscriptionOnboarding(subscriptionData);
 
       toast({
         title: "Profile Information Saved",

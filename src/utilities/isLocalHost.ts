@@ -1,3 +1,5 @@
 export function isLocalHost() {
-  return window.location.origin === 'http://localhost:3000';
+  if (typeof window !== "undefined") {
+    return window.location.origin === 'http://localhost:3000';
+  }
 }
