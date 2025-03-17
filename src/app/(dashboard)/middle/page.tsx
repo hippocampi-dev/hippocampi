@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "~/server/auth";
 import { getDoctor, getUserRole, hasUserRole } from "~/server/db/queries";
+import { isLocalHost } from "~/utilities/isLocalHost";
 
 export default async function Middle() {
   const session = await auth();

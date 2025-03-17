@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import {
   Sidebar,
@@ -23,93 +25,68 @@ import {
   ChevronDown,
   Home,
   LogOut,
-  MessagesSquare,
-  Receipt,
-  ReceiptText,
+  Bot,
   User,
   UserCircle,
-  Users,
   Video,
+  MessagesSquare,
+  ReceiptText,
 } from "lucide-react";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 
-export function DoctorDashboardSidebar() {
+export function PatientDashboardSidebar() {
   const { data: session } = useSession();
 
   return (
     <Sidebar className="w-64">
       <SidebarHeader>
-        <h2 className="px-4 py-2 text-xl font-bold">{`Dr. ${session?.user.name}`}</h2>
+        <h2 className="px-4 pt-2 text-xl font-bold">{`${session?.user.name}`}</h2>
       </SidebarHeader>
       <SidebarContent className="px-4">
         <SidebarMenu>
           <SidebarSeparator />
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="/dashboard/doctor/">
-                <Home className="mr-2 h-4 w-4" />
-                <span>Dashboard</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="/dashboard/doctor/patients">
-                <Users className="mr-2 h-4 w-4" />
-                <span>Patients</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="/dashboard/doctor/appointments">
-                <Calendar className="mr-2 h-4 w-4" />
-                <span>Appointments</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <Link href="/dashboard/doctor/messages">
+            <SidebarMenuItem>
               <SidebarMenuButton>
+                <Link href="/dashboard/patient">
+                  <Home className="mr-2 h-4 w-4" />
+                  Home
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton>
+              <Link href="/dashboard/patient/messages">
                 <MessagesSquare className="mr-2 h-4 w-4" />
                 Messages
-              </SidebarMenuButton>
-            </Link>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="/dashboard/doctor/zoom">
-                <Video className="w-4 h-4 mr-2" />
-                <span>Zoom</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="/dashboard/doctor/billing">
-                <Receipt className="mr-2 h-4 w-4" />
-                <span>Billing</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="/dashboard/doctor/invoices">
+            <SidebarMenuButton>
+              <Link href="/dashboard/patient/invoices">
                 <ReceiptText className="mr-2 h-4 w-4" />
-                <span>Invoices</span>
+                Invoices
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Link href="/dashboard/patient/chatbot">
+                <Bot className="mr-2 h-4 w-4" />
+                Chat Bot
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="px-4">
+      <SidebarFooter>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton>
               <UserCircle className="mr-2 h-4 w-4" />
-              <span>My Profile</span>
+              My Profile
               <ChevronDown className="ml-auto h-4 w-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
@@ -117,7 +94,7 @@ export function DoctorDashboardSidebar() {
             <SidebarMenu className="mb-1">
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link href="/dashboard/doctor/profile">
+                  <Link href="/dashboard/patient/my-information">
                     <User className="mr-2 h-4 w-4" />
                     <span>My Information</span>
                   </Link>
@@ -140,5 +117,5 @@ export function DoctorDashboardSidebar() {
         </DropdownMenu>
       </SidebarFooter>
     </Sidebar>
-  );
+  )
 }
