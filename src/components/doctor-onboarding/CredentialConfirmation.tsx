@@ -15,7 +15,7 @@ import { LicenseFormData } from "./MedicalLicenseForm"
 import { NPIFormData } from "./NPIForm"
 import { Certification, CertificationsFormData } from "./CertificationsForm"
 import { useSession } from "next-auth/react"
-import { setDoctorCredentialLinksOnboarding } from "~/app/_actions/onboarding/actions"
+import { addDoctorCredentialLinksOnboarding } from "~/app/_actions/onboarding/actions"
 import { useRouter } from "next/navigation"
 
 interface CredentialConfirmationProps {
@@ -88,7 +88,7 @@ export function CredentialConfirmation({
         }))
       },
     }
-    await setDoctorCredentialLinksOnboarding(session?.user.id!, credentials).then(() =>{
+    await addDoctorCredentialLinksOnboarding(session?.user.id!, credentials).then(() =>{
       setLoading(false)
       onComplete()
       setTimeout(() => {

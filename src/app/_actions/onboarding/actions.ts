@@ -25,8 +25,52 @@ export async function addDoctorSubscriptionOnboarding(subscription: Subscription
   return await addDoctorSubscription(subscription);
 }
 
-export async function setDoctorCredentialLinksOnboarding(id: string, credentials: CredentialsInterface) {
-  console.log(credentials);
+export async function addDoctorCredentialLinksOnboarding(id: string, credentials: CredentialsInterface) {
+  // console.log(credentials);
   return;
   return await setDoctorCredentialLinks(id as "string", credentials);
 }
+
+// Doctor Onboarding Credentials Repository --> YYYY --> DoctorID --> Files
+// Doctor Onboarding Credentials Repository/2025/doctorId/DEAForm.pdf
+
+// export interface CredentialsInterface {
+//   npi: NPIForm,
+//   license: LicenseForm,
+//   dea: DEAForm,
+//   malpractice: MalpracticeForm,
+//   certifications: CertificationsForm
+// }
+// export interface NPIForm {
+//   npiNumber: string
+//   file: File
+// }
+// export interface LicenseForm {
+//   licenseNumber: string,
+//   expirationDate: string,
+//   file: File
+// }
+// export interface DEAForm {
+//   deaNumber: string
+//   startDate: string
+//   expirationDate: string
+//   file: File
+// }
+// export interface MalpracticeForm {
+//   policyNumber: string
+//   insurerName: string
+//   startDate: string
+//   expirationDate: string
+//   coverageAmount: string
+//   file: File
+// }export interface Certification {
+//   id: string
+//   organization: string
+//   name: string
+//   dateReceived: string
+//   expirationDate?: string
+//   file: File
+// }
+// export interface CertificationsForm {
+//   certifications: Certification[]
+// }
