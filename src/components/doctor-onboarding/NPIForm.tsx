@@ -18,7 +18,7 @@ export interface NPIFormData {
 
 export interface NPIForm {
   npiNumber: string
-  file: File
+  file: File | string
 }
 
 interface NPIFormProps {

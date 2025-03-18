@@ -26,7 +26,7 @@ export interface Certification {
   name: string
   dateReceived: string
   expirationDate?: string
-  file: File
+  file: File | string
 }
 
 export interface CertificationsFormData {
