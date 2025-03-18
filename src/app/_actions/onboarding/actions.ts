@@ -31,8 +31,8 @@ export async function addDoctorCredentialLinksOnboarding(id: string, credentials
   // credentials = createTestCredentials();
 
   const processedCredentials = await convertCredentialFilesToBlobUrl(id, credentials);
-  console.log('credentials', processedCredentials);
-  console.log('certifications', processedCredentials.certifications.certifications)
+  // console.log('credentials', processedCredentials);
+  // console.log('certifications', processedCredentials.certifications.certifications)
 
   const returnedCredentials = await setDoctorCredentialLinks(id as "string", processedCredentials);
 
