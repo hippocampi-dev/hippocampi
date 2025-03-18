@@ -1,14 +1,27 @@
 "use server"
 import { z, ZodType } from "zod"
 import { revalidatePath } from "next/cache";
-import { addDoctorAvailabilities, checkOverlappingAvailability, updateAppointmentStatus } from "~/server/db/queries";
+import { addAppointment, addDoctorAvailabilities, checkOverlappingAvailability, updateAppointmentStatus } from "~/server/db/queries";
 import { getUserId } from "~/utilities/getUser";
 import { redirect } from "next/navigation";
 import { availabilitySchema } from "~/lib/utils";
-import { DoctorAvailabilitiesInterface } from "~/server/db/type";
+import { AppointmentsInterface, DoctorAvailabilitiesInterface } from "~/server/db/type";
 import { getDoctor, getDoctorAvailabilities } from "~/server/db/queries";
 import { DoctorsInterface } from "~/server/db/type";
 import { addDays, format } from "date-fns";
+
+
+export async function updateAppointmentStatusAction(appointmentId: string, status: "Scheduled" | "Completed" | "Canceled" | "No-Show") {
+    console.log("DEBUG updateAppointmentStatusAction - Params:", { appointmentId, status });
+    try {
+      const updatedAppointment = await updateAppointmentStatus(appointmentId, status);
+      console.log("DEBUG updateAppointmentStatusAction - Success:", updatedAppointment);
+      return updatedAppointment;
+    } catch (error) {
+      console.error("DEBUG updateAppointmentStatusAction - Error:", error);
+      throw new Error(`Failed to update appointment: ${error instanceof Error ? error.message : String(error)}`);
+    }
+}
 
 export async function fetchDoctorDetails(doctorId: "string"): Promise<DoctorsInterface> {
   const doctor = await getDoctor(doctorId);
@@ -59,19 +72,47 @@ export async function scheduleAppointment(data: {
   reason: string;
   notes?: string;
 }) {
+  console.log("DEBUG scheduleAppointment - Raw data:", data);
+  console.log("DEBUG scheduleAppointment - scheduledAt type:", typeof data.scheduledAt);
+  console.log("DEBUG scheduleAppointment - scheduledAt value:", data.scheduledAt);
+  
   try {
-    const response = await fetch(`/api/db/management/appointments/add`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
+    // Create a safe copy of the data
+    let formattedData = { 
+      ...data,
+      status: "Scheduled" 
+    };
     
-    return await response.json();
+    // Handle date conversion carefully
+    if (data.scheduledAt instanceof Date) {
+      console.log("DEBUG scheduleAppointment - Converting Date to ISO string");
+      formattedData.scheduledAt = data.scheduledAt.toISOString();
+    } else if (typeof data.scheduledAt === 'string') {
+      console.log("DEBUG scheduleAppointment - scheduledAt is a string, parsing to Date");
+      try {
+        // Try to parse and ensure it's a valid date before converting to ISO
+        const parsedDate = new Date(data.scheduledAt);
+        if (isNaN(parsedDate.getTime())) {
+          throw new Error(`Invalid date string: ${data.scheduledAt}`);
+        }
+        formattedData.scheduledAt = parsedDate.toISOString();
+      } catch (err) {
+        console.error("DEBUG scheduleAppointment - Failed to parse date string:", err);
+        throw new Error(`Invalid date format: ${data.scheduledAt}`);
+      }
+    } else {
+      // Handle case where scheduledAt is neither a Date nor a string
+      console.error("DEBUG scheduleAppointment - scheduledAt is not a Date or string:", data.scheduledAt);
+      throw new Error(`Invalid scheduledAt data type: ${typeof data.scheduledAt}`);
+    }
+    
+    console.log("DEBUG scheduleAppointment - Formatted data:", formattedData);
+    const [result]: AppointmentsInterface[] = await addAppointment(formattedData);
+    console.log("DEBUG scheduleAppointment - Result:", result);
+    return result;
   } catch (error) {
-    console.error("Failed to schedule appointment:", error);
-    throw new Error("Failed to schedule appointment");
+    console.error("DEBUG scheduleAppointment - Error:", error);
+    throw new Error(`Failed to schedule appointment: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
 
@@ -144,26 +185,3 @@ export async function createAvailability(formData: FormData) {
     }
   }
 }
-
-export async function updateAppointment(appointmentId: string, status: "Scheduled" | "Completed" | "Canceled" | "No-Show") {
-  try {
-    const updatedAppointment = await updateAppointmentStatus(appointmentId, status);
-    
-    if (!updatedAppointment || updatedAppointment.length === 0) {
-      throw new Error("Failed to update appointment status");
-    }
-    
-    // Revalidate relevant paths
-    revalidatePath("/dashboard/patient/schedule");
-    revalidatePath("/dashboard/doctor/appointments");
-    
-    return { success: true, appointment: updatedAppointment[0] };
-  } catch (error) {
-    console.error("Failed to update appointment status:", error);
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : "Unknown error" 
-    };
-  }
-}
-

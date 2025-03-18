@@ -7,6 +7,7 @@ import { AppointmentsInterface, DoctorsInterface } from "~/server/db/type";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
+import { fetchDoctorDetails, updateAppointmentStatusAction } from "~/app/_actions/schedule/actions";
 
 interface CurrentAppointmentsProps {
   appointments: AppointmentsInterface[];
@@ -17,23 +18,23 @@ export function CurrentAppointments({ appointments }: CurrentAppointmentsProps) 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchDoctorDetails = async () => {
+    const fetchDoctorDetailsEffect = async () => {
       try {
         const enhancedAppointments = await Promise.all(
           appointments.map(async (appointment) => {
             try {
-              const res = await fetch(`/api/db/doctor?id=${appointment.doctorId}`);
-              const data = await res.json();
+              const data = await fetchDoctorDetails(appointment.doctorId as "string");
+              console.log("Fetched doctor data:", data);
               return {
                 ...appointment,
-                doctor: data.doctor,
-                scheduledAt: new Date(appointment.scheduledAt).toISOString()
+                doctor: data,
+                scheduledAt: new Date(appointment.scheduledAt)
               };
             } catch (error) {
               console.error("Error fetching doctor details:", error);
               return {
                 ...appointment,
-                scheduledAt: new Date(appointment.scheduledAt).toISOString()
+                scheduledAt: new Date(appointment.scheduledAt)
               };
             }
           })
@@ -51,23 +52,13 @@ export function CurrentAppointments({ appointments }: CurrentAppointmentsProps) 
       }
     };
 
-    fetchDoctorDetails();
+    fetchDoctorDetailsEffect();
   }, [appointments]);
 
   const updateAppointmentStatus = async (id: string, status: "Scheduled" | "Completed" | "Canceled" | "No-Show") => {
     try {
-      const response = await fetch('/api/db/management/appointments/update-status', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id, status }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to update appointment");
-      }
+      const response = await updateAppointmentStatusAction(id, status)
+      console.log("Updated appointment status:", response);
 
       // Update local state
       setAppointmentData(prev => 
@@ -83,19 +74,8 @@ export function CurrentAppointments({ appointments }: CurrentAppointmentsProps) 
 
   const handleCancelAppointment = async (id: string) => {
     try {
-      const response = await fetch('/api/db/management/appointments/cancel', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id }),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to cancel appointment");
-      }
-      
+      const response = await updateAppointmentStatusAction(id, "Canceled");
+
       // Update local state
       setAppointmentData(prev => 
         prev.map(apt => apt.id === id ? { ...apt, status: "Canceled" } : apt)
