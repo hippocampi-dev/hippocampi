@@ -1,1 +1,0 @@
-ALTER TABLE "hippocampi_users" ALTER COLUMN "email_verified" SET DATA TYPE timestamp;

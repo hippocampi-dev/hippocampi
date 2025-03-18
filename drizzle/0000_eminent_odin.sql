@@ -1,5 +1,17 @@
 DO $$ BEGIN
- CREATE TYPE "public"."appointment_status" AS ENUM('Scheduled', 'Canceled', 'Completed');
+ CREATE TYPE "public"."day_of_week" AS ENUM('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."onboarding_status" AS ENUM('not-started', 'profile', 'credentials', 'pending-approval', 'approved');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."appointment_status" AS ENUM('Scheduled', 'Canceled', 'Completed', 'No-Show');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -84,6 +96,10 @@ CREATE TABLE IF NOT EXISTS "hippocampi_users" (
 	"email" varchar(255) NOT NULL,
 	"email_verified" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
 	"image" varchar(255),
+	"mfa_enabled" boolean DEFAULT false NOT NULL,
+	"mfa_verified" boolean DEFAULT false NOT NULL,
+	"mfa_secret" varchar(255),
+	"mfa_temp_secret" varchar(255),
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
@@ -95,12 +111,23 @@ CREATE TABLE IF NOT EXISTS "hippocampi_verification_token" (
 	CONSTRAINT "hippocampi_verification_token_identifier_token_pk" PRIMARY KEY("identifier","token")
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "hippocampi_doctor_availabilities" (
+	"recurring_id" varchar(255) PRIMARY KEY NOT NULL,
+	"doctor_id" varchar(255) NOT NULL,
+	"day_of_week" "day_of_week" NOT NULL,
+	"start_time" varchar NOT NULL,
+	"end_time" varchar NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "hippocampi_doctor_credentials" (
 	"doctor_id" varchar(255) PRIMARY KEY NOT NULL,
 	"degree" varchar(255) NOT NULL,
 	"medical_school" varchar(255) NOT NULL,
 	"residency" varchar(255) NOT NULL,
 	"approach" text NOT NULL,
+	"files" json,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
@@ -109,11 +136,17 @@ CREATE TABLE IF NOT EXISTS "hippocampi_doctors" (
 	"doctor_id" varchar(255) PRIMARY KEY NOT NULL,
 	"first_name" varchar NOT NULL,
 	"last_name" varchar NOT NULL,
+	"date_of_birth" date NOT NULL,
+	"age" integer NOT NULL,
+	"gender" varchar NOT NULL,
+	"primary_language" varchar NOT NULL,
+	"phone_number" varchar NOT NULL,
 	"email" varchar(255) NOT NULL,
-	"location" text NOT NULL,
 	"specialization" varchar,
 	"ratings" varchar(20),
 	"bio" text NOT NULL,
+	"profile_url" varchar(255) NOT NULL,
+	"onboarding_status" "onboarding_status" DEFAULT 'not-started',
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "hippocampi_doctors_email_unique" UNIQUE("email")
@@ -123,7 +156,7 @@ CREATE TABLE IF NOT EXISTS "hippocampi_appointments" (
 	"id" varchar(255) PRIMARY KEY NOT NULL,
 	"doctor_id" varchar(255) NOT NULL,
 	"patient_id" varchar(255) NOT NULL,
-	"scheduled_at" timestamp with time zone NOT NULL,
+	"scheduled_at" timestamp NOT NULL,
 	"reason" text,
 	"notes" text,
 	"appointment_status" "appointment_status" DEFAULT 'Scheduled' NOT NULL,
@@ -178,6 +211,19 @@ CREATE TABLE IF NOT EXISTS "hippocampi_allergies" (
 	"allergen" varchar NOT NULL,
 	"reaction_description" text,
 	"severity_level" varchar,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "hippocampi_cognitive_assessments" (
+	"id" varchar(255) PRIMARY KEY NOT NULL,
+	"patient_id" varchar(255) NOT NULL,
+	"primary_concerns" json NOT NULL,
+	"additional_support" json DEFAULT 'null'::json,
+	"mental_demands" text NOT NULL,
+	"cognitive_changes" text NOT NULL,
+	"areas_for_help" json DEFAULT 'null'::json,
+	"additional_info" text DEFAULT '',
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
@@ -286,7 +332,8 @@ CREATE TABLE IF NOT EXISTS "hippocampi_messages" (
 	"conversation_id" varchar(255) NOT NULL,
 	"sender_id" varchar(255) NOT NULL,
 	"content" text NOT NULL,
-	"read" boolean NOT NULL,
+	"read" boolean DEFAULT false NOT NULL,
+	"time" timestamp with time zone NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
@@ -311,6 +358,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "hippocampi_user_logins" ADD CONSTRAINT "hippocampi_user_logins_affected_patient_id_hippocampi_patients_patient_id_fk" FOREIGN KEY ("affected_patient_id") REFERENCES "public"."hippocampi_patients"("patient_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "hippocampi_doctor_availabilities" ADD CONSTRAINT "hippocampi_doctor_availabilities_doctor_id_hippocampi_doctors_doctor_id_fk" FOREIGN KEY ("doctor_id") REFERENCES "public"."hippocampi_doctors"("doctor_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -383,6 +436,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "hippocampi_allergies" ADD CONSTRAINT "hippocampi_allergies_patient_id_hippocampi_patients_patient_id_fk" FOREIGN KEY ("patient_id") REFERENCES "public"."hippocampi_patients"("patient_id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "hippocampi_cognitive_assessments" ADD CONSTRAINT "hippocampi_cognitive_assessments_patient_id_hippocampi_patients_patient_id_fk" FOREIGN KEY ("patient_id") REFERENCES "public"."hippocampi_patients"("patient_id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

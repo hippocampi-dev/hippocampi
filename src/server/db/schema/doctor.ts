@@ -34,7 +34,7 @@ export const doctors = createTable(
       .references(() => users.id, {onDelete: 'cascade'}),
     firstName: varchar('first_name').notNull(),
     lastName: varchar('last_name').notNull(),
-    dateOfBirth: date("date_of_birth", { mode: "date" }).notNull(),
+    dateOfBirth: varchar("date_of_birth").notNull(), // Changed to varchar instead of date with date mode
     age: integer("age").notNull(),
     gender: varchar('gender').notNull(),
     primaryLanguage: varchar('primary_language').notNull(),
