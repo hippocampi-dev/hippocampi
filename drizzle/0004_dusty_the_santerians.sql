@@ -1,0 +1,1 @@
+ALTER TABLE "hippocampi_doctors" DROP COLUMN IF EXISTS "date_of_birth";
