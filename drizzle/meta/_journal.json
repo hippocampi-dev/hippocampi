@@ -47,50 +47,15 @@
     {
       "idx": 6,
       "version": "7",
-      "when": 1741978155358,
-      "tag": "0006_smooth_korg",
+      "when": 1741817371481,
+      "tag": "0006_loose_calypso",
       "breakpoints": true
     },
     {
       "idx": 7,
       "version": "7",
-      "when": 1742010535032,
-      "tag": "0007_lonely_doomsday",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "7",
-      "when": 1742082762898,
-      "tag": "0008_spotty_gateway",
-      "breakpoints": true
-    },
-    {
-      "idx": 9,
-      "version": "7",
-      "when": 1742082820998,
-      "tag": "0009_cheerful_hawkeye",
-      "breakpoints": true
-    },
-    {
-      "idx": 10,
-      "version": "7",
-      "when": 1742083264817,
-      "tag": "0010_true_warhawk",
-      "breakpoints": true
-    },
-    {
-      "idx": 11,
-      "version": "7",
-      "when": 1742084044090,
-      "tag": "0011_luxuriant_the_hunter",
-      "breakpoints": true
-    },
-    {
-      "idx": 12,
-      "version": "7",
-      "when": 1742086498544,
-      "tag": "0012_natural_vision",
+      "when": 1742083439799,
+      "tag": "0007_shocking_goblin_queen",
       "breakpoints": true
     }
   ]

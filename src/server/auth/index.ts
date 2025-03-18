@@ -8,7 +8,7 @@ const auth = cache(uncachedAuth);
 
 export { auth, handlers, signIn, signOut };
 
-// Custom sign-in function to handle MFA
+// Custom login function to handle MFA
 export async function signInWithMfa(credentials: Record<"email" | "password", string>) {
   const user = await signIn("credentials", { ...credentials, redirect: false })
 

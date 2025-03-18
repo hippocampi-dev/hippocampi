@@ -75,12 +75,12 @@ export default async function DoctorsTable({
                   </div>
                 </div>
 
-                <div className="mt-4 space-y-2">
+                {/* <div className="mt-4 space-y-2">
                   <div className="flex items-center text-sm text-gray-600">
                     <span className="mr-2">📍</span>
                     {doctor.location}
                   </div>
-                </div>
+                </div> */}
 
                 <div className="mt-4 pt-4 border-t">
                   <p className="text-sm text-gray-600">Bio: {doctor.bio}</p>

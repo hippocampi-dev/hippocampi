@@ -42,8 +42,7 @@ export default async function HealthcareProviders() {
                     <p className="text-sm text-gray-600">
                       {doctor.specialization
                         ? doctor.specialization
-                        : "General Practitioner"}{" "}
-                      | {doctor.location}
+                        : "General Practitioner"}
                     </p>
                     <p className="text-sm text-gray-600">
                       Ratings: {doctor.ratings ? doctor.ratings : "N/A"}

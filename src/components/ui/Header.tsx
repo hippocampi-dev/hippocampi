@@ -44,7 +44,7 @@ export function Header() {
                   asChild
                   className="border-blue-600 text-blue-600 hover:bg-blue-50"
                 >
-                  <Link href="/auth/check-mfa">Go to Dashboard</Link>
+                  <Link href="/auth/check-mfa">Login</Link>
                 </Button>
               </motion.div>
             )}
@@ -53,7 +53,7 @@ export function Header() {
                 onClick={
                   session
                     ? () => signOut({ redirect: true, callbackUrl: "/" })
-                    : () => redirect("/auth/sign-in")
+                    : () => redirect("/portal")
                 }
                 className="bg-blue-600 text-white hover:bg-blue-700"
               >

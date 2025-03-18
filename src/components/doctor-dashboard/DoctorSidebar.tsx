@@ -1,24 +1,36 @@
-"use client";
-
-import {
-  Home,
-  Calendar,
-  Users,
-  Settings,
-  LogOut,
-  User,
-  Receipt,
-  ReceiptText,
-  FileText,
-} from "lucide-react";
+import * as React from "react";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuItem,
   SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarSeparator,
+  SidebarTrigger,
 } from "~/components/ui/sidebar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
+import {
+  Calendar,
+  ChevronDown,
+  Home,
+  LogOut,
+  MessagesSquare,
+  Receipt,
+  ReceiptText,
+  User,
+  UserCircle,
+  Users,
+  Video,
+} from "lucide-react";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
@@ -27,12 +39,13 @@ export function DoctorDashboardSidebar() {
   const { data: session } = useSession();
 
   return (
-    <Sidebar>
+    <Sidebar className="w-64">
       <SidebarHeader>
-        <h2 className="px-4 py-2 text-xl font-bold">{`Dr ${session?.user.name}`}</h2>
+        <h2 className="px-4 py-2 text-xl font-bold">{`Dr. ${session?.user.name}`}</h2>
       </SidebarHeader>
       <SidebarContent className="px-4">
         <SidebarMenu>
+          <SidebarSeparator />
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href="/dashboard/doctor/">
@@ -41,14 +54,6 @@ export function DoctorDashboardSidebar() {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          {/* <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="/dashboard/doctor/appointments">
-                <Calendar className="w-4 h-4 mr-2" />
-                <span>Appointments</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem> */}
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href="/dashboard/doctor/patients">
@@ -66,17 +71,17 @@ export function DoctorDashboardSidebar() {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-                <Link href="/dashboard/doctor/messages">
-                  <SidebarMenuButton>
-                    <FileText className="mr-2 h-4 w-4" />
-                    Messages
-                  </SidebarMenuButton>
-                </Link>
-              </SidebarMenuItem>
+            <Link href="/dashboard/doctor/messages">
+              <SidebarMenuButton>
+                <MessagesSquare className="mr-2 h-4 w-4" />
+                Messages
+              </SidebarMenuButton>
+            </Link>
+          </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href="/dashboard/doctor/zoom">
-                <Calendar className="w-4 h-4 mr-2" />
+                <Video className="w-4 h-4 mr-2" />
                 <span>Zoom</span>
               </Link>
             </SidebarMenuButton>
@@ -97,40 +102,43 @@ export function DoctorDashboardSidebar() {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="/dashboard/doctor/account">
-                <User className="mr-2 h-4 w-4" />
-                <span>Account</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          {/* <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="/dashboard/doctor/settings">
-                <Settings className="w-4 h-4 mr-2" />
-                <span>Settings</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem> */}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarContent className="mb-10 mt-auto flex flex-col justify-end px-4">
-        <SidebarMenu>
-          <button
-            className={`w-full text-left`}
-            onClick={async () => {
-              await signOut({ redirect: true, redirectTo: "/" });
-              redirect("/");
-            }}
-          >
-            <SidebarMenuItem className="flex items-center">
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Sign Out</span>
-            </SidebarMenuItem>
-          </button>
-        </SidebarMenu>
-      </SidebarContent>
+      <SidebarFooter className="px-4">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <SidebarMenuButton>
+              <UserCircle className="mr-2 h-4 w-4" />
+              <span>My Profile</span>
+              <ChevronDown className="ml-auto h-4 w-4" />
+            </SidebarMenuButton>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="text-left w-56">
+            <SidebarMenu className="mb-1">
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/dashboard/doctor/profile">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>My Information</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <button 
+                  onClick={async () => {
+                    await signOut({ redirect: true, redirectTo: "/" });
+                    redirect("/");
+                  }}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Sign Out</span>
+                  </button>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 }
