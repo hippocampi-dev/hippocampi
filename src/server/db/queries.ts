@@ -307,7 +307,34 @@ export const getPatientDoctorManagement = async (user_id: UserIdInterface) => {
 
 // add scheduled meeting
 export const addAppointment = async (meeting: AppointmentsInterface) => {
-  console.log("Meeting is scheduled at " + meeting.scheduledAt);
+  console.log("DEBUG addAppointment - Raw meeting data:", meeting);
+  console.log("DEBUG addAppointment - scheduledAt type:", typeof meeting.scheduledAt);
+  console.log("DEBUG addAppointment - scheduledAt value:", meeting.scheduledAt);
+  
+  // Ensure date is properly formatted for PostgreSQL
+  if (meeting.scheduledAt instanceof Date) {
+    console.log("DEBUG addAppointment - Converting Date object to ISO string");
+    meeting = {
+      ...meeting,
+      scheduledAt: meeting.scheduledAt.toISOString()
+    };
+  } else if (typeof meeting.scheduledAt === 'string') {
+    try {
+      // Try to parse and format the date to ensure PostgreSQL compatibility
+      console.log("DEBUG addAppointment - Parsing string date:", meeting.scheduledAt);
+      const parsedDate = new Date(meeting.scheduledAt);
+      meeting = {
+        ...meeting,
+        scheduledAt: parsedDate.toISOString()
+      };
+      console.log("DEBUG addAppointment - Formatted date:", meeting.scheduledAt);
+    } catch (err) {
+      console.error("DEBUG addAppointment - Date parsing error:", err);
+      throw new Error(`Invalid date format: ${meeting.scheduledAt}`);
+    }
+  }
+  
+  console.log("DEBUG addAppointment - Final meeting data:", meeting);
   return db
     .insert(schema_management.appointments)
     .values(meeting)
@@ -353,34 +380,25 @@ export const updateAppointmentStatus = async (
   appointment_id: string,
   status: "Scheduled" | "Completed" | "Canceled" | "No-Show"
 ) => {
-  const dateToStore = new Date().toISOString();
-  if (isNaN(Date.parse(dateToStore))) {
-    console.log("Invalid date");
-    throw new Error('Invalid date');
-  }
-  const currentAppointment = await getAppointment(appointment_id);
+  console.log("DEBUG updateAppointmentStatus - Updating status:", { appointment_id, status });
   
-  if (!currentAppointment || !currentAppointment.patientId || !currentAppointment.doctorId) {
-    throw new Error('Invalid appointment data: missing required fields');
+  try {
+    const result = await db
+      .update(schema_management.appointments)
+      .set({ 
+        status,
+        // Use NOW() directly from SQL rather than passing a JS date
+        updated_at: sql`NOW()` 
+      })
+      .where(eq(schema_management.appointments.id, appointment_id))
+      .returning();
+    
+    console.log("DEBUG updateAppointmentStatus - Success:", result);
+    return result;
+  } catch (err) {
+    console.error("DEBUG updateAppointmentStatus - Error:", err);
+    throw err;
   }
-
-  const addingAppointment: AppointmentsInterface = {
-    ...currentAppointment,
-    patientId: currentAppointment.patientId,
-    doctorId: currentAppointment.doctorId,
-    status,
-    scheduledAt: dateToStore,
-  }
-  return db
-    .insert(schema_management.appointments)
-    .values(addingAppointment)
-    .onConflictDoNothing()
-    .returning();
-  // await db
-  // .update(schema_management.appointments)
-  // .set({ status, scheduledAt: dateToStore })
-  // .where(eq(schema_management.appointments.id, appointment_id))
-  // .returning();
 };
 
 // add allergies

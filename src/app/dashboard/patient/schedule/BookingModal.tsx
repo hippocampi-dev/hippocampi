@@ -1,151 +1,192 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "~/components/ui/dialog";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "~/components/ui/form";
 import { Textarea } from "~/components/ui/textarea";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { scheduleAppointment } from "~/app/_actions/schedule/actions";
 import { formatTimeWithAMPM } from "~/lib/utils";
 
-// Remove the server action import
-// import { scheduleAppointment } from "./actions";
+const formSchema = z.object({
+  reason: z.string().min(5, "Please provide a reason that's at least 5 characters long"),
+  notes: z.string().optional(),
+});
+
+interface AvailabilitySlot {
+  date: Date;
+  formattedDate: string;
+  dayOfWeek: string;
+  startTime: string;
+  endTime: string;
+  availabilityId: string;
+}
 
 interface BookingModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  slot: {
-    date: Date;
-    formattedDate: string;
-    dayOfWeek: string;
-    startTime: string;
-    endTime: string;
-    availabilityId: string;
-  };
+  slot: AvailabilitySlot;
   doctorId: string;
   patientId: string;
 }
 
-export function BookingModal({ open, onOpenChange, slot, doctorId, patientId }: BookingModalProps) {
-  const [reason, setReason] = useState("");
-  const [notes, setNotes] = useState("");
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
-  
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+export function BookingModal({
+  open,
+  onOpenChange,
+  slot,
+  doctorId,
+  patientId,
+}: BookingModalProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      reason: "",
+      notes: "",
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsSubmitting(true);
     
     try {
-      // Create a Date object combining the slot date with the start time
-      const [hours, minutes] = slot.startTime.split(':').map(Number);
+      console.log("BookingModal - Slot received:", slot);
       
-      if (hours === undefined || minutes === undefined) {
-        throw new Error("Invalid startTime format");
-      }
-
-      const scheduledAt = new Date(slot.date);
-      scheduledAt.setHours(hours, minutes);
-
-      // Use fetch to call the API endpoint instead of direct server action
-      const response = await fetch('/api/db/management/appointments/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          doctorId,
-          patientId,
-          scheduledAt,
-          reason,
-          notes
-        }),
-      });
+      // Parse the time from the slot
+      // Create a proper date object from the date and time strings
+      let scheduledDate;
       
-      const result = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(result.error || "Failed to book appointment");
-      }
-      
-      toast.success("Appointment booked successfully", {
-        description: "Click to view your appointments",
-        action: {
-          label: "View",
-          onClick: () => {
-            // Use a custom data attribute to trigger tab switch
-            const tabsElement = document.querySelector('[data-tabs-list]');
-            if (tabsElement) {
-              const currentTabButton = tabsElement.querySelector('[data-state="active"]');
-              const appointmentsTabButton = tabsElement.querySelector('[value="current"]');
-              if (currentTabButton && appointmentsTabButton) {
-                (appointmentsTabButton as HTMLButtonElement).click();
-              }
-            }
-          }
+      try {
+        // For debugging
+        console.log("Date input:", slot.date);
+        console.log("Time input:", slot.startTime);
+        
+        // If slot.date is already a Date object
+        if (slot.date instanceof Date) {
+          scheduledDate = new Date(slot.date);
+        } else {
+          // If it's a string, parse it to a Date
+          scheduledDate = new Date(slot.date);
         }
-      });
+        
+        // Now set the time from startTime (format: "HH:MM")
+        const [hours, minutes] = slot.startTime.split(':').map(Number);
+        scheduledDate.setHours(hours, minutes, 0, 0);
+        
+        console.log("Created scheduledDate:", scheduledDate);
+        console.log("scheduledDate is valid:", !isNaN(scheduledDate.getTime()));
+      } catch (err) {
+        console.error("Error creating date:", err);
+        throw new Error("Failed to create appointment date");
+      }
       
+      // Make sure we have a valid date before proceeding
+      if (!scheduledDate || isNaN(scheduledDate.getTime())) {
+        throw new Error("Invalid appointment date");
+      }
+      
+      const appointmentData = {
+        doctorId,
+        patientId,
+        scheduledAt: scheduledDate,
+        reason: values.reason,
+        notes: values.notes || "",
+        status: "Scheduled" as const,
+      };
+      
+      console.log("Submitting appointment data:", appointmentData);
+      
+      const result = await scheduleAppointment(appointmentData);
+      toast.success("Appointment booked successfully!");
       onOpenChange(false);
-      router.refresh();
+      
+      // Optionally refresh the page to show the new appointment
+      window.location.reload();
     } catch (error) {
-      toast.error("Failed to book appointment", {
-        description: error instanceof Error ? error.message : "Please try again later"
-      });
+      console.error("Error booking appointment:", error);
+      toast.error(`Failed to book appointment: ${error instanceof Error ? error.message : String(error)}`);
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
-  
+
+  const formattedStartTime = formatTimeWithAMPM(slot.startTime);
+  const formattedEndTime = formatTimeWithAMPM(slot.endTime);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Book Appointment</DialogTitle>
           <DialogDescription>
-            Schedule an appointment for {slot.formattedDate} at {formatTimeWithAMPM(slot.startTime)}
+            Schedule an appointment for {slot.formattedDate} at {formattedStartTime} - {formattedEndTime}
           </DialogDescription>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="reason">Reason for consultation</Label>
-            <Input 
-              id="reason" 
-              value={reason} 
-              onChange={(e) => setReason(e.target.value)}
-              placeholder="E.g., Follow-up, New symptoms, Prescription renewal"
-              required
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="reason"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Reason for visit*</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Briefly describe your reason for this visit" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="notes">Additional notes (optional)</Label>
-            <Textarea 
-              id="notes" 
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Any specific concerns or information you'd like to share"
-              className="min-h-[100px]"
+            
+            <FormField
+              control={form.control}
+              name="notes"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Additional notes</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Any additional information your doctor should know" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          
-          <DialogFooter>
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={() => onOpenChange(false)}
-              disabled={loading}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={loading || !reason.trim()}>
-              {loading ? "Booking..." : "Book Appointment"}
-            </Button>
-          </DialogFooter>
-        </form>
+            
+            <DialogFooter>
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => onOpenChange(false)}
+                disabled={isSubmitting}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Booking..." : "Book Appointment"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
