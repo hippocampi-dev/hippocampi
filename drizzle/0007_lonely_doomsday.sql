@@ -1,2 +1,0 @@
-ALTER TABLE "hippocampi_doctor_availabilities" ALTER COLUMN "start_time" SET DATA TYPE varchar;--> statement-breakpoint
-ALTER TABLE "hippocampi_doctor_availabilities" ALTER COLUMN "end_time" SET DATA TYPE varchar;
