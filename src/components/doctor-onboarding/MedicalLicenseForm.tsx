@@ -19,7 +19,7 @@ export interface LicenseFormData {
 export interface LicenseForm {
   licenseNumber: string,
   expirationDate: string,
-  file: File
+  file: File | string
 }
 
 interface MedicalLicenseFormProps {

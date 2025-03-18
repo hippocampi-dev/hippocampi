@@ -4,6 +4,8 @@ import { CredentialsInterface } from "~/app/(dashboard)/onboarding/credentials/p
 import { auth } from "~/server/auth"
 import { addDoctor, addDoctorCredentials, addDoctorSubscription, getDoctor, setDoctor, setDoctorCredentialLinks } from "~/server/db/queries"
 import { DoctorCredentialsInterface, DoctorsInterface, SubscriptionsInterface } from "~/server/db/type";
+import { uploadFile } from "../blob/actions";
+import { createTestCredentials } from "./test-data";
 
 export async function updateDoctorOnboardingStatus() {
   const session = await auth();
@@ -26,51 +28,46 @@ export async function addDoctorSubscriptionOnboarding(subscription: Subscription
 }
 
 export async function addDoctorCredentialLinksOnboarding(id: string, credentials: CredentialsInterface) {
-  // console.log(credentials);
-  return;
-  return await setDoctorCredentialLinks(id as "string", credentials);
+  // credentials = createTestCredentials();
+
+  const processedCredentials = await convertCredentialFilesToBlobUrl(id, credentials);
+  console.log('credentials', processedCredentials);
+  console.log('certifications', processedCredentials.certifications.certifications)
+
+  const returnedCredentials = await setDoctorCredentialLinks(id as "string", processedCredentials);
+
+  if (returnedCredentials) {
+    await updateDoctorOnboardingStatus();
+  }
+
+  return returnedCredentials;
 }
 
-// Doctor Onboarding Credentials Repository --> YYYY --> DoctorID --> Files
-// Doctor Onboarding Credentials Repository/2025/doctorId/DEAForm.pdf
+async function convertCredentialFilesToBlobUrl(id: string, credentials: CredentialsInterface) {
+  const processedCredentials = {
+    npi: {
+      ...credentials.npi,
+      file: (await uploadFile(id, 'npi-document', credentials.npi.file as File)).url
+    },
+    license: {
+      ...credentials.license,
+      file: (await uploadFile(id, 'medical-license', credentials.license.file as File)).url
+    },
+    dea: {
+      ...credentials.dea,
+      file: (await uploadFile(id, 'dea-certificate', credentials.dea.file as File)).url
+    },
+    malpractice: {
+      ...credentials.malpractice,
+      file: (await uploadFile(id, 'malpractice-policy', credentials.malpractice.file as File)).url
+    },
+    certifications: {
+      certifications: await Promise.all(credentials.certifications.certifications.map(async (cert) => ({
+        ...cert,
+        file: (await uploadFile(id, 'certification', cert.file as File, cert.id)).url
+      })))
+    }
+  }
 
-// export interface CredentialsInterface {
-//   npi: NPIForm,
-//   license: LicenseForm,
-//   dea: DEAForm,
-//   malpractice: MalpracticeForm,
-//   certifications: CertificationsForm
-// }
-// export interface NPIForm {
-//   npiNumber: string
-//   file: File
-// }
-// export interface LicenseForm {
-//   licenseNumber: string,
-//   expirationDate: string,
-//   file: File
-// }
-// export interface DEAForm {
-//   deaNumber: string
-//   startDate: string
-//   expirationDate: string
-//   file: File
-// }
-// export interface MalpracticeForm {
-//   policyNumber: string
-//   insurerName: string
-//   startDate: string
-//   expirationDate: string
-//   coverageAmount: string
-//   file: File
-// }export interface Certification {
-//   id: string
-//   organization: string
-//   name: string
-//   dateReceived: string
-//   expirationDate?: string
-//   file: File
-// }
-// export interface CertificationsForm {
-//   certifications: Certification[]
-// }
+  return processedCredentials
+}

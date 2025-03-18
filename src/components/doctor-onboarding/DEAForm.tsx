@@ -21,7 +21,7 @@ export interface DEAForm {
   deaNumber: string
   startDate: string
   expirationDate: string
-  file: File
+  file: File | string
 }
 
 interface DEAFormProps {
