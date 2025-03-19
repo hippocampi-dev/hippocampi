@@ -71,20 +71,20 @@ export function PatientDashboardSidebar() {
           <SidebarMenuItem>
             
               <Link href="/dashboard/patient/messages">
-              <SidebarMenuButton>
                 <MessagesSquare className="mr-2 h-4 w-4" />
                 Messages
                 </SidebarMenuButton>
               </Link>
+            </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             
               <Link href="/dashboard/patient/invoices">
-              <SidebarMenuButton>
                 <ReceiptText className="mr-2 h-4 w-4" />
                 Invoices
                 </SidebarMenuButton>
               </Link>
+            </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
