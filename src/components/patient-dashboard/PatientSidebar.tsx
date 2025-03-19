@@ -90,18 +90,18 @@ export function PatientDashboardSidebar() {
             <SidebarMenuButton asChild>
               <Link href="/dashboard/patient/chatbot">
                 <Bot className="mr-2 h-4 w-4" />
-                Chat Bot
+                <span>Chat Bot</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="px-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton>
               <UserCircle className="mr-2 h-4 w-4" />
-              My Profile
+              <span>My Profile</span>
               <ChevronDown className="ml-auto h-4 w-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>

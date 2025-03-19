@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import { Header } from "~/components/ui/Header";
 import type React from "react"; // Added import for React
 import { SessionProvider } from "next-auth/react";
+import { Toaster } from "~/components/ui/toaster";
+import { ToastProvider } from "./contexts/ToastContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,9 +23,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className}`}>
-        <SessionProvider>
-          <main>{children}</main>
-        </SessionProvider>
+        <ToastProvider>
+          <SessionProvider>
+            <main>{children}</main>
+            <Toaster />
+          </SessionProvider>
+        </ToastProvider>
       </body>
     </html>
   );

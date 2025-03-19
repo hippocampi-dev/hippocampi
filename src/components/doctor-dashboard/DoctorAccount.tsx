@@ -35,8 +35,8 @@ import { DoctorCredentialsInterface, DoctorsInterface } from "~/server/db/type";
 import { useSession } from "next-auth/react";
 import { convertGender, ProfileFormData, ProfileFormSchema } from "../doctor-onboarding/ProfileFormSchema";
 import { calculateAge } from "~/utilities/calculateAge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
-import { useToast } from "~/hooks/useToaster";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { useToast } from "~/app/contexts/ToastContext";
 
 export default function DoctorAccount() {
   const { data: session } = useSession();
@@ -92,7 +92,7 @@ export default function DoctorAccount() {
               specialization: doctorInfo.specialization!,
               bio: doctorInfo.bio,
               profileUrl: doctorInfo.profileUrl,
-              dateOfBirth: doctorInfo.dateOfBirth.toDateString(),
+              dateOfBirth: new Date(doctorInfo.dateOfBirth).toISOString().split('T')[0]!,
               gender: convertGender(doctorInfo.gender),
               // age
               primaryLanguage: doctorInfo.primaryLanguage,
@@ -169,8 +169,8 @@ export default function DoctorAccount() {
     <div className="container py-12">
       <div className="mx-auto max-w-3xl space-y-6">
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold">Profile Information</h1>
-          <p className="text-muted-foreground">Please provide your general information to complete your profile.</p>
+          <h1 className="text-3xl font-bold">My Profile</h1>
+          <p className="text-muted-foreground">Please update your general information to update your profile.</p>
         </div>
 
         <Card>

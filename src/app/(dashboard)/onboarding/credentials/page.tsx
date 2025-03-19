@@ -5,13 +5,13 @@ import { Button } from "~/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~/components/ui/card"
 import { Progress } from "~/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
-import { useToast } from "~/hooks/useToaster"
 import { NPIForm, NPIFormData } from "~/components/doctor-onboarding/NPIForm"
 import { LicenseForm, LicenseFormData, MedicalLicenseForm } from "~/components/doctor-onboarding/MedicalLicenseForm"
 import { DEAForm, DEAFormData } from "~/components/doctor-onboarding/DEAForm"
 import { MalpracticeForm, MalpracticeFormData } from "~/components/doctor-onboarding/MalpracticeForm"
 import { CertificationsForm, CertificationsFormData } from "~/components/doctor-onboarding/CertificationsForm"
 import { CredentialConfirmation } from "~/components/doctor-onboarding/CredentialConfirmation"
+import { useToast } from "~/app/contexts/ToastContext"
 
 export interface CredentialsInterface {
   npi: NPIForm,
