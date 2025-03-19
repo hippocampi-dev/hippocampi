@@ -3,7 +3,7 @@ import { Button } from "~/components/ui/button";
 import { getDoctorAvailabilities, formatTimeWithAMPM } from "~/server/db/queries";
 import { getUserId } from "~/utilities/getUser";
 import { AddAvailability } from "./AddAvailability";
-import { DeleteAvailability } from "~/app/dashboard/doctor/schedule/DeleteAvailability";
+import { DeleteAvailability } from "~/app/(dashboard)/dashboard/doctor/schedule/DeleteAvailability";
 import { X } from "lucide-react";
 
 // Days of the week starting from Monday
