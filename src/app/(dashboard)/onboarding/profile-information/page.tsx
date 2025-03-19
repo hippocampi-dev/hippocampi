@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form"
 import { ProfileFormSchema, type ProfileFormData } from '~/components/doctor-onboarding/ProfileFormSchema'
 import { calculateAge } from "~/utilities/calculateAge"
-import { addDoctorCredentialsOnboarding, addDoctorOnboarding, addDoctorSubscriptionOnboarding, updateDoctorOnboardingStatus } from "~/app/_actions/onboarding/actions"
+import { addDoctorCredentialsOnboarding, addDoctorOnboarding, addDoctorSubscriptionOnboarding } from "~/app/_actions/onboarding/actions"
 import { DoctorCredentialsInterface, DoctorsInterface, SubscriptionsInterface } from "~/server/db/type"
 import { useSession } from "next-auth/react"
 import { isLocalHost } from "~/utilities/isLocalHost"
