@@ -58,19 +58,27 @@ export function PatientDashboardSidebar() {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
+              <Link href="/dashboard/patient/schedule">
+                <Calendar1 className="mr-2 h-4 w-4" />
+                <span>Schedule</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
               <Link href="/dashboard/patient/messages">
-              <SidebarMenuButton>
                 <MessagesSquare className="mr-2 h-4 w-4" />
                 <span>Messages</span>
               </Link>
+            </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href="/dashboard/patient/invoices">
-              <SidebarMenuButton>
                 <ReceiptText className="mr-2 h-4 w-4" />
                 <span>Invoices</span>
               </Link>
+            </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
