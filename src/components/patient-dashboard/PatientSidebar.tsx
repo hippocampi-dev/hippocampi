@@ -31,6 +31,7 @@ import {
   Video,
   MessagesSquare,
   ReceiptText,
+  Calendar1,
 } from "lucide-react";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
@@ -48,28 +49,42 @@ export function PatientDashboardSidebar() {
         <SidebarMenu>
           <SidebarSeparator />
             <SidebarMenuItem>
-              <SidebarMenuButton>
+              
                 <Link href="/dashboard/patient">
+                <SidebarMenuButton>
                   <Home className="mr-2 h-4 w-4" />
                   Home
+                  </SidebarMenuButton>
                 </Link>
-              </SidebarMenuButton>
+              
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              
+                <Link href="/dashboard/patient/schedule">
+                <SidebarMenuButton>
+                  <Calendar1 className="mr-2 h-4 w-4" />
+                  Schedule
+                  </SidebarMenuButton>
+                </Link>
+              
             </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton>
+            
               <Link href="/dashboard/patient/messages">
+              <SidebarMenuButton>
                 <MessagesSquare className="mr-2 h-4 w-4" />
                 Messages
+                </SidebarMenuButton>
               </Link>
-            </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton>
+            
               <Link href="/dashboard/patient/invoices">
+              <SidebarMenuButton>
                 <ReceiptText className="mr-2 h-4 w-4" />
                 Invoices
+                </SidebarMenuButton>
               </Link>
-            </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>

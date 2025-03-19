@@ -78,7 +78,7 @@ export async function scheduleAppointment(data: {
   
   try {
     // Create a safe copy of the data
-    let formattedData = { 
+    let formattedData: Omit<AppointmentsInterface, 'id' | 'created_at' | 'updated_at'> = { 
       ...data,
       status: "Scheduled" 
     };
@@ -86,7 +86,7 @@ export async function scheduleAppointment(data: {
     // Handle date conversion carefully
     if (data.scheduledAt instanceof Date) {
       console.log("DEBUG scheduleAppointment - Converting Date to ISO string");
-      formattedData.scheduledAt = data.scheduledAt.toISOString();
+      formattedData.scheduledAt = data.scheduledAt;
     } else if (typeof data.scheduledAt === 'string') {
       console.log("DEBUG scheduleAppointment - scheduledAt is a string, parsing to Date");
       try {
@@ -95,7 +95,7 @@ export async function scheduleAppointment(data: {
         if (isNaN(parsedDate.getTime())) {
           throw new Error(`Invalid date string: ${data.scheduledAt}`);
         }
-        formattedData.scheduledAt = parsedDate.toISOString();
+        formattedData.scheduledAt = parsedDate;
       } catch (err) {
         console.error("DEBUG scheduleAppointment - Failed to parse date string:", err);
         throw new Error(`Invalid date format: ${data.scheduledAt}`);

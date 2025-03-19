@@ -316,7 +316,7 @@ export const addAppointment = async (meeting: AppointmentsInterface) => {
     console.log("DEBUG addAppointment - Converting Date object to ISO string");
     meeting = {
       ...meeting,
-      scheduledAt: meeting.scheduledAt.toISOString()
+      scheduledAt: meeting.scheduledAt
     };
   } else if (typeof meeting.scheduledAt === 'string') {
     try {
@@ -325,7 +325,7 @@ export const addAppointment = async (meeting: AppointmentsInterface) => {
       const parsedDate = new Date(meeting.scheduledAt);
       meeting = {
         ...meeting,
-        scheduledAt: parsedDate.toISOString()
+        scheduledAt: parsedDate
       };
       console.log("DEBUG addAppointment - Formatted date:", meeting.scheduledAt);
     } catch (err) {

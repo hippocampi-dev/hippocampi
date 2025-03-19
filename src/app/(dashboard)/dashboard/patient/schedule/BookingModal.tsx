@@ -90,7 +90,7 @@ export function BookingModal({
         
         // Now set the time from startTime (format: "HH:MM")
         const [hours, minutes] = slot.startTime.split(':').map(Number);
-        scheduledDate.setHours(hours, minutes, 0, 0);
+        scheduledDate.setHours(hours ?? 0, minutes ?? 0, 0, 0);
         
         console.log("Created scheduledDate:", scheduledDate);
         console.log("scheduledDate is valid:", !isNaN(scheduledDate.getTime()));
