@@ -1,13 +1,21 @@
 "use client"
 
-import { Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from "~/components/ui/toast"
-import { useToast } from "~/hooks/useToaster"
+import { useToast } from "~/app/contexts/ToastContext"
+import {
+  Toast,
+  ToastClose,
+  ToastDescription,
+  ToastProvider as RadixToastProvider,
+  ToastTitle,
+  ToastViewport,
+} from "~/components/ui/toast"
 
 export function Toaster() {
   const { toasts } = useToast()
+  console.log("Current toasts:", toasts)
 
   return (
-    <ToastProvider>
+    <RadixToastProvider>
       {toasts.map(({ id, title, description, action, ...props }) => (
         <Toast key={id} {...props}>
           <div className="grid gap-1">
@@ -19,6 +27,6 @@ export function Toaster() {
         </Toast>
       ))}
       <ToastViewport />
-    </ToastProvider>
+    </RadixToastProvider>
   )
 }

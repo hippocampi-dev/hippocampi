@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Checkbox } from "~/components/ui/checkbox"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
-import { useToast } from "~/hooks/useToaster"
+import { useToast } from "~/app/contexts/ToastContext"
 
 export default function OnboardingStart() {
   const router = useRouter()
@@ -18,7 +18,7 @@ export default function OnboardingStart() {
   const [agreed, setAgreed] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!agreed) {
@@ -26,8 +26,8 @@ export default function OnboardingStart() {
         title: "Agreement Required",
         description: "You must agree to the terms before proceeding.",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
     if (!inviteCode.trim()) {
@@ -35,12 +35,20 @@ export default function OnboardingStart() {
         title: "Invite Code Required",
         description: "Please enter your invitation code to continue.",
         variant: "destructive",
-      })
-      return
+      });
+      return;
+    }
+    
+    if (inviteCode !== '000000') {
+      toast({
+        title: "Incorrect Invite Code",
+        description: "Please enter the correct invitation code to continue.",
+        variant: "destructive",
+      });
+      return;
     }
 
     setLoading(true);
-    if (inviteCode !== '000000') return; // bypass for testing
 
     // Simulate API call to validate invite code
     setTimeout(() => {

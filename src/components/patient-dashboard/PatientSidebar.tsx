@@ -47,27 +47,27 @@ export function PatientDashboardSidebar() {
       <SidebarContent className="px-4">
         <SidebarMenu>
           <SidebarSeparator />
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <Link href="/dashboard/patient">
-                  <Home className="mr-2 h-4 w-4" />
-                  Home
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton>
-              <Link href="/dashboard/patient/messages">
-                <MessagesSquare className="mr-2 h-4 w-4" />
-                Messages
+            <SidebarMenuButton asChild>
+              <Link href="/dashboard/patient">
+                <Home className="mr-2 h-4 w-4" />
+                <span>Home</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton>
+            <SidebarMenuButton asChild>
+              <Link href="/dashboard/patient/messages">
+                <MessagesSquare className="mr-2 h-4 w-4" />
+                <span>Messages</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
               <Link href="/dashboard/patient/invoices">
                 <ReceiptText className="mr-2 h-4 w-4" />
-                Invoices
+                <span>Invoices</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -75,18 +75,18 @@ export function PatientDashboardSidebar() {
             <SidebarMenuButton asChild>
               <Link href="/dashboard/patient/chatbot">
                 <Bot className="mr-2 h-4 w-4" />
-                Chat Bot
+                <span>Chat Bot</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="px-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton>
               <UserCircle className="mr-2 h-4 w-4" />
-              My Profile
+              <span>My Profile</span>
               <ChevronDown className="ml-auto h-4 w-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>

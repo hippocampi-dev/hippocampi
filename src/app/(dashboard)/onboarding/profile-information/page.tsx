@@ -9,7 +9,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "~/components/ui/input"
 import { Textarea } from "~/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select"
-import { useToast } from "~/hooks/useToaster"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form"
 import { ProfileFormSchema, type ProfileFormData } from '~/components/doctor-onboarding/ProfileFormSchema'
@@ -18,6 +17,7 @@ import { addDoctorCredentialsOnboarding, addDoctorOnboarding, addDoctorSubscript
 import { DoctorCredentialsInterface, DoctorsInterface, SubscriptionsInterface } from "~/server/db/type"
 import { useSession } from "next-auth/react"
 import { isLocalHost } from "~/utilities/isLocalHost"
+import { useToast } from "~/app/contexts/ToastContext"
 
 export default function ProfileInformation() {
   const {data: session} = useSession();
@@ -35,7 +35,7 @@ export default function ProfileInformation() {
         lastName: "",
         dateOfBirth: "",
         gender: "prefer-not-to-say",
-        primaryLanguage: "",
+        primaryLanguage: "English",
         phoneNumber: "",
         email: "",
         specialization: "",
