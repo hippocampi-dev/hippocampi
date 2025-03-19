@@ -5,10 +5,19 @@ import { AppointmentsInterface } from "~/server/db/type";
 export const POST = async (request: Request) => {
   const body = await request.json();
   // console.log(body);
+  const scheduledAtTest = new Date(body.scheduledAt).toISOString()
+  const scheduledAtComparison = new Date().toISOString()
 
+  if (scheduledAtTest === scheduledAtComparison) {
+    console.log("true");
+  }
+  else {
+    console.log("false");
+  }
+  
   const apppointment: AppointmentsInterface = {
     ...body,
-    scheduledAt: new Date(body.scheduledAt)
+    scheduledAt: new Date(body.scheduledAt).toISOString(),
   };
 
   try {

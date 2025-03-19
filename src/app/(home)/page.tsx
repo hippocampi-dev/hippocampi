@@ -424,22 +424,22 @@ export default function LandingPage() {
             </p>
             <div className="mt-4 flex gap-4 md:mt-0">
               <Link
-                href="#"
+                href="/legal/privacy-policy"
                 className="text-xs text-muted-foreground transition-colors hover:text-primary"
               >
                 Privacy Policy
               </Link>
               <Link
-                href="#"
+                href="/legal/terms-of-use"
                 className="text-xs text-muted-foreground transition-colors hover:text-primary"
               >
-                Terms of Service
+                Terms of Use
               </Link>
               <Link
-                href="#"
+                href="/legal/nondiscrimination-notice"
                 className="text-xs text-muted-foreground transition-colors hover:text-primary"
               >
-                Accessibility
+                Nondiscrimination
               </Link>
             </div>
           </div>

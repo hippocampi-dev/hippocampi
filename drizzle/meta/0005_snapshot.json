@@ -1,6 +1,6 @@
 {
-  "id": "5112d2bd-0cf5-41db-923d-f42460a1509b",
-  "prevId": "a7ced8ca-eb1e-4105-bbab-5109b30efe80",
+  "id": "1f9a9770-f959-4f8c-9a76-741ebbe790e2",
+  "prevId": "c0673b92-7366-4c11-b068-0c64ada645ea",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -427,6 +427,75 @@
       },
       "uniqueConstraints": {}
     },
+    "public.hippocampi_doctor_availabilities": {
+      "name": "hippocampi_doctor_availabilities",
+      "schema": "",
+      "columns": {
+        "recurring_id": {
+          "name": "recurring_id",
+          "type": "varchar(255)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "doctor_id": {
+          "name": "doctor_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "day_of_week": {
+          "name": "day_of_week",
+          "type": "day_of_week",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "start_time": {
+          "name": "start_time",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "end_time": {
+          "name": "end_time",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "hippocampi_doctor_availabilities_doctor_id_hippocampi_doctors_doctor_id_fk": {
+          "name": "hippocampi_doctor_availabilities_doctor_id_hippocampi_doctors_doctor_id_fk",
+          "tableFrom": "hippocampi_doctor_availabilities",
+          "tableTo": "hippocampi_doctors",
+          "columnsFrom": [
+            "doctor_id"
+          ],
+          "columnsTo": [
+            "doctor_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.hippocampi_doctor_credentials": {
       "name": "hippocampi_doctor_credentials",
       "schema": "",
@@ -460,6 +529,12 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "files": {
+          "name": "files",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -517,15 +592,39 @@
           "primaryKey": false,
           "notNull": true
         },
-        "email": {
-          "name": "email",
-          "type": "varchar(255)",
+        "date_of_birth": {
+          "name": "date_of_birth",
+          "type": "date",
           "primaryKey": false,
           "notNull": true
         },
-        "location": {
-          "name": "location",
-          "type": "text",
+        "age": {
+          "name": "age",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gender": {
+          "name": "gender",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "primary_language": {
+          "name": "primary_language",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "phone_number": {
+          "name": "phone_number",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
@@ -552,6 +651,14 @@
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
+        },
+        "onboarding_status": {
+          "name": "onboarding_status",
+          "type": "onboarding_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'not-started'"
         },
         "created_at": {
           "name": "created_at",
@@ -619,7 +726,7 @@
         },
         "scheduled_at": {
           "name": "scheduled_at",
-          "type": "timestamp with time zone",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true
         },
@@ -1988,13 +2095,38 @@
     }
   },
   "enums": {
+    "public.day_of_week": {
+      "name": "day_of_week",
+      "schema": "public",
+      "values": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ]
+    },
+    "public.onboarding_status": {
+      "name": "onboarding_status",
+      "schema": "public",
+      "values": [
+        "not-started",
+        "profile",
+        "credentials",
+        "pending-approval",
+        "approved"
+      ]
+    },
     "public.appointment_status": {
       "name": "appointment_status",
       "schema": "public",
       "values": [
         "Scheduled",
         "Canceled",
-        "Completed"
+        "Completed",
+        "No-Show"
       ]
     },
     "public.invoice_status": {

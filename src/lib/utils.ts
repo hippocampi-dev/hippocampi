@@ -1,5 +1,8 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { z, ZodError, ZodType } from "zod"
+
+
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -68,3 +71,53 @@ export function formatMessageTime(timestamp: string): string {
   // Otherwise show date
   return date.toLocaleDateString([], { month: "short", day: "numeric" })
 }
+
+/**
+ * Format a time string (HH:MM) with AM/PM
+ */
+export function formatTimeWithAMPM(time: string): string {
+  const [hours, minutes] = time.split(':').map(Number);
+  if ((hours) == null || minutes == null) {
+    return time;
+  }
+  
+  const period = hours >= 12 ? 'PM' : 'AM';
+  const formattedHours = hours % 12 || 12; // Convert 0 to 12 for 12 AM
+  const formattedMinutes = minutes.toString().padStart(2, '0');
+  
+  return `${formattedHours}:${formattedMinutes} ${period}`;
+}
+
+export const availabilitySchema = z
+  .object({
+    day: z.enum(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], {
+      required_error: "Please select a day of the week",
+    }),
+    "start-time": z.string({
+      required_error: "Please select a start time",
+    }),
+    "end-time": z.string({
+      required_error: "Please select an end time",
+    }),
+  })
+  .refine(
+    (data) => {
+      const [startHour, startMinute] = data["start-time"].split(":").map(Number)
+      const [endHour, endMinute] = data["end-time"].split(":").map(Number)
+
+      if (startHour === undefined || startMinute === undefined || endHour === undefined || endMinute === undefined) {
+        return false
+      }
+
+      const startMinutes = startHour * 60 + startMinute
+      const endMinutes = endHour * 60 + endMinute
+
+      return endMinutes > startMinutes
+    },
+    {
+      message: "End time must be after start time",
+      path: ["end-time"],
+    },
+  )
+
+export type AvailabilityFormData = z.infer<typeof availabilitySchema>

@@ -1,23 +1,35 @@
-import { cancelAppointment } from "~/server/db/queries";
+import { NextResponse } from "next/server";
+import { updateAppointmentStatus } from "~/server/db/queries";
 import { AppointmentsIdInterface } from "~/server/db/type";
 
 // pass in AppointmentsIdInterface json
 export const POST = async (request: Request) => {
-  const body: AppointmentsIdInterface = await request.json();
-
   try {
-    const response = await cancelAppointment(body);
-
-    if (!response) {
-      return Response.json("Error");
+    const { id } = await request.json();
+    console.log("Canceling appointment with ID:", id);
+    if (!id) {
+      return NextResponse.json(
+        { error: "Appointment ID is required" },
+        { status: 400 }
+      );
     }
-
-    return new Response(JSON.stringify(response), {
-      headers: {
-        "Content-Type": "application/json",
-      },
+    console.log("Updated appointment:");
+    const updatedAppointment = await updateAppointmentStatus(id, "Canceled");
+    if (!updatedAppointment) {
+      return NextResponse.json(
+        { error: "Failed to cancel appointment" },
+        { status: 500 }
+      );
+    }
+    
+    return NextResponse.json({ 
+      success: true,
+      appointment: updatedAppointment 
     });
   } catch (error) {
-    return Response.json({ error }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
+    );
   }
 };

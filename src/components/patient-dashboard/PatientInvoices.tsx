@@ -1,3 +1,4 @@
+"use client"
 import { loadStripe } from "@stripe/stripe-js";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
 import { AppointmentInvoiceDict, InvoicesInterface } from "~/server/db/type"

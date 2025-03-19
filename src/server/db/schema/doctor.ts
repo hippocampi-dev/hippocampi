@@ -10,6 +10,7 @@ import {
   text,
   timestamp,
   varchar,
+  time,
 } from "drizzle-orm/pg-core";
 import { users } from "./auth";
 import { timestamps } from "./utils";
@@ -63,6 +64,27 @@ export const doctorCredentials = createTable(
     residency: varchar("residency", { length: 255 }).notNull(),
     approach: text("approach").notNull(),
     files: json('files'),
+    ...timestamps
+  }
+)
+
+export const daysOfWeekEnum = pgEnum("day_of_week", [
+  "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+]);
+
+export const doctorAvailabilities = createTable(
+  "doctor_availabilities",
+  {
+    recurringId: varchar("recurring_id", { length: 255 })
+      .notNull()
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    doctorId: varchar('doctor_id', { length: 255 })
+      .notNull()
+      .references(() => doctors.doctorId),
+    dayOfWeek: daysOfWeekEnum("day_of_week").notNull(),
+    startTime: varchar("start_time").notNull(),
+    endTime: varchar("end_time").notNull(),
     ...timestamps
   }
 )

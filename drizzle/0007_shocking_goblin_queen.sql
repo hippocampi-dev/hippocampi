@@ -1,1 +1,0 @@
-ALTER TABLE "hippocampi_doctor_credentials" ADD COLUMN "files" json;

@@ -5,57 +5,43 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1740710757610,
-      "tag": "0000_melted_killmonger",
+      "when": 1742264847208,
+      "tag": "0000_eminent_odin",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1740793720065,
-      "tag": "0001_curly_shape",
+      "when": 1742265155138,
+      "tag": "0001_silly_hellcat",
       "breakpoints": true
     },
     {
       "idx": 2,
       "version": "7",
-      "when": 1740809804931,
-      "tag": "0002_gray_ulik",
+      "when": 1742265395743,
+      "tag": "0002_wild_jean_grey",
       "breakpoints": true
     },
     {
       "idx": 3,
       "version": "7",
-      "when": 1740961496465,
-      "tag": "0003_outgoing_scorpion",
+      "when": 1742266384513,
+      "tag": "0003_graceful_reavers",
       "breakpoints": true
     },
     {
       "idx": 4,
       "version": "7",
-      "when": 1741207415934,
-      "tag": "0004_same_risque",
+      "when": 1742266466034,
+      "tag": "0004_dusty_the_santerians",
       "breakpoints": true
     },
     {
       "idx": 5,
       "version": "7",
-      "when": 1741553553326,
-      "tag": "0005_typical_mimic",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1741817371481,
-      "tag": "0006_loose_calypso",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1742083439799,
-      "tag": "0007_shocking_goblin_queen",
+      "when": 1742266482600,
+      "tag": "0005_round_king_cobra",
       "breakpoints": true
     }
   ]
