@@ -5,9 +5,9 @@ import { getUserId } from "~/utilities/getUser";
 import { AddAvailability } from "./AddAvailability";
 import { DeleteAvailability } from "~/app/(dashboard)/dashboard/doctor/schedule/DeleteAvailability";
 import { X } from "lucide-react";
+import { DAYS } from "~/lib/utils";
 
 // Days of the week starting from Monday
-export const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 export default async function Page() {
   const doctorId = await getUserId();

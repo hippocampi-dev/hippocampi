@@ -88,7 +88,6 @@ export function DoctorAppointments({ patientId, doctorManagement }: DoctorAppoin
                   )}
                 </div>
                 <div>
-                  <p className="text-sm">{doctor.location}</p>
                   {lastVisit && (
                     <p className="text-xs text-muted-foreground mt-1">
                       Last Visit: {lastVisit.toLocaleDateString()}
