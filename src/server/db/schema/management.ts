@@ -1,4 +1,5 @@
 import {
+  boolean,
   date,
   decimal,
   index,
@@ -81,6 +82,7 @@ export const appointments = createTable(
     reason: text('reason'),
     notes: text('notes'), // Optional field for additional info
     status: appointmentStatusEnum('appointment_status').notNull().default('Scheduled'),
+    reviewed: boolean('reviewed').default(false),
     ...timestamps
   },
   (meeting) => ({

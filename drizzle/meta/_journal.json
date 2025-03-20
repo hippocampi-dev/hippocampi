@@ -118,6 +118,13 @@
       "when": 1742266482600,
       "tag": "0005_round_king_cobra",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1742429336380,
+      "tag": "0006_wide_avengers",
+      "breakpoints": true
     }
   ]
 }

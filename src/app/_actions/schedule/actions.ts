@@ -1,7 +1,7 @@
 "use server"
 import { z, ZodType } from "zod"
 import { revalidatePath } from "next/cache";
-import { addAppointment, addDoctorAvailabilities, checkOverlappingAvailability, updateAppointmentStatus } from "~/server/db/queries";
+import { addAppointment, addDoctorAvailabilities, checkOverlappingAvailability, reviewAppointment, updateAppointmentStatus } from "~/server/db/queries";
 import { getUserId } from "~/utilities/getUser";
 import { redirect } from "next/navigation";
 import { availabilitySchema } from "~/lib/utils";
@@ -10,6 +10,19 @@ import { getDoctor, getDoctorAvailabilities } from "~/server/db/queries";
 import { DoctorsInterface } from "~/server/db/type";
 import { addDays, format } from "date-fns";
 
+export async function reviewAppointmentAction(appointmentId: string) {
+  console.log("DEBUG reviewAppointment - Params:", { appointmentId });
+  try {
+    const appointment = await reviewAppointment(appointmentId);
+    console.log("DEBUG reviewAppointment - Success:", appointment);
+    revalidatePath("/dashboard/doctor/appointments")
+    return appointment;
+  } catch (error) {
+    console.error("DEBUG reviewAppointment - Error:", error);
+    throw new Error(`Failed to review appointment: ${error instanceof Error ? error.message : String(error)}`);
+  }
+  
+}
 
 export async function updateAppointmentStatusAction(appointmentId: string, status: "Scheduled" | "Completed" | "Canceled" | "No-Show") {
     console.log("DEBUG updateAppointmentStatusAction - Params:", { appointmentId, status });
