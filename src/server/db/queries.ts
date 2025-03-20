@@ -836,6 +836,7 @@ export const getConversations = async (userId: string) => {
 
 export const getConversationDict = async (userId: string) => {
   const conversations = await getConversations(userId);
+
   const userRole = await getUserRole(userId as "string");
   const dict: ConversationDict = {};
   const isDoctor = userRole?.userRole === 'doctor'; // is the current user a doctor
@@ -846,13 +847,29 @@ export const getConversationDict = async (userId: string) => {
       where: eq(schema_message.messages.conversationId, c.conversationId),
       limit: 1,
     });
+
+    let otherUser = isDoctor // if is doctor, other user is patient
+      ? await getPatient(c.patientId as "string")
+      : await getDoctor(c.doctorId as "string");
+    
+    // Only process if a message exists
+    if (!lastMessage || !lastMessage[0]) {
+      dict[c.conversationId] = {
+        conversation: c,
+        otherUser: otherUser!
+      };
+      continue;
+    }
     const lastMessageUserRole = await getUserRole(lastMessage[0]?.senderId as "string");
-    const lastMessageUser = lastMessageUserRole?.userRole === 'patient' ? await getPatient(lastMessage[0]?.senderId as "string") : await getDoctor(lastMessage[0]?.senderId as "string");
+    const lastMessageUser = lastMessageUserRole?.userRole === 'patient'
+      ? await getPatient(lastMessage[0]?.senderId as "string")
+      : await getDoctor(lastMessage[0]?.senderId as "string");
 
     dict[c.conversationId] = {
       conversation: c,
       lastMessage: lastMessage[0],
-      lastMessageUser: lastMessageUser
+      lastMessageUser: lastMessageUser,
+      otherUser: otherUser!
     }
   }
   return dict;
