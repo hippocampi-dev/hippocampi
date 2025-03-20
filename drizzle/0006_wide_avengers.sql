@@ -1,0 +1,1 @@
+ALTER TABLE "hippocampi_appointments" ADD COLUMN "reviewed" boolean DEFAULT false;

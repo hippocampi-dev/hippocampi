@@ -368,6 +368,45 @@ export const getAppointments = async (user_id: UserIdInterface) => {
   });
 };
 
+export const getFilteredAppointments = async (
+  user_id: UserIdInterface) => {
+    const appointments = await getAppointments(user_id);
+    const upcomingAppointments = appointments.filter(
+    apt => apt.status === "Scheduled" && new Date(apt.scheduledAt) > new Date()
+    
+  );
+  return upcomingAppointments;
+  }
+
+export const getUnreviewedAppointments = async (user_id: UserIdInterface) => {
+  const userRole = await getUserRole(user_id);
+  if (userRole?.userRole === "doctor") {
+    return db.query.appointments.findMany({
+      where: and(
+        eq(schema_management.appointments.doctorId, user_id),
+        eq(schema_management.appointments.reviewed, false)
+      ),
+    });
+  }
+  return db.query.appointments.findMany({
+    where: and(
+      eq(schema_management.appointments.patientId, user_id),
+      eq(schema_management.appointments.reviewed, false)
+    ),
+  });
+}
+
+export const reviewAppointment = async (appointment_id: string) => {
+  return db
+      .update(schema_management.appointments)
+      .set({ 
+        reviewed: true,
+        updated_at: sql`NOW()`
+      })
+      .where(eq(schema_management.appointments.id, appointment_id))
+      .returning();
+  };
+
 // get scheduled meeting
 export const getAppointment = async (appointment_id: string) => {
   return db.query.appointments.findFirst({

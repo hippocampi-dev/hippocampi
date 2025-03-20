@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic"
 
 import { Suspense } from "react";
 import DoctorAppointments from "~/components/doctor-dashboard/DoctorAppointments";
-import { getAppointments, getPatientDict } from "~/server/db/queries";
+import { getAppointments, getFilteredAppointments, getPatientDict, getUnreviewedAppointments } from "~/server/db/queries";
 import { getUserId } from "~/utilities/getUser";
 
 export default function AppointmentsPage() {
@@ -18,7 +18,7 @@ async function AppointmentsContainer() {
   const doctorId = await getUserId() as "string";
   
   // Start both data fetching operations in parallel
-  const appointmentsPromise = getAppointments(doctorId);
+  const appointmentsPromise = getUnreviewedAppointments(doctorId);
   const patientDictPromise = getPatientDict(doctorId);
   
   // Wait for both promises to resolve
