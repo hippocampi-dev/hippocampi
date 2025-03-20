@@ -1,4 +1,5 @@
 'server-only'
+'use server'
 
 import { createConversation, createMessage, setMessagesRead } from "~/server/db/queries";
 import { ConversationsInterface, MessagesInterface } from "~/server/db/type";

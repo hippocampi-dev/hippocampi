@@ -117,7 +117,7 @@ export function DoctorDashboardSidebar() {
             <SidebarMenu className="mb-1">
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link href="/dashboard/doctor/profile">
+                  <Link href="/dashboard/doctor/account">
                     <User className="mr-2 h-4 w-4" />
                     <span>My Information</span>
                   </Link>

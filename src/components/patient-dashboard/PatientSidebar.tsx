@@ -48,60 +48,54 @@ export function PatientDashboardSidebar() {
       <SidebarContent className="px-4">
         <SidebarMenu>
           <SidebarSeparator />
-            <SidebarMenuItem>
-              
-                <Link href="/dashboard/patient">
-                <SidebarMenuButton>
-                  <Home className="mr-2 h-4 w-4" />
-                  Home
-                  </SidebarMenuButton>
-                </Link>
-              
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              
-                <Link href="/dashboard/patient/schedule">
-                <SidebarMenuButton>
-                  <Calendar1 className="mr-2 h-4 w-4" />
-                  Schedule
-                  </SidebarMenuButton>
-                </Link>
-              
-            </SidebarMenuItem>
           <SidebarMenuItem>
-            
-              <Link href="/dashboard/patient/messages">
-              <SidebarMenuButton>
-                <MessagesSquare className="mr-2 h-4 w-4" />
-                Messages
-                </SidebarMenuButton>
+            <SidebarMenuButton asChild>
+              <Link href="/dashboard/patient">
+                <Home className="mr-2 h-4 w-4" />
+                <span>Home</span>
               </Link>
+            </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            
-              <Link href="/dashboard/patient/invoices">
-              <SidebarMenuButton>
-                <ReceiptText className="mr-2 h-4 w-4" />
-                Invoices
-                </SidebarMenuButton>
+            <SidebarMenuButton asChild>
+              <Link href="/dashboard/patient/schedule">
+                <Calendar1 className="mr-2 h-4 w-4" />
+                <span>Schedule</span>
               </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Link href="/dashboard/patient/messages">
+                <MessagesSquare className="mr-2 h-4 w-4" />
+                <span>Messages</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Link href="/dashboard/patient/invoices">
+                <ReceiptText className="mr-2 h-4 w-4" />
+                <span>Invoices</span>
+              </Link>
+            </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href="/dashboard/patient/chatbot">
                 <Bot className="mr-2 h-4 w-4" />
-                Chat Bot
+                <span>Chat Bot</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="px-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton>
               <UserCircle className="mr-2 h-4 w-4" />
-              My Profile
+              <span>My Profile</span>
               <ChevronDown className="ml-auto h-4 w-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
