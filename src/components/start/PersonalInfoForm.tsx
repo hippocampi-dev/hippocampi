@@ -191,7 +191,7 @@ export default function PersonalInfoForm({ data, onChange }: PersonalInfoFormPro
             className="mr-2"
           />
           <Label htmlFor="termsOfService">
-            I agree to the <a href="/legal/terms-of-service" className="text-blue-500 underline" target="_blank" rel="noopener noreferrer">Terms of Service</a>
+            I agree to the <a href="/legal/terms-of-use" className="text-blue-500 underline" target="_blank" rel="noopener noreferrer">Terms of Service</a>
           </Label>
         </div>
         <div className="flex items-center">
