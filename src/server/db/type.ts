@@ -143,7 +143,8 @@ export type PatientDict = {
 export type ConversationDict = {
   [key: string]: {
     conversation: ConversationsInterface
-    lastMessage: MessagesInterface | undefined
-    lastMessageUser: DoctorsInterface | PatientsInterface | undefined
+    lastMessage?: MessagesInterface | undefined
+    lastMessageUser?: DoctorsInterface | PatientsInterface | undefined
+    otherUser: DoctorsInterface | PatientsInterface
   }
 };

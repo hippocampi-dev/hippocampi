@@ -13,12 +13,13 @@ export function MessagesList({ conversationDict, dashboard }: props) {
     <div className="divide-y divide-gray-200">
       {Object.keys(conversationDict).map(key => {
         const conversation = conversationDict[key];
-        const lastMessageUser = conversation?.lastMessageUser;
+        const otherUser = conversation?.otherUser;
         const isYou = conversation?.lastMessage?.senderId === 
         (dashboard === 'doctor' 
           ? conversation?.conversation.doctorId 
           : conversation?.conversation.patientId);
         const hasUnread = !conversation?.lastMessage?.read && !isYou;
+        const startedConversation = conversation?.lastMessage
 
         return (
           <Link
@@ -28,24 +29,24 @@ export function MessagesList({ conversationDict, dashboard }: props) {
           >
             <Avatar className="h-12 w-12 mr-4">
               <AvatarImage
-                src={`${lastMessageUser?.firstName} ${lastMessageUser?.lastName}`} 
-                alt={`${lastMessageUser?.firstName} ${lastMessageUser?.lastName}`}
+                src={`${otherUser?.firstName} ${otherUser?.lastName}`} 
+                alt={`${otherUser?.firstName} ${otherUser?.lastName}`}
               />
-              <AvatarFallback>{lastMessageUser?.firstName.charAt(0)}</AvatarFallback>
+              <AvatarFallback>{otherUser?.firstName.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
               <div className="flex justify-between items-baseline">
                 {/* If last message is from other person and not read --> bold */}
                 <h3 className={`text-base ${hasUnread ? "font-bold" : "font-semibold"} truncate`}>
-                  {`${lastMessageUser?.firstName} ${lastMessageUser?.lastName}`}
+                  {`${otherUser?.firstName} ${otherUser?.lastName}`}
                 </h3>
                 <span className={`text-xs ${hasUnread ? "text-black font-semibold" : "text-gray-500"}`}>
-                  {formatMessageTime(conversation?.lastMessage?.time.toString()!)}
+                  {startedConversation ? formatMessageTime(conversation?.lastMessage?.time.toString()!) : ""}
                 </span>
               </div>
               <p className={`text-sm truncate ${hasUnread ? "text-black font-semibold" : "text-gray-500"}`}>
                 {isYou && "You: "}
-                {conversation?.lastMessage?.content}
+                {startedConversation ? conversation?.lastMessage?.content : "Start a conversation"}
               </p>
             </div>
           </Link>
