@@ -2,7 +2,7 @@ import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { z, ZodError, ZodType } from "zod"
 
-
+export const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
