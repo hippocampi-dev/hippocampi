@@ -1,5 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
+import Footer from "~/components/ui/Footer"
 import { Header } from "~/components/ui/Header"
 
 const teamMembers = [
@@ -99,6 +100,7 @@ export default function AboutPage() {
           </div>
         </section>
       </main>
+      <Footer />
     </div>
   )
 }

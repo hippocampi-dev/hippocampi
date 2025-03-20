@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { signOut, useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { Button } from "~/components/ui/button";
+import { DropdownMenuSeparator, DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuItem } from "./dropdown-menu";
 
 export function Header() {
   const { data: session } = useSession();
@@ -16,7 +17,7 @@ export function Header() {
           <Link href="/" className="flex-1 text-2xl font-bold text-blue-600">
             Hippocampi
           </Link>
-          <div className="hidden flex-1 justify-center space-x-4 md:flex">
+          <div className="hidden flex-1 justify-center items-center space-x-4 md:flex gap-2">
             {/* <Link href="/" className="text-gray-700 hover:text-blue-600 transition duration-300">
               Home
             </Link> */}
@@ -32,6 +33,30 @@ export function Header() {
             >
               Contact
             </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <span className="text-gray-700 transition-colors hover:text-primary cursor-pointer">
+                  Legal
+                </span>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                <DropdownMenuItem>
+                  <Link href="/legal/terms-of-use" className="w-full">
+                    Terms of Use
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/legal/privacy-policy" className="w-full">
+                    Privacy Policy
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/legal/nondiscrimination-notice" className="w-full">
+                    Nondiscrimination
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <div className="flex flex-1 justify-end space-x-2">
             {session && (
