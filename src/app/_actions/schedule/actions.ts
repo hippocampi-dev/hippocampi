@@ -1,7 +1,7 @@
 "use server"
 import { z, ZodType } from "zod"
 import { revalidatePath } from "next/cache";
-import { addAppointment, addDoctorAvailabilities, checkOverlappingAvailability, reviewAppointment, updateAppointmentStatus } from "~/server/db/queries";
+import { addAppointment, addDoctorAvailabilities, checkOverlappingAvailability, getAppointment, reviewAppointment, updateAppointmentStatus } from "~/server/db/queries";
 import { getUserId } from "~/utilities/getUser";
 import { redirect } from "next/navigation";
 import { availabilitySchema } from "~/lib/utils";
@@ -126,6 +126,19 @@ export async function scheduleAppointment(data: {
   } catch (error) {
     console.error("DEBUG scheduleAppointment - Error:", error);
     throw new Error(`Failed to schedule appointment: ${error instanceof Error ? error.message : String(error)}`);
+  }
+}
+
+export async function getAppointmentDetails(appointmentId: string) {
+  try {
+    const appointment = await getAppointment(appointmentId);
+    if (!appointment) {
+      throw new Error("Appointment not found");
+    }
+    return appointment;
+  } catch (error) {
+    console.error("DEBUG getAppointmentDetails - Error:", error);
+    throw new Error(`Failed to fetch appointment details: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
 
