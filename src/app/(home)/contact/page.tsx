@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import Footer from "~/components/ui/Footer";
 import { Header } from "~/components/ui/Header";
 
 export default function Contact() {
@@ -75,7 +76,7 @@ export default function Contact() {
                 Alternative Contact Methods
               </h2>
               <p className="mb-2 text-lg text-gray-700">
-                Email: info@hippocampi.co
+                {`Email: ${process.env.NEXT_PUBLIC_HIPPOCAMPI_EMAIL}`}
               </p>
               <p className="mb-2 text-lg text-gray-700">
                 Phone: +1 (818) 913-0022
@@ -113,6 +114,7 @@ export default function Contact() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

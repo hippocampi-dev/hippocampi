@@ -12,7 +12,7 @@ import {
 
 export function Toaster() {
   const { toasts } = useToast()
-  console.log("Current toasts:", toasts)
+  // console.log("Current toasts:", toasts)
 
   return (
     <RadixToastProvider>

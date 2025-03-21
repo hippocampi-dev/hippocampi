@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Header } from "~/components/ui/Header";
 import { ChevronLeft } from "lucide-react";
+import Footer from "~/components/ui/Footer";
 
 export default function NondiscriminationNoticePage() {
   return (
@@ -35,7 +36,7 @@ export default function NondiscriminationNoticePage() {
                   Hippocampi, Inc. complies with all applicable federal civil rights laws, including Section 1557 of the Affordable Care Act (Section 1557). Hippocampi, Inc. does not discriminate on the basis of race, color, national origin (including limited English proficiency and primary language), age, disability, or sex (consistent with the scope of sex discrimination described at 45 CFR § 92.101(a)(2)).
                 </p>
 
-                <h2 className="mt-8 text-2xl font-semibold tracking-tight">Our Commitment</h2>
+                <h2 className="mt-8 text-2xl font-semibold tracking-tight mb-1">Our Commitment</h2>
                 <p className="text-muted-foreground">
                   In compliance with Section 1557 and other federal civil rights laws, we provide individuals the following in a timely manner and free of charge:
                 </p>
@@ -77,13 +78,13 @@ export default function NondiscriminationNoticePage() {
                     To access our language assistance services, auxiliary aids and services, and for assistance in getting a reasonable modification, please contact:
                   </p>
                   <p className="mt-2">
-                    <Link href="mailto:support@hippocampi.co" className="text-primary hover:underline">
-                      support@hippocampi.co
+                    <Link href={`mailto:${process.env.NEXT_PUBLIC_HIPPOCAMPI_EMAIL}`} className="text-primary hover:underline">
+                      {process.env.NEXT_PUBLIC_HIPPOCAMPI_EMAIL}
                     </Link>
                   </p>
                 </div>
 
-                <h2 className="mt-8 text-2xl font-semibold tracking-tight">Filing a Complaint</h2>
+                <h2 className="mt-8 text-2xl font-semibold tracking-tight mb-1">Filing a Complaint</h2>
                 <p className="text-muted-foreground">
                   If you believe Hippocampi, Inc. has failed to provide these services or has discriminated in another way on the basis of race, color, national origin, sex, age, or disability, you can file a complaint with the U.S. Department of Health and Human Services, Office for Civil Rights:
                 </p>
@@ -115,30 +116,7 @@ export default function NondiscriminationNoticePage() {
       </main>
 
       {/* Footer */}
-      <footer className="w-full border-t bg-background py-8 md:py-12">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="flex flex-col items-center justify-center space-y-4 text-center">
-            <div className="flex items-center space-x-4">
-              <Link 
-                href="/legal/privacy-policy" 
-                className="text-sm text-muted-foreground transition-colors hover:text-primary"
-              >
-                Privacy Policy
-              </Link>
-              <div className="h-1 w-1 rounded-full bg-muted-foreground/50"></div>
-              <Link 
-                href="/legal/terms-of-use" 
-                className="text-sm text-muted-foreground transition-colors hover:text-primary"
-              >
-                Terms of Use
-              </Link>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              &copy; {new Date().getFullYear()} Hippocampi, Inc. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

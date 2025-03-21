@@ -55,6 +55,17 @@ export const authConfig = {
     verificationTokensTable: verificationTokens,
   }),
   callbacks: {
+    authorized({ auth, request: { nextUrl } }) {
+      const isLoggedIn = !!auth?.user;
+      const isOnProtectedRoute = nextUrl.pathname.startsWith('/dashboard') || nextUrl.pathname.startsWith('/onboarding') || nextUrl.pathname.startsWith('/checkout')
+      if (isOnProtectedRoute) {
+        if (isLoggedIn) return true;
+        return false; // Redirect unauthenticated users to login page
+      } else if (isLoggedIn) {
+        return Response.redirect(new URL('/middle', nextUrl));
+      }
+      return true;
+    },
     jwt: async ({ token, user }) => {
       if (user) {
         token.id = user.id
