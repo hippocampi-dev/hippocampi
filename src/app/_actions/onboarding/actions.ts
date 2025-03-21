@@ -4,7 +4,7 @@ import { CredentialsInterface } from "~/app/(dashboard)/onboarding/credentials/p
 import { auth } from "~/server/auth"
 import { addDoctor, addDoctorCredentials, addDoctorSubscription, getDoctor, setDoctor, setDoctorCredentialLinks } from "~/server/db/queries"
 import { DoctorCredentialsInterface, DoctorsInterface, SubscriptionsInterface } from "~/server/db/type";
-import { uploadFile } from "../blob/actions";
+import { uploadCredentialsFile } from "../blob/actions";
 import { createTestCredentials } from "./test-data";
 
 export async function updateDoctorOnboardingStatus() {
@@ -47,24 +47,24 @@ async function convertCredentialFilesToBlobUrl(id: string, credentials: Credenti
   const processedCredentials = {
     npi: {
       ...credentials.npi,
-      file: (await uploadFile(id, 'npi-document', credentials.npi.file as File)).url
+      file: (await uploadCredentialsFile(id, 'npi-document', credentials.npi.file as File)).url
     },
     license: {
       ...credentials.license,
-      file: (await uploadFile(id, 'medical-license', credentials.license.file as File)).url
+      file: (await uploadCredentialsFile(id, 'medical-license', credentials.license.file as File)).url
     },
     dea: {
       ...credentials.dea,
-      file: (await uploadFile(id, 'dea-certificate', credentials.dea.file as File)).url
+      file: (await uploadCredentialsFile(id, 'dea-certificate', credentials.dea.file as File)).url
     },
     malpractice: {
       ...credentials.malpractice,
-      file: (await uploadFile(id, 'malpractice-policy', credentials.malpractice.file as File)).url
+      file: (await uploadCredentialsFile(id, 'malpractice-policy', credentials.malpractice.file as File)).url
     },
     certifications: {
       certifications: await Promise.all(credentials.certifications.certifications.map(async (cert) => ({
         ...cert,
-        file: (await uploadFile(id, 'certification', cert.file as File, cert.id)).url
+        file: (await uploadCredentialsFile(id, 'certification', cert.file as File, cert.id)).url
       })))
     }
   }
