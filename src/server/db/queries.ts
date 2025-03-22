@@ -260,6 +260,99 @@ export const getDoctorCredentials = async (user_id: UserIdInterface) => {
   });
 };
 
+interface Section {
+  id: string;
+  title: string;
+  content: string;
+  type: 'text' | 'table';
+  required?: boolean;
+}
+
+interface MedicationRow {
+  name: string;
+  dosage: string;
+  frequency: string;
+  purpose: string;
+}
+
+interface SaveConsultationNotesParams {
+  appointmentId: string;
+  patientName: string;
+  patientDob: string;
+  appointmentDate: string;
+  consultingSpecialist: string;
+  sections: Section[];
+  medications: MedicationRow[];
+  isDraft: boolean;
+}
+
+export async function saveConsultationNotes({
+  appointmentId,
+  patientName,
+  patientDob,
+  appointmentDate,
+  consultingSpecialist,
+  sections,
+  medications,
+  isDraft,
+}: SaveConsultationNotesParams) {
+  // Check if consultation notes already exist
+  const existingNotes = await db.query.consultationNotes.findFirst({
+    where: eq(schema_management.consultationNotes.appointmentId, appointmentId),
+  });
+  
+  if (existingNotes) {
+    // Update existing notes
+    return await db
+      .update(schema_management.consultationNotes)
+      .set({
+        patientName,
+        patientDob,
+        appointmentDate,
+        consultingSpecialist,
+        sections,
+        medications,
+        isDraft,
+        updatedAt: new Date(),
+      })
+      .where(eq(schema_management.consultationNotes.appointmentId, appointmentId))
+      .returning();
+  } else {
+    // Create new notes
+    return await db
+      .insert(schema_management.consultationNotes)
+      .values({
+        appointmentId,
+        patientName,
+        patientDob,
+        appointmentDate,
+        consultingSpecialist,
+        sections,
+        medications,
+        isDraft,
+      })
+      .returning();
+  }
+}
+
+export async function getConsultationNotes(appointmentId: string) {
+  return await db.query.consultationNotes.findFirst({
+    where: eq(schema_management.consultationNotes.appointmentId, appointmentId),
+  });
+}
+
+export async function updateConsultationDraftStatus(appointmentId: string, isDraft: boolean) {
+  return await db
+    .update(schema_management.consultationNotes)
+    .set({
+      isDraft,
+      updatedAt: new Date(),
+    })
+    .where(eq(schema_management.consultationNotes.appointmentId, appointmentId))
+    .returning();
+}
+
+
 export const getPendingDoctorCredentials = async () => {
   const doctors = await db.query.doctors.findMany({
     where: eq(schema_doctor.doctors.onboardingStatus, 'pending'),
@@ -419,6 +512,21 @@ export const getUnreviewedAppointments = async (user_id: UserIdInterface) => {
     ),
   });
 }
+
+export const uploadAppointmentNotesUrl = async (
+  appointment_id: string,
+  file_url: string,
+) => {
+  return db
+    .update(schema_management.appointments)
+    .set({
+      file: file_url,
+      notesTaken: "true",
+      updated_at: sql`NOW()`
+    })
+    .where(eq(schema_management.appointments.id, appointment_id)) // use eq to compare
+    .returning();
+};
 
 export const reviewAppointment = async (appointment_id: string) => {
   return db

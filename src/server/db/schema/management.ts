@@ -4,6 +4,7 @@ import {
   decimal,
   index,
   integer,
+  json,
   numeric,
   pgEnum,
   primaryKey,
@@ -16,6 +17,7 @@ import { patients } from './patient';
 import { doctors } from './doctor';
 import { timestamps } from './utils';
 import { createTable } from './schema';
+import { url } from 'inspector';
 
 // User Roles
 export const rolesEnum = pgEnum('user_role', [
@@ -64,6 +66,36 @@ export const appointmentStatusEnum = pgEnum('appointment_status', [
   'No-Show'
 ]);
 
+export const consultationNotes = createTable("consultation_notes", {
+  id: varchar('id', { length: 255 })
+      .notNull()
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+  appointmentId: varchar("appointment_id", { length: 255 }).notNull().references(() => appointments.id),
+  patientName: varchar("patient_name", { length: 255 }).notNull(),
+  patientDob: varchar("patient_dob", { length: 50 }),
+  appointmentDate: varchar("appointment_date", { length: 50 }),
+  consultingSpecialist: varchar("consulting_specialist", { length: 255 }),
+  
+  // Store sections as a JSON array
+  sections: json("sections").notNull(),
+  
+  // Store medications as a JSON array
+  medications: json("medications"),
+  
+  // Track draft status
+  isDraft: boolean("is_draft").default(true),
+  
+  // Timestamps
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const notesTakenEnum = pgEnum('notes_taken', [
+  'true', "in-progress", "to-do", "false"]);
+
+  
+
 export const appointments = createTable(
   'appointments',
   {
@@ -83,6 +115,8 @@ export const appointments = createTable(
     notes: text('notes'), // Optional field for additional info
     status: appointmentStatusEnum('appointment_status').notNull().default('Scheduled'),
     reviewed: boolean('reviewed').default(false),
+    notesTaken: notesTakenEnum('notes_taken').default("false"),
+    file: varchar('file'),
     ...timestamps
   },
   (meeting) => ({

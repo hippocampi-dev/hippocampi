@@ -1,6 +1,7 @@
 'use server'
 
 import { put } from '@vercel/blob';
+import { uploadAppointmentNotesUrl } from '~/server/db/queries';
 
 // ~ signify dynamic routes
 
@@ -21,7 +22,7 @@ export async function uploadCredentialsFile(
 
 // doctors/~doctorId/patients/~patientId/appointments/~appointmentId/~notes.pdf
 export async function uploadAppointmentNotesFile(
-  doctorId: string, 
+  doctorId: string,
   patientId: string,
   appointmentId: string,
   file: File,
@@ -30,6 +31,8 @@ export async function uploadAppointmentNotesFile(
     access: 'public',
     addRandomSuffix: false
   });
+
+  const response = await uploadAppointmentNotesUrl(appointmentId, blob.url);
 
   return blob; // assume const blob = await uploadAppointmentNotesFile(params), call blob.url to get url to blob db
 }
