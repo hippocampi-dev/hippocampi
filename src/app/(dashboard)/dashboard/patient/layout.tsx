@@ -1,5 +1,10 @@
+'use client'
+
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { PatientDashboardSidebar } from "~/components/patient-dashboard/PatientSidebar";
 import { SidebarProvider } from "~/components/ui/sidebar";
+import { UserRolesInterface } from "~/server/db/type";
 
 
 export default function DashboardLayout({
@@ -7,6 +12,19 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
+
+  useEffect(() => {
+    const protect = async () => {
+      const role: UserRolesInterface = await fetch('/api/db/management/user-role/get').then(r => r.json()).then(r => r.response);
+  
+      if (role.userRole === 'doctor') {
+        router.push('/middle');
+      }
+    }
+
+    protect();
+  }, [])
 
   return (
     <SidebarProvider>
