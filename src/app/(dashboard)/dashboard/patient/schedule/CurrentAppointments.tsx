@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { fetchDoctorDetails, updateAppointmentStatusAction } from "~/app/_actions/schedule/actions";
+import { useRouter } from "next/navigation";
 
 interface CurrentAppointmentsProps {
   appointments: AppointmentsInterface[];
@@ -103,7 +104,10 @@ export function CurrentAppointments({ appointments }: CurrentAppointmentsProps) 
   // Group appointments by status
   const upcomingAppointments = appointmentData.filter(apt => apt.status === "Scheduled" && new Date(apt.scheduledAt) > new Date());
   const pastAppointments = appointmentData.filter(apt => 
-    apt.status === "Completed" || apt.status === "Canceled" || apt.status === "No-Show" || new Date(apt.scheduledAt) <= new Date()
+    apt.status === "Completed" || 
+    (apt.status === "Canceled" && apt.reviewed !== true) || 
+    apt.status === "No-Show" || 
+    (new Date(apt.scheduledAt) <= new Date() && apt.status === "Scheduled")
   );
 
   return (
@@ -111,7 +115,7 @@ export function CurrentAppointments({ appointments }: CurrentAppointmentsProps) 
       <div>
         <h2 className="text-xl font-semibold mb-4">Upcoming Appointments</h2>
         {upcomingAppointments.length > 0 ? (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 max-h-[500px] overflow-y-auto pr-2">
             {upcomingAppointments.map((appointment) => (
               <AppointmentCard 
                 key={appointment.id} 
@@ -129,7 +133,7 @@ export function CurrentAppointments({ appointments }: CurrentAppointmentsProps) 
       <div>
         <h2 className="text-xl font-semibold mb-4">Past Appointments</h2>
         {pastAppointments.length > 0 ? (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 max-h-[500px] overflow-y-auto pr-2">
             {pastAppointments.map((appointment) => (
               <AppointmentCard 
                 key={appointment.id} 
@@ -155,6 +159,7 @@ interface AppointmentCardProps {
 }
 
 function AppointmentCard({ appointment, onCancel, onUpdateStatus, isPast = false }: AppointmentCardProps) {
+  const router = useRouter();
   const statusColors: Record<string, string> = {
     Scheduled: "bg-green-100 text-green-800",
     Canceled: "bg-red-100 text-red-800",
@@ -168,6 +173,12 @@ function AppointmentCard({ appointment, onCancel, onUpdateStatus, isPast = false
   const now = new Date();
   const appointmentDate = new Date(appointment.scheduledAt);
   const isInPast = appointmentDate < now;
+  
+  const handleViewDetails = () => {
+    if (appointment.id) {
+      router.push(`/dashboard/patient/schedule/${appointment.id}/details`);
+    }
+  };
 
   return (
     <Card>
@@ -226,6 +237,19 @@ function AppointmentCard({ appointment, onCancel, onUpdateStatus, isPast = false
               onClick={() => onUpdateStatus("No-Show")}
             >
               Mark No-Show
+            </Button>
+          </div>
+        )}
+        
+        {appointment.notesTaken === "true" && (
+          <div className="w-full flex justify-end mt-2">
+            <Button 
+              variant="link" 
+              size="sm" 
+              className="text-blue-600 p-0 h-auto"
+              onClick={handleViewDetails}
+            >
+              View Details
             </Button>
           </div>
         )}

@@ -15,6 +15,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "~/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "~/components/ui/tooltip";
 import { useToast } from "~/app/contexts/ToastContext"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "~/components/ui/dialog";
 
 // Icons
 import { MoreHorizontal, Trash2, Plus, Save, FileText, ArrowLeft } from "lucide-react";
@@ -51,6 +52,7 @@ export default function ConsultationTemplateEdit() {
   const templateRef = useRef<HTMLDivElement>(null);
   const [isDraftSaved, setIsDraftSaved] = useState(false);
   const { toast } = useToast();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   const initialSections: Section[] = [
     { id: 'patientInfo', title: 'Patient Information', content: '', type: 'text', required: true },
@@ -226,8 +228,7 @@ export default function ConsultationTemplateEdit() {
     return date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
   };
 
-  // Generate PDF as text
-  const generatePDF = async () => {
+  const handleDone = async () => {
     try {
       // First save the consultation as finalized (not a draft)
       const saveResponse = await finalizeSaveConsultation({
@@ -562,6 +563,24 @@ export default function ConsultationTemplateEdit() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Confirmation Modal */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Finalize Consultation</DialogTitle>
+          </DialogHeader>
+          <p>Are you sure you want to finalize this consultation? You will be redirected to the details page.</p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleDone}>
+              Confirm
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
