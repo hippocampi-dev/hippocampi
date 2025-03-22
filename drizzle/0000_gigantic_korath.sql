@@ -23,6 +23,12 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ CREATE TYPE "public"."notes_taken" AS ENUM('true', 'in-progress', 'to-do', 'false');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  CREATE TYPE "public"."user_role" AS ENUM('patient', 'doctor', 'admin');
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -162,8 +168,24 @@ CREATE TABLE IF NOT EXISTS "hippocampi_appointments" (
 	"notes" text,
 	"appointment_status" "appointment_status" DEFAULT 'Scheduled' NOT NULL,
 	"reviewed" boolean DEFAULT false,
+	"notes_taken" "notes_taken" DEFAULT 'false',
+	"file" varchar,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "hippocampi_consultation_notes" (
+	"id" varchar(255) PRIMARY KEY NOT NULL,
+	"appointment_id" varchar(255) NOT NULL,
+	"patient_name" varchar(255) NOT NULL,
+	"patient_dob" varchar(50),
+	"appointment_date" varchar(50),
+	"consulting_specialist" varchar(255),
+	"sections" json NOT NULL,
+	"medications" json,
+	"is_draft" boolean DEFAULT true,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "hippocampi_invoices" (
@@ -390,6 +412,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "hippocampi_appointments" ADD CONSTRAINT "hippocampi_appointments_patient_id_hippocampi_patients_patient_id_fk" FOREIGN KEY ("patient_id") REFERENCES "public"."hippocampi_patients"("patient_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "hippocampi_consultation_notes" ADD CONSTRAINT "hippocampi_consultation_notes_appointment_id_hippocampi_appointments_id_fk" FOREIGN KEY ("appointment_id") REFERENCES "public"."hippocampi_appointments"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

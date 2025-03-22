@@ -2,12 +2,13 @@ export const dynamic = "force-dynamic"
 
 import { Suspense } from "react";
 import DoctorAppointments from "~/components/doctor-dashboard/DoctorAppointments";
-import { getAppointments, getFilteredAppointments, getPatientDict, getUnreviewedAppointments } from "~/server/db/queries";
+import Loading from "~/components/loading/page";
+import { getPatientDict, getUnreviewedAppointments } from "~/server/db/queries";
 import { getUserId } from "~/utilities/getUser";
 
 export default function AppointmentsPage() {
   return (
-    <Suspense fallback={<AppointmentsLoadingSkeleton />}>
+    <Suspense fallback={<Loading />}>
       <AppointmentsContainer />
     </Suspense>
   );
@@ -32,18 +33,5 @@ async function AppointmentsContainer() {
       appointments={appointments}
       patientDict={patientDict}
     />
-  );
-}
-
-function AppointmentsLoadingSkeleton() {
-  return (
-    <div className="p-6 space-y-6">
-      <div className="h-8 w-48 bg-muted rounded-lg animate-pulse" />
-      <div className="space-y-4">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="h-24 bg-muted rounded-lg animate-pulse" />
-        ))}
-      </div>
-    </div>
   );
 }
