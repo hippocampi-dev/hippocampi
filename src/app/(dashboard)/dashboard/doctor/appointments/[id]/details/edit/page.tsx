@@ -386,9 +386,9 @@ export default function ConsultationTemplateEdit() {
                 <Save className="mr-2 h-4 w-4" /> Save Draft
               </Button>
               <Button
-                onClick={generatePDF}
+                onClick={() => setIsModalOpen(true)}
               >
-                <FileText className="mr-2 h-4 w-4" /> Generate PDF
+                <FileText className="mr-2 h-4 w-4" /> Done
               </Button>
             </div>
           </CardHeader>
