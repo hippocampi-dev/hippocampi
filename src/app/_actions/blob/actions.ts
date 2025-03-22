@@ -21,7 +21,7 @@ export async function uploadCredentialsFile(
 
 // doctors/~doctorId/patients/~patientId/appointments/~appointmentId/~notes.pdf
 export async function uploadAppointmentNotesFile(
-  doctorId: string, 
+  doctorId: string,
   patientId: string,
   appointmentId: string,
   file: File,
