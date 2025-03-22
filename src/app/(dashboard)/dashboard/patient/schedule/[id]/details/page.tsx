@@ -2,16 +2,15 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { FiEdit, FiDownload, FiUsers, FiCalendar } from 'react-icons/fi';
+import { FiDownload, FiArrowLeft } from 'react-icons/fi';
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Skeleton } from "~/components/ui/skeleton";
-import { useToast } from "~/app/contexts/ToastContext";
+import { toast } from "sonner";
 import { getAppointmentDetails } from '~/app/_actions/schedule/actions';
 import { getPatientDetails, getDoctorDetails } from '~/app/_actions/users/actions';
-import { fetchConsultationNotes } from "~/app/_actions/schedule/actions";
 
 interface AppointmentData {
   id: string;
@@ -40,33 +39,31 @@ interface DoctorData {
   firstName: string;
   lastName: string;
   specialty: string | null;
+  specialization?: string | null;
 }
 
-export default function AppointmentDetails() {
-  const params = useParams<{ id: string}>()
-  
+export default function PatientAppointmentDetails() {
+  const params = useParams<{ id: string}>();
   const router = useRouter();
-  const { toast } = useToast();
   const [appointment, setAppointment] = useState<AppointmentData | null>(null);
-  
   const [patient, setPatient] = useState<PatientData | null>(null);
   const [doctor, setDoctor] = useState<DoctorData | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("pdf");
-  const [notesDraft, setNotesDraft] = useState(false);
   const pdfUrl = `${appointment?.file}?t=${new Date().getTime()}`;
+
   useEffect(() => {
     const fetchAppointmentData = async () => {
       try {
         setLoading(true);
         const appointmentData = await getAppointmentDetails(params.id);
-        console.log("the file is " + appointmentData.file)
         setAppointment(appointmentData);
         
         if (appointmentData) {
           // Fetch patient and doctor info
           const patientData = await getPatientDetails(appointmentData.patientId);
           const doctorData = await getDoctorDetails(appointmentData.doctorId);
+          
           if (patientData) {
             setPatient({
               id: patientData.patientId,
@@ -76,58 +73,39 @@ export default function AppointmentDetails() {
               email: patientData.email,
               phone: patientData.phoneNumber || null,
             });
-          } else {
-            setPatient(null);
           }
+          
           if (doctorData) {
             setDoctor({
               id: doctorData.doctorId,
               firstName: doctorData.firstName,
               lastName: doctorData.lastName,
-              specialty: null, // Replace with actual property if available in doctorData
+              specialty: null, // Adjusted to handle missing property
+              specialization: doctorData.specialization || null,
             });
-          } else {
-            setDoctor(null);
-          }
-          
-          // Fetch consultation notes to check if they're in draft form
-          const notesResponse = await fetchConsultationNotes(params.id);
-          if (notesResponse.success && notesResponse.data) {
-            setNotesDraft(notesResponse.data.isDraft || false);
           }
         }
       } catch (error) {
-        // ...existing error handling...
+        console.error("Failed to fetch appointment details:", error);
+        toast.error("Failed to load appointment details");
       } finally {
         setLoading(false);
       }
     };
 
     fetchAppointmentData();
-  }, [params.id, toast]);
-
-  const handleEditClick = () => {
-    router.push(`/dashboard/doctor/appointments/${params.id}/details/edit`);
-  };
+  }, [params.id]);
 
   const handleDownloadPdf = () => {
     if (appointment?.file) {
       window.open(appointment.file, '_blank');
     } else {
-      toast({
-        title: "No PDF Available",
-        description: "There is no PDF file available for this appointment.",
-        variant: "destructive"
-      });
+      toast.error("No PDF file available for this appointment.");
     }
   };
 
-  const navigateToAllPatients = () => {
-    router.push('/dashboard/doctor/patients');
-  };
-
-  const navigateToAllAppointments = () => {
-    router.push('/dashboard/doctor/appointments');
+  const navigateBack = () => {
+    router.push('/dashboard/patient/schedule');
   };
 
   // Format date function
@@ -153,7 +131,6 @@ export default function AppointmentDetails() {
               <Skeleton className="h-8 w-64" />
               <div className="flex gap-3">
                 <Skeleton className="h-10 w-36" />
-                <Skeleton className="h-10 w-36" />
               </div>
             </div>
           </CardHeader>
@@ -170,14 +147,14 @@ export default function AppointmentDetails() {
   }
 
   return (
-    <div className="container max-w-6xl py-8">
+    <div className="overflow-auto container max-w-6xl py-8">
       <Card>
         <CardHeader className="pb-3">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
               <CardTitle className="text-2xl font-bold">Appointment Details</CardTitle>
               <p className="text-sm text-muted-foreground mt-1">
-                {appointment?.status} | Last updated: {formatDate(appointment?.updated_at)}
+                {appointment?.status} | {formatDate(appointment?.scheduledAt)}
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
@@ -185,17 +162,9 @@ export default function AppointmentDetails() {
                 variant="outline" 
                 size="sm" 
                 className="flex items-center gap-2"
-                onClick={navigateToAllPatients}
+                onClick={navigateBack}
               >
-                <FiUsers size={16} /> All Patients
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="flex items-center gap-2"
-                onClick={navigateToAllAppointments}
-              >
-                <FiCalendar size={16} /> All Appointments
+                <FiArrowLeft size={16} /> Back to Appointments
               </Button>
               {appointment?.file && (
                 <Button 
@@ -207,17 +176,6 @@ export default function AppointmentDetails() {
                   <FiDownload size={16} /> Download PDF
                 </Button>
               )}
-              <Button 
-                variant="default" 
-                size="sm" 
-                className="flex items-center gap-2"
-                onClick={handleEditClick}
-              >
-                <FiEdit size={16} /> 
-                {appointment?.file 
-                  ? (notesDraft ? 'Continue Editing' : 'Edit')
-                  : 'Create'} Consultation
-              </Button>
             </div>
           </div>
         </CardHeader>
@@ -249,7 +207,7 @@ export default function AppointmentDetails() {
             </div>
             
             <div className="bg-muted/40 p-5 rounded-lg">
-              <h3 className="font-semibold text-lg mb-4">Appointment Information</h3>
+              <h3 className="font-semibold text-lg mb-4">Doctor Information</h3>
               <div className="grid grid-cols-1 gap-2">
                 <div>
                   <p className="text-sm text-muted-foreground">Doctor</p>
@@ -257,7 +215,7 @@ export default function AppointmentDetails() {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Specialty</p>
-                  <p className="font-medium">{doctor?.specialty || 'N/A'}</p>
+                  <p className="font-medium">{doctor?.specialty || doctor?.specialization || 'N/A'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Scheduled Time</p>
@@ -273,28 +231,19 @@ export default function AppointmentDetails() {
           
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="mb-4">
-            {appointment?.file && <TabsTrigger value="pdf">PDF Document</TabsTrigger>}
+              {appointment?.file && <TabsTrigger value="pdf">PDF Document</TabsTrigger>}
               <TabsTrigger value="details">Consultation Notes</TabsTrigger>
-              
             </TabsList>
+            
             <TabsContent value="details" className="mt-0">
               <div className="bg-card p-6 border rounded-lg">
                 {appointment?.notes ? (
                   <div className="prose max-w-none">
                     <div className="whitespace-pre-line">{appointment.notes}</div>
-                    {notesDraft && (
-                      <p className="text-sm text-muted-foreground mt-2">Note: These notes are in draft form.</p>
-                    )}
                   </div>
                 ) : (
                   <div className="text-center py-12">
                     <p className="text-lg font-medium text-muted-foreground">No consultation notes available</p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Create a consultation note to add details about this appointment
-                    </p>
-                    <Button onClick={handleEditClick} className="mt-4">
-                      Create Consultation Note
-                    </Button>
                   </div>
                 )}
               </div>

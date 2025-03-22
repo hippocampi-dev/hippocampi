@@ -495,6 +495,26 @@ export const getFilteredAppointments = async (
   return upcomingAppointments;
   }
 
+export const getCompletedAppointments = async (user_id: UserIdInterface) => {
+  const userRole = await getUserRole(user_id);
+  if (userRole?.userRole === "doctor") {
+    return db.query.appointments.findMany({
+      where: and(
+        eq(schema_management.appointments.doctorId, user_id),
+        eq(schema_management.appointments.status, "Completed"),
+        eq(schema_management.appointments.reviewed, true),
+        eq(schema_management.appointments.notesTaken, "true")
+      ),
+    });
+  }
+  return db.query.appointments.findMany({
+    where: and(
+      eq(schema_management.appointments.patientId, user_id),
+      eq(schema_management.appointments.status, "Completed")
+    ),
+  });
+}
+
 export const getUnreviewedAppointments = async (user_id: UserIdInterface) => {
   const userRole = await getUserRole(user_id);
   if (userRole?.userRole === "doctor") {
@@ -521,6 +541,7 @@ export const uploadAppointmentNotesUrl = async (
     .update(schema_management.appointments)
     .set({
       file: file_url,
+      reviewed: true,
       notesTaken: "true",
       updated_at: sql`NOW()`
     })

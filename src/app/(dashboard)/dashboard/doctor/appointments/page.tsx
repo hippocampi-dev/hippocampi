@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic"
-
 import { Suspense } from "react";
 import DoctorAppointments from "~/components/doctor-dashboard/DoctorAppointments";
 import Loading from "~/components/loading/page";
@@ -18,13 +16,15 @@ async function AppointmentsContainer() {
   // Get the doctor ID first
   const doctorId = await getUserId() as "string";
   
-  // Start both data fetching operations in parallel
-  const appointmentsPromise = getUnreviewedAppointments(doctorId);
+  // Start all data fetching operations in parallel
+  const upcomingAppointmentsPromise = getUnreviewedAppointments(doctorId);
+  const completedAppointmentsPromise = getCompletedAppointments(doctorId);
   const patientDictPromise = getPatientDict(doctorId);
   
-  // Wait for both promises to resolve
-  const [appointments, patientDict] = await Promise.all([
-    appointmentsPromise,
+  // Wait for all promises to resolve
+  const [upcomingAppointments, completedAppointments, patientDict] = await Promise.all([
+    upcomingAppointmentsPromise,
+    completedAppointmentsPromise,
     patientDictPromise
   ]);
 
