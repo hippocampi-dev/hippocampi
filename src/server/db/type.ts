@@ -148,3 +148,10 @@ export type ConversationDict = {
     otherUser: DoctorsInterface | PatientsInterface
   }
 };
+
+export type DoctorDict = {
+  [key: string]: {
+    doctor: DoctorsInterface
+    credentials: DoctorCredentialsInterface
+  }
+}

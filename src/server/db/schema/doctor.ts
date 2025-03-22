@@ -21,7 +21,8 @@ export const onboardingStatusEnum = pgEnum('onboarding_status', [
   'not-started',
   'profile',
   'credentials',
-  'pending-approval',
+  'pending',
+  'rejected',
   'approved'
 ]);
 
@@ -63,6 +64,7 @@ export const doctorCredentials = createTable(
     medicalSchool: varchar("medical_school", { length: 255 }).notNull(),
     residency: varchar("residency", { length: 255 }).notNull(),
     approach: text("approach").notNull(),
+    dateSubmitted: timestamp('date_submitted', { mode: 'date' }),
     files: json('files'),
     ...timestamps
   }

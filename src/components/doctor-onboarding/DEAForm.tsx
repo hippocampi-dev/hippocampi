@@ -22,6 +22,7 @@ export interface DEAForm {
   startDate: string
   expirationDate: string
   file: File | string
+  fileUrl?: string
 }
 
 interface DEAFormProps {
