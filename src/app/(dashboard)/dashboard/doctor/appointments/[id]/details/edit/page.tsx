@@ -22,6 +22,14 @@ import { fetchDoctorDetails, getAppointmentDetails } from '~/app/_actions/schedu
 import { getPatientDetails } from '~/app/_actions/users/actions';
 import { uploadAppointmentNotesFile } from '~/app/_actions/blob/actions';
 
+import { 
+  saveConsultationDraft, 
+  fetchConsultationNotes, 
+  finalizeSaveConsultation,
+  Section as ConsultationSection,
+  MedicationRow as ConsultationMedicationRow
+} from "~/app/_actions/schedule/actions";
+
 interface Section {
   id: string;
   title: string;
@@ -64,6 +72,22 @@ export default function ConsultationTemplateEdit() {
   const [dob, setDob] = useState('');
   const [appointmentDate, setAppointmentDate] = useState('');
   const [consultingSpecialist, setConsultingSpecialist] = useState('');
+  interface AppointmentDetails {
+    id: string;
+    created_at: string;
+    updated_at: string;
+    patientId: string;
+    notes: string | null;
+    doctorId: string;
+    scheduledAt: Date;
+    reason: string | null;
+    status: "Scheduled" | "Canceled" | "Completed" | "No-Show";
+    reviewed: boolean | null;
+    notesTaken: "true" | "false" | "to-do" | "in-progress" | null;
+    file: string | null;
+  }
+  
+  const [appointment, setAppointment] = useState<AppointmentDetails | null>(null);
   const [medicationRows, setMedicationRows] = useState<MedicationRow[]>([
     { name: 'B Complex Vitamins (VITAMIN B COMPLEX) capsule', dosage: '', frequency: 'Take 1 capsule by mouth daily', purpose: '' }
   ]);
@@ -71,14 +95,35 @@ export default function ConsultationTemplateEdit() {
   useEffect(() => {
     const getAppointmentDetailsFunction = async () => {
       try {
-        console.log("step 1")
         const appointmentDetails = await getAppointmentDetails(params.id);
         const patient = await getPatientDetails(appointmentDetails.patientId);
         const doctor = await fetchDoctorDetails(appointmentDetails.doctorId as "string");
+        setAppointment(appointmentDetails);
         setAppointmentDate(appointmentDetails.scheduledAt?.toISOString().split('T')[0] ?? '');
         setPatientName(patient?.firstName + " " + patient?.lastName);
         setDob(patient?.dateOfBirth?.toISOString().split('T')[0] || '');
         setConsultingSpecialist(doctor?.firstName + " " + doctor?.lastName);
+        
+        // Fetch existing consultation notes if any
+        const notesResponse = await fetchConsultationNotes(params.id);
+        if (notesResponse.success && notesResponse.data) {
+          const savedNotes = notesResponse.data;
+          
+          // Restore saved data
+          if (savedNotes.patientName) setPatientName(savedNotes.patientName);
+          if (savedNotes.patientDob) setDob(savedNotes.patientDob);
+          if (savedNotes.appointmentDate) setAppointmentDate(savedNotes.appointmentDate);
+          if (savedNotes.consultingSpecialist) setConsultingSpecialist(savedNotes.consultingSpecialist);
+          
+          // Restore sections
+          if (savedNotes.sections) setSections(savedNotes.sections as Section[]);
+          
+          // Restore medications
+          if (savedNotes.medications) setMedicationRows(savedNotes.medications as MedicationRow[]);
+          
+          // Update draft status
+          setIsDraftSaved(!savedNotes.isDraft);
+        }
       } catch (error) {
         console.error("Failed to fetch appointment details:", error);
         toast({
@@ -129,7 +174,13 @@ export default function ConsultationTemplateEdit() {
 
   const updateMedicationRow = (index: number, field: keyof MedicationRow, value: string) => {
     const updatedRows = [...medicationRows];
-    updatedRows[index] = { ...updatedRows[index], [field]: value };
+    updatedRows[index] = {
+      name: updatedRows[index]?.name ?? '',
+      dosage: updatedRows[index]?.dosage ?? '',
+      frequency: updatedRows[index]?.frequency ?? '',
+      purpose: updatedRows[index]?.purpose ?? '',
+      [field]: value,
+    };
     setMedicationRows(updatedRows);
   };
 
@@ -138,14 +189,34 @@ export default function ConsultationTemplateEdit() {
   };
 
   const saveDraft = async () => {
-    // Placeholder for database action
-    console.log("Saving draft to database...");
-    // In a real app: await saveConsultationDraft({ appointmentId: params.id, sections, patientInfo: { patientName, dob, appointmentDate, consultingSpecialist } });
-    setIsDraftSaved(true);
-    toast({
-      title: "Draft Saved",
-      description: "Your consultation draft has been saved successfully."
-    });
+    try {
+      const response = await saveConsultationDraft({
+        appointmentId: params.id,
+        patientName,
+        patientDob: dob,
+        appointmentDate,
+        consultingSpecialist,
+        sections,
+        medications: medicationRows
+      });
+      
+      if (response.success) {
+        setIsDraftSaved(true);
+        toast({
+          title: "Draft Saved",
+          description: "Your consultation draft has been saved successfully."
+        });
+      } else {
+        throw new Error(response.error || "Failed to save draft");
+      }
+    } catch (error) {
+      console.error("Error saving draft:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save your draft. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   // Function to format the date in a readable format
@@ -156,8 +227,23 @@ export default function ConsultationTemplateEdit() {
   };
 
   // Generate PDF as text
-  const generatePDF = () => {
+  const generatePDF = async () => {
     try {
+      // First save the consultation as finalized (not a draft)
+      const saveResponse = await finalizeSaveConsultation({
+        appointmentId: params.id,
+        patientName,
+        patientDob: dob,
+        appointmentDate,
+        consultingSpecialist,
+        sections,
+        medications: medicationRows
+      });
+      
+      if (!saveResponse.success) {
+        throw new Error("Failed to save consultation before generating PDF");
+      }
+
       const doc = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
@@ -229,6 +315,7 @@ export default function ConsultationTemplateEdit() {
       doc.setFont('helvetica', 'normal');
       doc.text(formatDate(appointmentDate), 120, yPosition);
       // Save PDF
+
       doc.save(`consultation_${params.id}.pdf`);
       setIsDraftSaved(true);
       toast({
@@ -236,9 +323,29 @@ export default function ConsultationTemplateEdit() {
         description: "Your consultation has been saved as a text-based PDF."
       });
 
+      
       // Placeholder for database action
       console.log("Uploading PDF to database...");
       // In a real app: await savePdfToDatabase({ appointmentId: params.id, pdfData: doc.output('blob') });
+      if (appointment) {
+        const pdfBlob = doc.output('blob');
+        const pdfFile = new File([pdfBlob], `consultation_${params.id}.pdf`, { type: 'application/pdf' });
+        const uploadResult = await uploadAppointmentNotesFile(
+          appointment.doctorId, 
+          appointment.patientId, 
+          appointment.id, 
+          pdfFile
+        );
+        
+        setIsDraftSaved(true);
+        toast({
+          title: "PDF Generated",
+          description: "Your consultation has been saved as a text-based PDF."
+        });
+        
+        // After successful generation, direct the user back to details
+        router.push(`/dashboard/doctor/appointments/${params.id}/details`);
+      }
       
     } catch (error) {
       console.error("Failed to generate PDF:", error);
