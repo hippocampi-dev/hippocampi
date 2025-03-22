@@ -5,7 +5,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."onboarding_status" AS ENUM('not-started', 'profile', 'credentials', 'pending-approval', 'approved');
+ CREATE TYPE "public"."onboarding_status" AS ENUM('not-started', 'profile', 'credentials', 'pending', 'rejected', 'approved');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -127,6 +127,7 @@ CREATE TABLE IF NOT EXISTS "hippocampi_doctor_credentials" (
 	"medical_school" varchar(255) NOT NULL,
 	"residency" varchar(255) NOT NULL,
 	"approach" text NOT NULL,
+	"date_submitted" timestamp,
 	"files" json,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
@@ -160,6 +161,7 @@ CREATE TABLE IF NOT EXISTS "hippocampi_appointments" (
 	"reason" text,
 	"notes" text,
 	"appointment_status" "appointment_status" DEFAULT 'Scheduled' NOT NULL,
+	"reviewed" boolean DEFAULT false,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );

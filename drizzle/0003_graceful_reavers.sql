@@ -1,1 +1,0 @@
-ALTER TABLE "hippocampi_doctors" ALTER COLUMN "date_of_birth" SET DATA TYPE date;

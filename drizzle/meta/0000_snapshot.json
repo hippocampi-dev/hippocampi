@@ -1,5 +1,5 @@
 {
-  "id": "70c94388-afc1-410a-ae37-be5602425cf8",
+  "id": "c04a5045-ff4f-4ca8-a673-fa97ae8d467d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -530,6 +530,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "date_submitted": {
+          "name": "date_submitted",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
         "files": {
           "name": "files",
           "type": "json",
@@ -749,6 +755,13 @@
           "primaryKey": false,
           "notNull": true,
           "default": "'Scheduled'"
+        },
+        "reviewed": {
+          "name": "reviewed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
         },
         "created_at": {
           "name": "created_at",
@@ -2115,7 +2128,8 @@
         "not-started",
         "profile",
         "credentials",
-        "pending-approval",
+        "pending",
+        "rejected",
         "approved"
       ]
     },
