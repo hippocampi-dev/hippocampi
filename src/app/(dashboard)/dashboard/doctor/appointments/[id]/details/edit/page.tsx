@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { jsPDF } from 'jspdf';
 
 // Shadcn UI components
@@ -18,8 +18,9 @@ import { useToast } from "~/app/contexts/ToastContext"
 
 // Icons
 import { MoreHorizontal, Trash2, Plus, Save, FileText, ArrowLeft } from "lucide-react";
-import { getAppointmentDetails } from '~/app/_actions/schedule/actions';
-import { getDoctorDetails, getPatientDetails } from '~/app/_actions/users/actions';
+import { fetchDoctorDetails, getAppointmentDetails } from '~/app/_actions/schedule/actions';
+import { getPatientDetails } from '~/app/_actions/users/actions';
+import { uploadAppointmentNotesFile } from '~/app/_actions/blob/actions';
 
 interface Section {
   id: string;
@@ -36,7 +37,8 @@ interface MedicationRow {
   purpose: string;
 }
 
-export default function ConsultationTemplateEdit({ params }: { params: { id: string } }) {
+export default function ConsultationTemplateEdit() {
+  const params = useParams<{ id: string}>()
   const router = useRouter();
   const templateRef = useRef<HTMLDivElement>(null);
   const [isDraftSaved, setIsDraftSaved] = useState(false);
@@ -69,13 +71,13 @@ export default function ConsultationTemplateEdit({ params }: { params: { id: str
   useEffect(() => {
     const getAppointmentDetailsFunction = async () => {
       try {
+        console.log("step 1")
         const appointmentDetails = await getAppointmentDetails(params.id);
-        // const patient = await getPatientDetails(appointmentDetails.patientId);
-        // const doctor = await getDoctorDetails(appointmentDetails.doctorId);
-        
+        const patient = await getPatientDetails(appointmentDetails.patientId);
+        const doctor = await fetchDoctorDetails(appointmentDetails.doctorId as "string");
+        setAppointmentDate(appointmentDetails.scheduledAt?.toISOString().split('T')[0] ?? '');
         setPatientName(patient?.firstName + " " + patient?.lastName);
-        setDob(patient?.dateOfBirth?.toString() || '');
-        setAppointmentDate(appointmentDetails.scheduledAt.toString());
+        setDob(patient?.dateOfBirth?.toISOString().split('T')[0] || '');
         setConsultingSpecialist(doctor?.firstName + " " + doctor?.lastName);
       } catch (error) {
         console.error("Failed to fetch appointment details:", error);
@@ -87,8 +89,7 @@ export default function ConsultationTemplateEdit({ params }: { params: { id: str
       }
     };
     
-    getAppointmentDetailsFunction(params.id);
-
+    getAppointmentDetailsFunction();
   }, [params.id, toast]);
   
   const deleteSection = (id: string) => {
@@ -227,7 +228,6 @@ export default function ConsultationTemplateEdit({ params }: { params: { id: str
       doc.text(`${consultingSpecialist}`, 20, yPosition);
       doc.setFont('helvetica', 'normal');
       doc.text(formatDate(appointmentDate), 120, yPosition);
-      
       // Save PDF
       doc.save(`consultation_${params.id}.pdf`);
       setIsDraftSaved(true);
@@ -305,7 +305,7 @@ export default function ConsultationTemplateEdit({ params }: { params: { id: str
                     id="dob"
                     type="date"
                     value={dob}
-                    onChange={(e) => setDob(e.target.value)}
+                    onChange={(e) => {setDob(e.target.value)}}
                   />
                 </div>
                 <div className="space-y-2">
