@@ -1,0 +1,1 @@
+ALTER TYPE "onboarding_status" ADD VALUE 'approved';

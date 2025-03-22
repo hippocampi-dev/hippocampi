@@ -9,6 +9,72 @@ import { AppointmentsInterface, DoctorAvailabilitiesInterface } from "~/server/d
 import { getDoctor, getDoctorAvailabilities } from "~/server/db/queries";
 import { DoctorsInterface } from "~/server/db/type";
 import { addDays, format } from "date-fns";
+import { 
+  saveConsultationNotes, 
+  getConsultationNotes,
+  updateConsultationDraftStatus
+} from "~/server/db/queries";
+
+export interface Section {
+  id: string;
+  title: string;
+  content: string;
+  type: 'text' | 'table';
+  required?: boolean;
+}
+
+export interface MedicationRow {
+  name: string;
+  dosage: string;
+  frequency: string;
+  purpose: string;
+}
+
+export interface SaveConsultationDraftParams {
+  appointmentId: string;
+  patientName: string;
+  patientDob: string;
+  appointmentDate: string;
+  consultingSpecialist: string;
+  sections: Section[];
+  medications: MedicationRow[];
+}
+
+export async function saveConsultationDraft(params: SaveConsultationDraftParams) {
+  try {
+    const result = await saveConsultationNotes({
+      ...params,
+      isDraft: true,
+    });
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("Failed to save consultation draft:", error);
+    return { success: false, error: "Failed to save draft" };
+  }
+}
+
+export async function finalizeSaveConsultation(params: SaveConsultationDraftParams) {
+  try {
+    const result = await saveConsultationNotes({
+      ...params,
+      isDraft: false,
+    });
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("Failed to finalize consultation:", error);
+    return { success: false, error: "Failed to finalize consultation" };
+  }
+}
+
+export async function fetchConsultationNotes(appointmentId: string) {
+  try {
+    const notes = await getConsultationNotes(appointmentId);
+    return { success: true, data: notes };
+  } catch (error) {
+    console.error("Failed to fetch consultation notes:", error);
+    return { success: false, error: "Failed to fetch consultation notes" };
+  }
+}
 
 export async function reviewAppointmentAction(appointmentId: string) {
   console.log("DEBUG reviewAppointment - Params:", { appointmentId });
