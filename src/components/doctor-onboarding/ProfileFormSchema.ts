@@ -31,7 +31,7 @@ export const OnboardingStatusEnum = z.enum([
   'not-started',
   'profile',
   'credentials',
-  'pending-approval',
+  'pending',
   'approved'
 ])
 

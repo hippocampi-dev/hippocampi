@@ -39,6 +39,7 @@ import { auth } from "~/server/auth"
 
 export default auth((req) => {
   if (!req.auth && req.nextUrl.pathname !== "/auth/login") {
+    console.log('test')
     const newUrl = new URL("/auth/login", req.nextUrl.origin)
     return Response.redirect(newUrl)
   }

@@ -1,1 +1,0 @@
-ALTER TABLE "hippocampi_doctors" ADD COLUMN "date_of_birth" varchar NOT NULL;

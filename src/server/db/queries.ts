@@ -34,6 +34,7 @@ import {
   cognitiveAssessmentInterface,
   ConversationDict,
   DoctorAvailabilitiesInterface,
+  DoctorDict,
 
   // Add the missing import here
 } from "./type";
@@ -245,6 +246,7 @@ export const setDoctorCredentialLinks  = async (
     .update(schema_doctor.doctorCredentials)
     .set({
       files: credentialLinks,
+      dateSubmitted: sql`NOW()`,
       updated_at: sql`NOW()`
     })
     .where(eq(schema_doctor.doctorCredentials.doctorId, user_id))
@@ -256,6 +258,27 @@ export const getDoctorCredentials = async (user_id: UserIdInterface) => {
   return db.query.doctorCredentials.findFirst({
     where: eq(schema_doctor.doctorCredentials.doctorId, user_id),
   });
+};
+
+export const getPendingDoctorCredentials = async () => {
+  const doctors = await db.query.doctors.findMany({
+    where: eq(schema_doctor.doctors.onboardingStatus, 'pending'),
+  });
+
+  const dict: DoctorDict = {}
+
+  for (const doctor of doctors) {
+    const credential = await getDoctorCredentials(doctor.doctorId as "string");
+
+    if (credential) {
+      dict[doctor.doctorId] = {
+        doctor: doctor,
+        credentials: credential
+      }
+    }
+  }
+
+  return dict;
 };
 
 // add patient-doctor management

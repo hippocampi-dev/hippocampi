@@ -26,6 +26,7 @@ export interface MalpracticeForm {
   expirationDate: string
   coverageAmount: string
   file: File | string
+  fileUrl?: string
 }
 
 interface MalpracticeFormProps {

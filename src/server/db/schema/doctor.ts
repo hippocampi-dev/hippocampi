@@ -22,7 +22,8 @@ export const onboardingStatusEnum = pgEnum('onboarding_status', [
   'not-started',
   'profile',
   'credentials',
-  'pending-approval',
+  'pending',
+  'rejected',
   'approved'
 ]);
 
