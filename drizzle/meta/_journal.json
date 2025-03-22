@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1742603283064,
-      "tag": "0000_ambiguous_zaran",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1742623057621,
-      "tag": "0001_new_blink",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1742624779187,
-      "tag": "0002_tiny_jetstream",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1742625568216,
-      "tag": "0003_even_iron_lad",
+      "when": 1742665760103,
+      "tag": "0000_gigantic_korath",
       "breakpoints": true
     }
   ]

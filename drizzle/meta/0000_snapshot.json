@@ -1,5 +1,5 @@
 {
-  "id": "c04a5045-ff4f-4ca8-a673-fa97ae8d467d",
+  "id": "c59ea003-343f-49e2-938d-4c96c83e1dc5",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -763,6 +763,20 @@
           "notNull": false,
           "default": false
         },
+        "notes_taken": {
+          "name": "notes_taken",
+          "type": "notes_taken",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'false'"
+        },
+        "file": {
+          "name": "file",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -848,6 +862,99 @@
           ],
           "columnsTo": [
             "patient_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.hippocampi_consultation_notes": {
+      "name": "hippocampi_consultation_notes",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "appointment_id": {
+          "name": "appointment_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "patient_name": {
+          "name": "patient_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "patient_dob": {
+          "name": "patient_dob",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "appointment_date": {
+          "name": "appointment_date",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "consulting_specialist": {
+          "name": "consulting_specialist",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sections": {
+          "name": "sections",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "medications": {
+          "name": "medications",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_draft": {
+          "name": "is_draft",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "hippocampi_consultation_notes_appointment_id_hippocampi_appointments_id_fk": {
+          "name": "hippocampi_consultation_notes_appointment_id_hippocampi_appointments_id_fk",
+          "tableFrom": "hippocampi_consultation_notes",
+          "tableTo": "hippocampi_appointments",
+          "columnsFrom": [
+            "appointment_id"
+          ],
+          "columnsTo": [
+            "id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -2149,6 +2256,16 @@
       "values": [
         "unpaid",
         "paid"
+      ]
+    },
+    "public.notes_taken": {
+      "name": "notes_taken",
+      "schema": "public",
+      "values": [
+        "true",
+        "in-progress",
+        "to-do",
+        "false"
       ]
     },
     "public.user_role": {

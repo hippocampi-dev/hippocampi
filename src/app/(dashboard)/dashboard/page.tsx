@@ -55,6 +55,9 @@ export default function Dashboard() {
             router.push('/dashboard/patient');
           }
         }
+        else if (role === 'admin') {
+          router.push('/dashboard/admin');
+        }
       } catch (error) {
         console.error("Error fetching user role", error);
       }

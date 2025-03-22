@@ -1,8 +1,20 @@
+export const dynamic = "force-dynamic"
+
+import { Suspense } from "react";
 import { DoctorsPendingApproval } from "~/components/admin-dashboard/DoctorsPendingApproval"
+import Loading from "~/components/loading/page";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card"
 import { getPendingDoctorCredentials } from "~/server/db/queries"
 
 export default async function Dashboard() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <DashboardContainer />
+    </Suspense>
+  )
+}
+
+async function DashboardContainer() {
   const dict = await getPendingDoctorCredentials();
 
   return (
