@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { DoctorDashboardSidebar } from "~/components/doctor-dashboard/DoctorSidebar";
 import { SidebarProvider } from "~/components/ui/sidebar";
-import { DoctorsInterface } from "~/server/db/type";
+import { DoctorsInterface, UserRolesInterface } from "~/server/db/type";
 
 
 export default function DoctorLayout({
@@ -15,15 +15,20 @@ export default function DoctorLayout({
   const router = useRouter();
 
   useEffect(() => {
-    const fetchDoctor = async () => {
+    const protect = async () => {
+      const role: UserRolesInterface = await fetch('/api/db/management/user-role/get').then(r => r.json()).then(r => r.response);
+  
+      if (role.userRole === 'patient') { // no patient
+        router.push('/middle');
+      }
       const doctor: DoctorsInterface | undefined = await fetch('/api/db/doctor/get').then(r => r.json()).then(r => r.response);
   
-      if (!doctor || doctor.onboardingStatus !== 'approved') {
+      if (!doctor || doctor.onboardingStatus !== 'approved') { // not approved
         router.push('/middle');
       }
     }
 
-    fetchDoctor();
+    protect();
   }, [])
   return (
     <SidebarProvider>
