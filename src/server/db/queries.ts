@@ -391,6 +391,7 @@ export const getAppointments = async (user_id: UserIdInterface) => {
   });
 };
 
+
 export const getFilteredAppointments = async (
   user_id: UserIdInterface) => {
     const appointments = await getAppointments(user_id);
