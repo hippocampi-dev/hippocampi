@@ -29,6 +29,7 @@ import {
   Section as ConsultationSection,
   MedicationRow as ConsultationMedicationRow
 } from "~/app/_actions/schedule/actions";
+import { AppointmentsInterface } from '~/server/db/type';
 
 interface Section {
   id: string;
@@ -72,22 +73,8 @@ export default function ConsultationTemplateEdit() {
   const [dob, setDob] = useState('');
   const [appointmentDate, setAppointmentDate] = useState('');
   const [consultingSpecialist, setConsultingSpecialist] = useState('');
-  interface AppointmentDetails {
-    id: string;
-    created_at: string;
-    updated_at: string;
-    patientId: string;
-    notes: string | null;
-    doctorId: string;
-    scheduledAt: Date;
-    reason: string | null;
-    status: "Scheduled" | "Canceled" | "Completed" | "No-Show";
-    reviewed: boolean | null;
-    notesTaken: "true" | "false" | "to-do" | "in-progress" | null;
-    file: string | null;
-  }
   
-  const [appointment, setAppointment] = useState<AppointmentDetails | null>(null);
+  const [appointment, setAppointment] = useState<AppointmentsInterface | null>(null);
   const [medicationRows, setMedicationRows] = useState<MedicationRow[]>([
     { name: 'B Complex Vitamins (VITAMIN B COMPLEX) capsule', dosage: '', frequency: 'Take 1 capsule by mouth daily', purpose: '' }
   ]);
@@ -333,7 +320,7 @@ export default function ConsultationTemplateEdit() {
         const uploadResult = await uploadAppointmentNotesFile(
           appointment.doctorId, 
           appointment.patientId, 
-          appointment.id, 
+          appointment.id!, 
           pdfFile
         );
         
