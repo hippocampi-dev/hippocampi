@@ -12,7 +12,7 @@ interface props {
   patientDict: PatientDict;
 }
 
-export default function DoctorAppointments({ appointments, patientDict }: props) {
+export default function UpcomingDoctorAppointments({ appointments, patientDict }: props) {
   const router = useRouter();
   const [dismissingIds, setDismissingIds] = useState<Set<string>>(new Set());
 
