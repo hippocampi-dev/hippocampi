@@ -20,6 +20,7 @@ import {
 } from "~/components/ui/dropdown-menu";
 import {
   Calendar,
+  Calendar1,
   ChevronDown,
   Home,
   LogOut,
@@ -67,6 +68,14 @@ export function DoctorDashboardSidebar() {
               <Link href="/dashboard/doctor/appointments">
                 <Calendar className="mr-2 h-4 w-4" />
                 <span>Appointments</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Link href="/dashboard/doctor/schedule">
+                <Calendar1 className="mr-2 h-4 w-4" />
+                <span>Schedule</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

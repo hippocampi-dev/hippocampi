@@ -15,12 +15,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "~/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "~/components/ui/tooltip";
 import { useToast } from "~/app/contexts/ToastContext"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "~/components/ui/dialog";
 
 // Icons
 import { MoreHorizontal, Trash2, Plus, Save, FileText, ArrowLeft } from "lucide-react";
 import { fetchDoctorDetails, getAppointmentDetails } from '~/app/_actions/schedule/actions';
-import { getPatientDetails } from '~/app/_actions/users/actions';
+import { getPatientDetails, getPatientMedicalHistory } from '~/app/_actions/users/actions';
 import { uploadAppointmentNotesFile } from '~/app/_actions/blob/actions';
 
 import { 
@@ -53,14 +52,13 @@ export default function ConsultationTemplateEdit() {
   const templateRef = useRef<HTMLDivElement>(null);
   const [isDraftSaved, setIsDraftSaved] = useState(false);
   const { toast } = useToast();
-  const [isModalOpen, setIsModalOpen] = useState(false);
   
   const initialSections: Section[] = [
     { id: 'patientInfo', title: 'Patient Information', content: '', type: 'text', required: true },
     { id: 'reasonForConsultation', title: 'Reason for Consultation', content: '', type: 'text', required: true },
     { id: 'symptomSeverity', title: 'Symptom Severity', content: '', type: 'text' },
     { id: 'medicalHistory', title: 'Relevant Medical History', content: '', type: 'text' },
-    { id: 'medications', title: 'Current Medications', content: '', type: 'table' },
+    // { id: 'medications', title: 'Current Medications', content: '', type: 'table' },
     { id: 'assessmentResults', title: 'Neuropsychological and Cognitive Assessment Results', content: '', type: 'text' },
     { id: 'patientReportedOutcomes', title: 'Patient-Reported Outcomes', content: '', type: 'text' },
     { id: 'clinicalObservations', title: 'Clinical Observations', content: '', type: 'text' },
@@ -77,21 +75,40 @@ export default function ConsultationTemplateEdit() {
   const [consultingSpecialist, setConsultingSpecialist] = useState('');
   
   const [appointment, setAppointment] = useState<AppointmentsInterface | null>(null);
-  const [medicationRows, setMedicationRows] = useState<MedicationRow[]>([
-    { name: 'B Complex Vitamins (VITAMIN B COMPLEX) capsule', dosage: '', frequency: 'Take 1 capsule by mouth daily', purpose: '' }
-  ]);
+  // const [medicationRows, setMedicationRows] = useState<MedicationRow[]>([
+  //   { name: 'B Complex Vitamins (VITAMIN B COMPLEX) capsule', dosage: '', frequency: 'Take 1 capsule by mouth daily', purpose: '' }
+  // ]);
 
   useEffect(() => {
     const getAppointmentDetailsFunction = async () => {
       try {
         const appointmentDetails = await getAppointmentDetails(params.id);
         const patient = await getPatientDetails(appointmentDetails.patientId);
+        const medicalHistory = await getPatientMedicalHistory(appointmentDetails.patientId);
         const doctor = await fetchDoctorDetails(appointmentDetails.doctorId as "string");
+
+        // Set initial values
         setAppointment(appointmentDetails);
         setAppointmentDate(appointmentDetails.scheduledAt?.toISOString().split('T')[0] ?? '');
         setPatientName(patient?.firstName + " " + patient?.lastName);
         setDob(patient?.dateOfBirth?.toISOString().split('T')[0] || '');
-        setConsultingSpecialist(doctor?.firstName + " " + doctor?.lastName);
+        setConsultingSpecialist("Dr. " + doctor?.firstName + " " + doctor?.lastName);
+        if (medicalHistory) {
+          const mH = `Existing conditions: ${medicalHistory?.existingDiagnoses}\nFamily History of Neurological Disorders: ${medicalHistory?.familyHistoryOfNeurologicalDisorders}\nHistory of chemotherapy or radiation therapy: ${medicalHistory?.historyOfChemotherapyOrRadiationTherapy}`
+          setSections(
+            sections.map(section => ({
+              ...section,
+              content: section.id === 'medicalHistory' ? mH : section.content
+            }))
+          );
+        }
+
+        setSections(
+          sections.map(section => ({
+            ...section,
+            content: section.id === 'reasonForConsultation' ? appointmentDetails.reason! : section.content
+          }))
+        );
         
         // Fetch existing consultation notes if any
         const notesResponse = await fetchConsultationNotes(params.id);
@@ -105,10 +122,12 @@ export default function ConsultationTemplateEdit() {
           if (savedNotes.consultingSpecialist) setConsultingSpecialist(savedNotes.consultingSpecialist);
           
           // Restore sections
-          if (savedNotes.sections) setSections(savedNotes.sections as Section[]);
+          if (savedNotes.sections && Object.keys(savedNotes.sections).length !== 0 && savedNotes.sections.constructor == Object) {
+            setSections(savedNotes.sections as Section[]);
+          }
           
           // Restore medications
-          if (savedNotes.medications) setMedicationRows(savedNotes.medications as MedicationRow[]);
+          // if (savedNotes.medications) setMedicationRows(savedNotes.medications as MedicationRow[]);
           
           // Update draft status
           setIsDraftSaved(!savedNotes.isDraft);
@@ -161,21 +180,21 @@ export default function ConsultationTemplateEdit() {
     );
   };
 
-  const updateMedicationRow = (index: number, field: keyof MedicationRow, value: string) => {
-    const updatedRows = [...medicationRows];
-    updatedRows[index] = {
-      name: updatedRows[index]?.name ?? '',
-      dosage: updatedRows[index]?.dosage ?? '',
-      frequency: updatedRows[index]?.frequency ?? '',
-      purpose: updatedRows[index]?.purpose ?? '',
-      [field]: value,
-    };
-    setMedicationRows(updatedRows);
-  };
+  // const updateMedicationRow = (index: number, field: keyof MedicationRow, value: string) => {
+  //   const updatedRows = [...medicationRows];
+  //   updatedRows[index] = {
+  //     name: updatedRows[index]?.name ?? '',
+  //     dosage: updatedRows[index]?.dosage ?? '',
+  //     frequency: updatedRows[index]?.frequency ?? '',
+  //     purpose: updatedRows[index]?.purpose ?? '',
+  //     [field]: value,
+  //   };
+  //   setMedicationRows(updatedRows);
+  // };
 
-  const addMedicationRow = () => {
-    setMedicationRows([...medicationRows, { name: '', dosage: '', frequency: '', purpose: '' }]);
-  };
+  // const addMedicationRow = () => {
+  //   setMedicationRows([...medicationRows, { name: '', dosage: '', frequency: '', purpose: '' }]);
+  // };
 
   const saveDraft = async () => {
     try {
@@ -186,7 +205,7 @@ export default function ConsultationTemplateEdit() {
         appointmentDate,
         consultingSpecialist,
         sections,
-        medications: medicationRows
+        // medications: medicationRows
       });
       
       if (response.success) {
@@ -215,7 +234,8 @@ export default function ConsultationTemplateEdit() {
     return date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
   };
 
-  const handleDone = async () => {
+  // Generate PDF as text
+  const generatePDF = async () => {
     try {
       // First save the consultation as finalized (not a draft)
       const saveResponse = await finalizeSaveConsultation({
@@ -225,7 +245,7 @@ export default function ConsultationTemplateEdit() {
         appointmentDate,
         consultingSpecialist,
         sections,
-        medications: medicationRows
+        // medications: medicationRows
       });
       
       if (!saveResponse.success) {
@@ -277,19 +297,19 @@ export default function ConsultationTemplateEdit() {
           doc.text(textLines, 20, yPosition);
           yPosition += 6 * textLines.length + 10;
         } 
-        else if (section.type === 'table' && section.id === 'medications') {
-          // Handle medications table
-          doc.text("Medication | Dosage | Frequency | Purpose", 20, yPosition);
-          yPosition += 8;
+        // else if (section.type === 'table' && section.id === 'medications') {
+        //   // Handle medications table
+        //   doc.text("Medication | Dosage | Frequency | Purpose", 20, yPosition);
+        //   yPosition += 8;
 
-          for (const med of medicationRows) {
-            const medText = `${med.name} | ${med.dosage} | ${med.frequency} | ${med.purpose}`;
-            const medLines = doc.splitTextToSize(medText, 170);
-            doc.text(medLines, 20, yPosition);
-            yPosition += 6 * medLines.length + 4;
-          }
-          yPosition += 6;
-        }
+        //   for (const med of medicationRows) {
+        //     const medText = `${med.name} | ${med.dosage} | ${med.frequency} | ${med.purpose}`;
+        //     const medLines = doc.splitTextToSize(medText, 170);
+        //     doc.text(medLines, 20, yPosition);
+        //     yPosition += 6 * medLines.length + 4;
+        //   }
+        //   yPosition += 6;
+        // }
       }
 
       // Add signature at the end
@@ -374,9 +394,9 @@ export default function ConsultationTemplateEdit() {
                 <Save className="mr-2 h-4 w-4" /> Save Draft
               </Button>
               <Button
-                onClick={() => setIsModalOpen(true)}
+                onClick={generatePDF}
               >
-                <FileText className="mr-2 h-4 w-4" /> Done
+                <FileText className="mr-2 h-4 w-4" /> Generate PDF
               </Button>
             </div>
           </CardHeader>
@@ -431,12 +451,12 @@ export default function ConsultationTemplateEdit() {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
                       {section.required ? (
-                        <h3 className="text-lg font-medium">{section.title}</h3>
+                        <h3 className="text-lg font-medium">{section.title}<span className="text-red-500">*</span></h3>
                       ) : (
                         <Input
                           value={section.title}
                           onChange={(e) => updateSectionTitle(section.id, e.target.value)}
-                          className="font-medium text-lg h-8 w-auto min-w-[200px]"
+                          className="font-medium text-lg h-8 w-auto min-w-[400px]"
                         />
                       )}
                     </div>
@@ -483,7 +503,7 @@ export default function ConsultationTemplateEdit() {
                     />
                   )}
 
-                  {section.type === 'table' && section.id === 'medications' && (
+                  {/* {section.type === 'table' && section.id === 'medications' && (
                     <div className="border rounded-md">
                       <div className="overflow-x-auto">
                         <Table>
@@ -541,7 +561,7 @@ export default function ConsultationTemplateEdit() {
                         </Button>
                       </div>
                     </div>
-                  )}
+                  )} */}
 
                   {index < sections.length - 1 && <Separator className="my-6" />}
                 </div>
@@ -550,24 +570,6 @@ export default function ConsultationTemplateEdit() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Confirmation Modal */}
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Finalize Consultation</DialogTitle>
-          </DialogHeader>
-          <p>Are you sure you want to finalize this consultation? You will be redirected to the details page.</p>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={handleDone}>
-              Confirm
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
