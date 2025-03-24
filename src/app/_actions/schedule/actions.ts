@@ -37,13 +37,14 @@ export interface SaveConsultationDraftParams {
   appointmentDate: string;
   consultingSpecialist: string;
   sections: Section[];
-  medications: MedicationRow[];
+  medications?: MedicationRow[];
 }
 
 export async function saveConsultationDraft(params: SaveConsultationDraftParams) {
   try {
     const result = await saveConsultationNotes({
       ...params,
+      medications: [],
       isDraft: true,
     });
     return { success: true, data: result };
@@ -57,6 +58,7 @@ export async function finalizeSaveConsultation(params: SaveConsultationDraftPara
   try {
     const result = await saveConsultationNotes({
       ...params,
+      medications: [],
       isDraft: false,
     });
     return { success: true, data: result };
