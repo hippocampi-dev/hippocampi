@@ -19,7 +19,7 @@ import { useToast } from "~/app/contexts/ToastContext"
 // Icons
 import { MoreHorizontal, Trash2, Plus, Save, FileText, ArrowLeft } from "lucide-react";
 import { fetchDoctorDetails, getAppointmentDetails } from '~/app/_actions/schedule/actions';
-import { getPatientDetails, getPatientMedicalHistory } from '~/app/_actions/users/actions';
+import { getPatientDetails, getPatientHealthInfo } from '~/app/_actions/users/actions';
 import { uploadAppointmentNotesFile } from '~/app/_actions/blob/actions';
 
 import { 
@@ -58,7 +58,7 @@ export default function ConsultationTemplateEdit() {
     { id: 'reasonForConsultation', title: 'Reason for Consultation', content: '', type: 'text', required: true },
     { id: 'symptomSeverity', title: 'Symptom Severity', content: '', type: 'text' },
     { id: 'medicalHistory', title: 'Relevant Medical History', content: '', type: 'text' },
-    // { id: 'medications', title: 'Current Medications', content: '', type: 'table' },
+    { id: 'medications', title: 'Current Medications', content: '', type: 'text' },
     { id: 'assessmentResults', title: 'Neuropsychological and Cognitive Assessment Results', content: '', type: 'text' },
     { id: 'patientReportedOutcomes', title: 'Patient-Reported Outcomes', content: '', type: 'text' },
     { id: 'clinicalObservations', title: 'Clinical Observations', content: '', type: 'text' },
@@ -84,7 +84,7 @@ export default function ConsultationTemplateEdit() {
       try {
         const appointmentDetails = await getAppointmentDetails(params.id);
         const patient = await getPatientDetails(appointmentDetails.patientId);
-        const medicalHistory = await getPatientMedicalHistory(appointmentDetails.patientId);
+        const healthInfo = await getPatientHealthInfo(appointmentDetails.patientId);
         const doctor = await fetchDoctorDetails(appointmentDetails.doctorId as "string");
 
         // Set initial values
@@ -93,22 +93,63 @@ export default function ConsultationTemplateEdit() {
         setPatientName(patient?.firstName + " " + patient?.lastName);
         setDob(patient?.dateOfBirth?.toISOString().split('T')[0] || '');
         setConsultingSpecialist("Dr. " + doctor?.firstName + " " + doctor?.lastName);
-        if (medicalHistory) {
-          const mH = `Existing conditions: ${medicalHistory?.existingDiagnoses}\nFamily History of Neurological Disorders: ${medicalHistory?.familyHistoryOfNeurologicalDisorders}\nHistory of chemotherapy or radiation therapy: ${medicalHistory?.historyOfChemotherapyOrRadiationTherapy}`
-          setSections(
-            sections.map(section => ({
-              ...section,
-              content: section.id === 'medicalHistory' ? mH : section.content
-            }))
-          );
+
+        let autocompleteSections = sections;
+
+        // medical history
+        if (healthInfo.medicalHistory) {
+          const mH = `Existing conditions: ${healthInfo.medicalHistory?.existingDiagnoses}\nFamily History of Neurological Disorders: ${healthInfo.medicalHistory?.familyHistoryOfNeurologicalDisorders}\nHistory of chemotherapy or radiation therapy: ${healthInfo.medicalHistory?.historyOfChemotherapyOrRadiationTherapy}`
+          autocompleteSections = autocompleteSections.map(section => ({
+            ...section,
+            content: section.id === 'medicalHistory' ? mH : section.content
+          }))
         }
 
-        setSections(
-          sections.map(section => ({
-            ...section,
-            content: section.id === 'reasonForConsultation' ? appointmentDetails.reason! : section.content
-          }))
-        );
+        autocompleteSections = autocompleteSections.map(section => ({
+          ...section,
+          content: section.id === 'reasonForConsultation' ? appointmentDetails.reason! : section.content
+        }))
+
+        // consultation reason
+        let patientInfo = '';
+
+        // patient info
+        patientInfo += 'Cognitive Symptoms:\n' + 
+          (healthInfo.cognitiveSymptoms.length 
+            ? healthInfo.cognitiveSymptoms
+              .map(cs => `${cs.symptomType} (${cs.severityLevel}) starting ${cs.onsetDate?.toDateString()} - ${cs.notes}`)
+              .join('\n') 
+            : 'None') + '\n\n';
+        patientInfo += 'Diagnoses:\n' + 
+          (healthInfo.diagnoses.length 
+            ? healthInfo.diagnoses
+              .map(d => `Diagnosed with ${d.conditionName} ${d.selfReported ? '(self reported)' : ''} on ${d.diagnosisDate.toDateString()} - ${d.notes}`)
+              .join('\n') 
+            : 'None') + '\n\n';
+        patientInfo += 'Treatments:\n' + 
+          (healthInfo.treatments.length 
+            ? healthInfo.treatments
+              .map(t => `Underwent ${t.treatmentName} (${t.start_date.toDateString()} - ${t.endDate ? t.endDate.toDateString() : 'present'}) - ${t.notes}`)
+              .join('\n') 
+            : 'None');
+        autocompleteSections = autocompleteSections.map(section => ({
+          ...section,
+          content: section.id === 'patientInfo' ? patientInfo : section.content
+        }));
+
+        // medications
+        const medications = 
+          (healthInfo.medications.length
+            ? healthInfo.medications
+              .map(m => `Taking ${m.medicationName} at dosage of ${m.dosage} ${m.frequency} ${m.startDate ? m.endDate ? `(${m.startDate.toDateString()} - ${m.endDate.toDateString()})` : `(${m.startDate.toDateString()} - present)` : ''}`)
+              .join('\n')
+            : 'None');
+        autocompleteSections = autocompleteSections.map(section => ({
+          ...section,
+          content: section.id === 'medications' ? medications : section.content
+        }));
+
+        setSections(autocompleteSections);
         
         // Fetch existing consultation notes if any
         const notesResponse = await fetchConsultationNotes(params.id);
@@ -143,7 +184,7 @@ export default function ConsultationTemplateEdit() {
     };
     
     getAppointmentDetailsFunction();
-  }, [params.id, toast]);
+  }, []);
   
   const deleteSection = (id: string) => {
     const sectionToDelete = sections.find(s => s.id === id);
