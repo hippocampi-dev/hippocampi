@@ -106,7 +106,7 @@ export type PatientCognitiveSymptomsInterface =
 
 // Patient Information
 export interface PatientHealthInformationInterface {
-  medicalHistory: PatientMedicalHistoryInterface;
+  medicalHistory?: PatientMedicalHistoryInterface;
   allergies: PatientAllergiesInterface[];
   cognitiveSymptoms: PatientCognitiveSymptomsInterface[];
   diagnoses: PatientDiagnosesInterface[];

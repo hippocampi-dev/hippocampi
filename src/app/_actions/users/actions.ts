@@ -1,6 +1,6 @@
 'use server'
 
-import { getDoctor, getMedicalHistory, getPatient } from "~/server/db/queries";
+import { getDoctor, getPatient, getPatientHealthInformation } from "~/server/db/queries";
 
 export async function getPatientDetails(patientId: string) {
   const patient = await getPatient(patientId as "string");
@@ -8,9 +8,9 @@ export async function getPatientDetails(patientId: string) {
   
 }
 
-export async function getPatientMedicalHistory(patientId: string) {
-  const medicalHistory = await getMedicalHistory(patientId as "string");
-  return medicalHistory;
+export async function getPatientHealthInfo(patientId: string) {
+  const healthInfo = await getPatientHealthInformation(patientId as "string");
+  return healthInfo;
 }
 
 
