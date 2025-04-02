@@ -76,7 +76,11 @@ export default function UpcomingDoctorAppointments({ appointments, patientDict }
                     Review
                   </Button>
                 ) : (
-                  <Button>
+                  <Button
+                    onClick={() => {
+                      router.push(`/dashboard/doctor/video-call/${appointment.id}`);
+                    }}
+                  >
                     Open Link
                   </Button>
                 )}

@@ -54,7 +54,11 @@ export default async function UpcomingAppointments() {
                   </p>
                 </div>
                 <Button className="w-full" asChild>
-                  <a href={"/temp/zoom/link"} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={`/dashboard/patient/video-call/${appointment.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <Video className="mr-2 h-4 w-4" />
                     Join Video Call
                   </a>
