@@ -28,11 +28,8 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        primary: {
-          DEFAULT: "var(--primary)",
-          foreground: "var(--primary-foreground)",
-          dark: "#1e40af",
-        },
+        primary: "var(--primary)",
+        primaryLight: "var(--primary-light)",
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
@@ -50,6 +47,7 @@ export default {
           foreground: "hsl(var(--accent-foreground))",
         },
         darkAccent: "var(--dark-accent)",
+        darkShade: "var(--dark-shade",
         lightAccent: "var(--light-accent)",
         lightShade: "var(--light-shade)",
         popover: {
