@@ -1,0 +1,1 @@
+ALTER TABLE "hippocampi_users" ADD COLUMN "stream_token" varchar(255);

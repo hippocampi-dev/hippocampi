@@ -1,0 +1,1 @@
+ALTER TABLE "hippocampi_users" DROP COLUMN IF EXISTS "stream_token";
