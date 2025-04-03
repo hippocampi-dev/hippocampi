@@ -11,31 +11,37 @@ export function Header() {
   const { data: session } = useSession();
 
   return (
-    <header className="w-screen bg-white shadow-md">
-      <nav className="container mx-auto px-6 py-3">
+    <header className="w-screen">
+      <nav className="mx-auto px-[5%] py-6">
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex-1 text-2xl font-bold text-blue-600">
+          <Link href="/" className="flex-1 text-2xl text-primary">
             Hippocampi
           </Link>
           <div className="hidden flex-1 justify-center items-center space-x-4 md:flex gap-2">
-            {/* <Link href="/" className="text-gray-700 hover:text-blue-600 transition duration-300">
+            {/* <Link href="/" className="text-gray-700 hover:text-primary transition duration-300">
               Home
             </Link> */}
             <Link
               href="/about"
-              className="text-gray-700 transition duration-300 hover:text-blue-600"
+              className="text-gray-700 transition duration-300 hover:text-primary"
             >
               About
             </Link>
             <Link
-              href="/contact"
-              className="text-gray-700 transition duration-300 hover:text-blue-600"
+              href="/patients"
+              className="text-gray-700 transition duration-300 hover:text-primary"
             >
-              Contact
+              Patients
+            </Link>
+            <Link
+              href="/providers"
+              className="text-gray-700 transition duration-300 hover:text-primary"
+            >
+              Providers
             </Link>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <span className="text-gray-700 transition-colors hover:text-primary cursor-pointer">
+                <span className="text-gray-700 transition-colors hover:text-primary cursor-pointer text-lg">
                   Legal
                 </span>
               </DropdownMenuTrigger>
@@ -57,6 +63,12 @@ export function Header() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+            <Link
+              href="/contact"
+              className="text-gray-700 transition duration-300 hover:text-primary"
+            >
+              Contact
+            </Link>
           </div>
           <div className="flex flex-1 justify-end space-x-2">
             {session && (
@@ -67,7 +79,7 @@ export function Header() {
                 <Button
                   variant="outline"
                   asChild
-                  className="border-blue-600 text-blue-600 hover:bg-blue-50"
+                  className="border-primary text-primary hover:bg-blue-50 py-2 px-6"
                 >
                   <Link href="/auth/check-mfa">Login</Link>
                 </Button>
@@ -80,9 +92,9 @@ export function Header() {
                     ? () => signOut({ redirect: true, callbackUrl: "/" })
                     : () => redirect("/portal")
                 }
-                className="bg-blue-600 text-white hover:bg-blue-700"
+                className="py-2 px-6"
               >
-                {session ? `Sign Out` : `Sign Up`}
+                {session ? `Sign Out` : `Get started`}
               </Button>
             </motion.div>
           </div>

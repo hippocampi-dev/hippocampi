@@ -19,6 +19,7 @@ const config = {
   //   return config;
   // },
   images: {
+    domains: ['images.unsplash.com'],
     remotePatterns: [
       {
         protocol: 'https',

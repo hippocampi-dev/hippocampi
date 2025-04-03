@@ -8,112 +8,21 @@ export default function Contact() {
   return (
     <>
       <Header />
-      <div className="py-16">
-        <div className="container mx-auto px-6">
-          <h1 className="mb-8 text-center text-4xl font-bold">Contact Us</h1>
-
-          <div className="mx-auto max-w-2xl">
-            <motion.form
-              className="space-y-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
+      <main>
+        <section className="w-full min-h-[90vh] flex flex-col px-9 py-16 gap-36">
+          <h1 className="text-8xl font-light">Get in touch</h1>
+          <div className="flex flex-col gap-12 w-1/3">
+            <p className="text-2xl/8">If you have any questions or you'd like to find out more about our services, please get in touch.</p>
+            <div className="flex flex-col gap-2">
+              <p>Contact details</p>
               <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                />
+                <p className="text-darkAccent text-lg/7">Email: info@hippocampi.co</p>
+                <p className="text-darkAccent text-lg/7">Phone: +1 (818) 913-0022</p>
               </div>
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="message"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows={4}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                ></textarea>
-              </div>
-              <div>
-                <button
-                  type="submit"
-                  className="w-full rounded-md bg-blue-600 px-4 py-2 text-white transition duration-300 hover:bg-blue-700"
-                >
-                  Send Message
-                </button>
-              </div>
-            </motion.form>
-
-            <div className="mt-12 text-center">
-              <h2 className="mb-4 text-2xl font-semibold">
-                Alternative Contact Methods
-              </h2>
-              <p className="mb-2 text-lg text-gray-700">
-                {`Email: ${process.env.NEXT_PUBLIC_HIPPOCAMPI_EMAIL}`}
-              </p>
-              <p className="mb-2 text-lg text-gray-700">
-                Phone: +1 (818) 913-0022
-              </p>
-              <div className="mt-4">
-                <a href="#" className="mr-4 text-blue-600 hover:text-blue-800">
-                  LinkedIn
-                </a>
-                <a href="#" className="mr-4 text-blue-600 hover:text-blue-800">
-                  Twitter
-                </a>
-                <a href="#" className="text-blue-600 hover:text-blue-800">
-                  Facebook
-                </a>
-              </div>
-            </div>
-
-            <div className="mt-12 text-center">
-              <h2 className="mb-4 text-2xl font-semibold">
-                Interested in Partnering?
-              </h2>
-              <p className="mb-4 text-lg text-gray-700">
-                We're always looking for innovative partners to help us improve
-                cognitive care for cancer patients. If you're an investor,
-                healthcare provider, or potential collaborator, we'd love to
-                hear from you.
-              </p>
-              <a
-                href="mailto:partnerships@hippocampi.com"
-                className="inline-block rounded-md bg-blue-600 px-6 py-2 text-white transition duration-300 hover:bg-blue-700"
-              >
-                Contact Our Partnership Team
-              </a>
             </div>
           </div>
-        </div>
-      </div>
+        </section>
+      </main>
       <Footer />
     </>
   );

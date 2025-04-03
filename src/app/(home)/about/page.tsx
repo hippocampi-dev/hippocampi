@@ -50,53 +50,114 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <Header />
-      <main className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
-        {/* Mission Section */}
-        <section className="mb-32">
-          <h1 className="text-5xl font-bold text-gray-900 mb-12 text-center animate-fade-in">Our Mission</h1>
-          <div className="bg-white rounded-3xl shadow-2xl p-10 md:p-16 relative overflow-hidden animate-fade-in-up">
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-600 to-purple-600"></div>
-            <h2 className="text-3xl font-semibold text-gray-900 mb-6">Post-Chemo Care, Quick and Personalized.</h2>
-            <p className="text-xl text-gray-700 mb-6 leading-relaxed">
-              Our cancer care systems demand immediate transformation, as its impact reaches far beyond a single tumor.
+      <main className="">
+        <section className="w-full px-9 relative flex flex-col items-center gap-24">
+          <div className="h-[80vh] flex justify-center items-center">
+            <p className="text-5xl font-light w-3/5">
+              How you heal shapes how you live.<br></br>
+              <span className="text-darkAccent">Connecting with the right care shouldn’t be a struggle.</span>
+              <br></br><br></br>
+              We normalize the challenges, innovate the solutions, and tailor the healthcare experience to you.
             </p>
-            <p className="text-xl text-gray-700 leading-relaxed">
-              Hippocampi leads this innovation by prioritizing personalized care, pioneering the first-ever platform
-              connecting cancer patients suffering cognitive and mental impairments with readily available healthcare
-              providers.
+          </div>
+
+          <Image
+            src="https://images.unsplash.com/photo-1665686377065-08ba896d16fd?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            alt="Neural synapse background"
+            width={9999}
+            height={9999}
+            className="object-cover rounded-3xl"
+            priority
+          />
+
+          <div className="flex flex-col w-3/5 gap-8">
+            <p className="text-5xl font-light">
+              Your health is personal.
+              <span className="text-darkAccent"> Now, so is your care.</span>
             </p>
+            <p>Treatment at Hippocampi include connecting you with specialized physicians through our digital health platform, ensuring you get expert care tailored to your needs. Whether you're exploring cutting-edge treatments or established therapies, our specialists assess your symptoms and health history one-on-one to create a personalized care plan. And support doesn’t stop there—through our platform, you can connect with your care team, access resources, and manage your treatment anytime. Because here, your recovery is our priority.</p>
           </div>
         </section>
 
         {/* Team Section */}
-        <section>
-          <h2 className="text-5xl font-bold text-gray-900 mb-16 text-center animate-fade-in">Our Team</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 animate-fade-in-stagger">
-            {teamMembers.map((member, index) => (
-              <div
-                key={member.name}
-                className="bg-white rounded-3xl shadow-xl overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-              >
-                <Link href={member.link} className="block relative h-[400px] overflow-hidden" target="_blank">
-                  <Image
-                    src={member.image || "/placeholder.svg"}
-                    alt={member.name}
-                    fill
-                    className="object-cover object-top"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent transition-opacity duration-300 opacity-0 hover:opacity-100 flex items-end justify-center pb-6">
-                    <span className="text-white text-lg font-semibold bg-blue-600 px-4 py-2 rounded-full">
-                      View Profile
-                    </span>
-                  </div>
-                </Link>
-                <div className="p-8">
-                  <h3 className="text-2xl font-semibold text-gray-900 mb-2">{member.name}</h3>
-                  <p className="text-lg font-medium text-blue-600 mb-4">{member.role}</p>
-                  <p className="text-gray-700 text-base line-clamp-4">{member.description}</p>
-                </div>
+        <section className="w-full flex justify-evenly pt-36 py-24">
+          <div className="flex flex-col gap-12 w-[30vw]">
+            <div className="flex flex-col gap-3">
+              <h2 className="text-4xl">Meet the team</h2>
+              <p>Our team has been working closely together for the last year. Our unique blend of skills is the blueprint for what we aim for at Hippocampi: patient recovery.</p>
+            </div>
+            <div className="flex flex-col gap-6 w-full">
+              <Image
+                src="/team/tej.png"
+                alt="Neural synapse background"
+                width={9999}
+                height={9999}
+                className="object-cover rounded-3xl aspect-[3/4] bg-lightAccent"
+                priority
+              />
+              <div>
+                <h2 className="text-2xl">Tej Patel</h2>
+                <p>Co-Founder and CEO</p>
               </div>
-            ))}
+            </div>
+            <div className="flex flex-col gap-6 w-full">
+              <Image
+                src="/team/hriday.png"
+                alt="Neural synapse background"
+                width={9999}
+                height={9999}
+                className="object-cover rounded-3xl aspect-[3/4] bg-lightAccent"
+                priority
+              />
+              <div>
+                <h2 className="text-2xl">Hriday Meka</h2>
+                <p>Head of Growth</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-12 w-[30vw]">
+            <div className="flex flex-col gap-6 w-full">
+              <Image
+                src="/team/kenan.png"
+                alt="Neural synapse background"
+                width={9999}
+                height={9999}
+                className="object-cover rounded-3xl aspect-[3/4] bg-lightAccent"
+                priority
+              />
+              <div>
+                <h2 className="text-2xl">Kenan Blair</h2>
+                <p>Co-Founder and CTO</p>
+              </div>
+            </div>
+            <div className="flex flex-col gap-6 w-full">
+              <Image
+                src="/team/travis.png"
+                alt="Neural synapse background"
+                width={9999}
+                height={9999}
+                className="object-cover rounded-3xl aspect-[3/4] bg-lightAccent"
+                priority
+              />
+              <div>
+                <h2 className="text-2xl">Travis Dao</h2>
+                <p>Chief Software Architect</p>
+              </div>
+            </div>
+            <div className="flex flex-col gap-6 w-full">
+              <Image
+                src="/team/kshitij.png"
+                alt="Neural synapse background"
+                width={9999}
+                height={9999}
+                className="object-cover rounded-3xl aspect-[3/4] bg-lightAccent"
+                priority
+              />
+              <div>
+                <h2 className="text-2xl">Kshitij Purani</h2>
+                <p>Head of Product</p>
+              </div>
+            </div>
           </div>
         </section>
       </main>
