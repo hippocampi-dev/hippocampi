@@ -9,6 +9,7 @@ import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { fetchDoctorDetails, updateAppointmentStatusAction } from "~/app/_actions/schedule/actions";
 import { useRouter } from "next/navigation";
+import { VideoIcon } from "lucide-react";
 
 interface CurrentAppointmentsProps {
   appointments: AppointmentsInterface[];
@@ -174,9 +175,18 @@ function AppointmentCard({ appointment, onCancel, onUpdateStatus, isPast = false
   const appointmentDate = new Date(appointment.scheduledAt);
   const isInPast = appointmentDate < now;
   
+  // Check if appointment is within 30 minutes of now (before or after)
+  const isActive = Math.abs(now.getTime() - appointmentDate.getTime()) <= 30 * 60 * 1000;
+  
   const handleViewDetails = () => {
     if (appointment.id) {
       router.push(`/dashboard/patient/schedule/${appointment.id}/details`);
+    }
+  };
+
+  const joinVideoCall = () => {
+    if (appointment.id) {
+      router.push(`/dashboard/meeting/${appointment.id}`);
     }
   };
 
@@ -210,14 +220,28 @@ function AppointmentCard({ appointment, onCancel, onUpdateStatus, isPast = false
         </div>
       </CardContent>
       <CardFooter className="flex flex-col gap-2">
-        {!isPast && appointment.status === "Scheduled" && onCancel && (
-          <Button 
-            variant="outline" 
-            className="w-full hover:bg-red-50 hover:text-red-600 hover:border-red-200"
-            onClick={onCancel}
-          >
-            Cancel Appointment
-          </Button>
+        {!isPast && appointment.status === "Scheduled" && (
+          <div className="w-full flex flex-col gap-2">
+            {isActive && (
+              <Button 
+                className="w-full"
+                onClick={joinVideoCall}
+              >
+                <VideoIcon className="h-4 w-4 mr-2" />
+                Join Video Call
+              </Button>
+            )}
+            
+            {onCancel && (
+              <Button 
+                variant="outline" 
+                className="w-full hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+                onClick={onCancel}
+              >
+                Cancel Appointment
+              </Button>
+            )}
+          </div>
         )}
         
         {isInPast && appointment.status === "Scheduled" && onUpdateStatus && (
