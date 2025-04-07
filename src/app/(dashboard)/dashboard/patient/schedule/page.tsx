@@ -19,7 +19,7 @@ export default async function PatientSchedulePage() {
   const appointments = await getAppointments(patientId);
   
   return (
-    <div className="container mx-auto py-6">
+    <div className="container overflow-y-auto mx-auto py-6">
       <h1 className="text-2xl font-bold mb-6">Appointment Management</h1>
       
       <Tabs defaultValue="schedule" className="w-full">

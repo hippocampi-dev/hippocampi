@@ -47,7 +47,7 @@ export default async function UpcomingAppointments() {
         {!appointments || appointments.length === 0 ? (
           <div className="flex flex-col items-center space-y-4">
             <p className="text-lg text-gray-600">No upcoming appointments</p>
-            <Link href="/dashboard/appointments/schedule">
+            <Link href="/dashboard/patient/schedule">
               <Button>Schedule an Appointment</Button>
             </Link>
           </div>

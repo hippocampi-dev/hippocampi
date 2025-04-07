@@ -64,7 +64,7 @@ export default async function HealthcareProviders() {
                     </Button>
                     <Button variant="default" className="flex-1" asChild>
                       <Link
-                        href={`/dashboard/appointments/schedule?doctorId=${doctor.doctorId}`}
+                        href={`/dashboard/patient/schedule`}
                       >
                         Schedule Appointment
                       </Link>

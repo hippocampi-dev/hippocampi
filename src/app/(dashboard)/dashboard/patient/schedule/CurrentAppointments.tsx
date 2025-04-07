@@ -134,7 +134,7 @@ export function CurrentAppointments({ appointments }: CurrentAppointmentsProps) 
       <div>
         <h2 className="text-xl font-semibold mb-4">Past Appointments</h2>
         {pastAppointments.length > 0 ? (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 max-h-[500px] overflow-y-auto pr-2">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 pr-2">
             {pastAppointments.map((appointment) => (
               <AppointmentCard 
                 key={appointment.id} 
