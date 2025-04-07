@@ -77,6 +77,7 @@ export function Header() {
                 whileTap={{ scale: 0.95 }}
               >
                 <Button
+                  size={'md'}
                   variant="outline"
                   asChild
                   className="border-primary text-primary hover:bg-blue-50 py-2 px-6"
@@ -87,6 +88,7 @@ export function Header() {
             )}
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
+                size={'md'}
                 onClick={
                   session
                     ? () => signOut({ redirect: true, callbackUrl: "/" })

@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function Footer() {
   return (
     <footer className="w-full bg-black py-8 md:py-12">
-        <div className="container mx-auto px-4 md:px-6">
+        <div className="w-full px-[72px]">
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             <div className="space-y-4">
               <div className="flex items-center gap-2">
@@ -38,6 +38,14 @@ export default function Footer() {
             <div className="space-y-4">
               <h3 className="text-sm font-medium text-darkAccent">Company</h3>
               <ul className="space-y-2">
+                <li>
+                  <Link
+                    href="/"
+                    className="text-sm text-white transition-colors hover:text-darkAccent"
+                  >
+                    Home
+                  </Link>
+                </li>
                 <li>
                   <Link
                     href="/about"

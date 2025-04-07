@@ -30,7 +30,7 @@ export default function LandingPage() {
                 Chemobrain care
                 personalized for you
               </h1>
-              <Button>
+              <Button size={'md'}>
                 <Link href="/portal">Book a consultation</Link>
               </Button>
             </div>
@@ -93,10 +93,10 @@ export default function LandingPage() {
                 care network
               </h1>
               <div className="flex gap-6">
-                <Button>
+                <Button size={'md'}>
                   <Link href="/portal">For Patients</Link>
                 </Button>
-                <Button variant={"light"}>
+                <Button variant={"light"} size={'md'}>
                   <Link href="/portal/doctor-login">For Providers</Link>
                 </Button>
               </div>

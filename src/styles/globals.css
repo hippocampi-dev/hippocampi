@@ -11,8 +11,9 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
     --primary: #2F7CAC;
-    --primary-foreground: #2F7CAC;
+    --primary-light: #BAE2FB;
     --dark-accent: #868686;
+    --dark-shade: #1F1F1F;
     --light-accent: #F2F2F2;
     --light-shade: #FEFEFE;
     --secondary: 210 40% 96.1%;

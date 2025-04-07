@@ -17,7 +17,7 @@ export default function HealthcarePortal() {
             <CardHeader className="bg-blue-50 pb-8">
               <div className="flex justify-center mb-4">
                 <div className="rounded-full bg-blue-100 p-3">
-                  <UserRound className="h-8 w-8 text-blue-600" />
+                  <UserRound className="h-8 w-8 text-primary" />
                 </div>
               </div>
               <CardTitle className="text-center text-2xl">Patient Login</CardTitle>
@@ -37,22 +37,22 @@ export default function HealthcarePortal() {
               </div>
               <ul className="space-y-2 text-gray-600">
                 <li className="flex items-center">
-                  <div className="mr-2 h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                  <div className="mr-2 h-1.5 w-1.5 rounded-full bg-primary"></div>
                   View upcoming appointments
                 </li>
                 <li className="flex items-center">
-                  <div className="mr-2 h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                  <div className="mr-2 h-1.5 w-1.5 rounded-full bg-primary"></div>
                   Access medical records
                 </li>
                 <li className="flex items-center">
-                  <div className="mr-2 h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                  <div className="mr-2 h-1.5 w-1.5 rounded-full bg-primary"></div>
                   Request prescription refills
                 </li>
               </ul>
             </CardContent>
             <CardFooter>
               <Link href="/portal/patient-login" className="w-full">
-                <Button className="w-full bg-blue-600 hover:bg-blue-700">Patient Login</Button>
+                <Button className="w-full">Patient Login</Button>
               </Link>
             </CardFooter>
           </Card>
