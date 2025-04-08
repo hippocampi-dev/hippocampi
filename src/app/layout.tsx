@@ -5,6 +5,7 @@ import type React from "react"; // Added import for React
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "~/components/ui/toaster";
 import { ToastProvider } from "./contexts/ToastContext";
+import { FeedbackPopup } from "~/components/buttons/FeedbackPopup";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,6 +28,7 @@ export default function RootLayout({
           <SessionProvider>
             <main>{children}</main>
             <Toaster />
+            <FeedbackPopup feedbackUrl="https://forms.gle/QfDjcHj3pEkCL2X1A" />
           </SessionProvider>
         </ToastProvider>
       </body>
