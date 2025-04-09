@@ -105,10 +105,10 @@ export const appointments = createTable(
       .$defaultFn(() => crypto.randomUUID()),
     doctorId: varchar('doctor_id', { length: 255 })
       .notNull()
-      .references(() => doctors.doctorId),
+      .references(() => doctors.doctorId, {onDelete: 'cascade'}),
     patientId: varchar('patient_id', { length: 255 })
       .notNull()
-      .references(() => patients.patientId),
+      .references(() => patients.patientId, {onDelete: 'cascade'}),
     scheduledAt: timestamp('scheduled_at', { mode: 'date' })
       .notNull(),
     reason: text('reason'),

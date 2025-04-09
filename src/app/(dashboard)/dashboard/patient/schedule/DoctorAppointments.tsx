@@ -56,7 +56,7 @@ export function DoctorAppointments({ patientId, doctorManagement }: DoctorAppoin
     return (
       <div className="flex flex-col items-center py-10">
         <p className="text-lg mb-4">You don't have any doctors assigned yet.</p>
-        <Button>Find Doctors</Button>
+        <Button onClick={() => window.location.href = "/dashboard/patient/select-doctor"}>Find Doctors</Button>
       </div>
     );
   }
