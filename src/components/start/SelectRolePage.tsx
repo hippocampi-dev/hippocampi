@@ -5,6 +5,9 @@ import { z } from "zod";
 import { role } from "~/server/db/type";
 import useSetUserRole from "~/app/hooks/useSetUserRole";
 import { redirect } from "next/navigation";
+import { Button } from "~/components/ui/button";
+import { Brain, UserRound } from "lucide-react";
+import Image from "next/image";
 
 const RoleSchema = z.nativeEnum(role);
 
@@ -25,44 +28,67 @@ export default function SelectRolePage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow">
-        <h1 className="mb-6 text-center text-2xl font-bold text-gray-800">
-          Select Your Role
+    <div className="relative flex min-h-screen items-center justify-center p-4 overflow-hidden">
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/highresneuronbackground.jpeg"
+          alt="Neural background"
+          fill
+          className="object-cover opacity-20"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-white/60 to-white/40"></div>
+      </div>
+      
+      <div className="z-10 w-full max-w-2xl animate-fade-in-up rounded-3xl bg-white p-12 shadow-lg">
+        <h1 className="mb-8 text-center text-4xl font-light tracking-tighter text-gray-900">
+          Join our integrative care network
         </h1>
-        <div className="flex space-x-4">
-          <button
+        <p className="mb-10 text-center text-darkAccent text-lg">
+          Select your role to get personalized access to our platform
+        </p>
+        
+        <div className="flex flex-col md:flex-row gap-6 animate-fade-in-stagger">
+          <div 
             onClick={() => setSelectedRole(role.doctor)}
-            className={`flex-1 rounded-lg border p-4 text-center text-lg font-medium transition-all ${
+            className={`flex-1 flex flex-col items-center justify-center gap-4 p-8 rounded-3xl transition-all cursor-pointer ${
               selectedRole === "doctor"
-                ? "border-blue-500 bg-blue-100 text-blue-700"
-                : "border-gray-300 bg-white text-gray-700"
+                ? "bg-primary text-white shadow-md"
+                : "bg-lightAccent hover:bg-primary/10"
             }`}
           >
-            Doctor
-          </button>
-          <button
+            <div className={`p-4 rounded-full ${selectedRole === "doctor" ? "bg-white/20" : "bg-sky-100"}`}>
+              <UserRound className={`h-12 w-12 ${selectedRole === "doctor" ? "text-white" : "text-primary"}`} />
+            </div>
+            <h2 className="text-2xl font-light">Provider</h2>
+          </div>
+          
+          <div 
             onClick={() => setSelectedRole(role.patient)}
-            className={`flex-1 rounded-lg border p-4 text-center text-lg font-medium transition-all ${
+            className={`flex-1 flex flex-col items-center justify-center gap-4 p-8 rounded-3xl transition-all cursor-pointer ${
               selectedRole === "patient"
-                ? "border-blue-500 bg-blue-100 text-blue-700"
-                : "border-gray-300 bg-white text-gray-700"
+                ? "bg-primary text-white shadow-md"
+                : "bg-lightAccent hover:bg-primary/10"
             }`}
           >
-            Patient
-          </button>
+            <div className={`p-4 rounded-full ${selectedRole === "patient" ? "bg-white/20" : "bg-sky-100"}`}>
+              <Brain className={`h-12 w-12 ${selectedRole === "patient" ? "text-white" : "text-primary"}`} />
+            </div>
+            <h2 className="text-2xl font-light">Patient</h2>
+          </div>
         </div>
-        <button
-          onClick={handleConfirm}
-          disabled={!selectedRole}
-          className={`mt-8 w-full rounded-lg p-4 text-center text-lg font-bold transition-all ${
-            selectedRole
-              ? "bg-blue-500 text-white hover:bg-blue-600"
-              : "cursor-not-allowed bg-gray-300 text-gray-500"
-          }`}
-        >
-          Confirm
-        </button>
+        
+        <div className="mt-12 flex justify-center">
+          <Button 
+            onClick={handleConfirm}
+            disabled={!selectedRole}
+            variant={selectedRole ? "default" : "secondary"}
+            size="md"
+            className="animate-fade-in"
+          >
+            Continue
+          </Button>
+        </div>
       </div>
     </div>
   );
