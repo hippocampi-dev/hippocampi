@@ -41,13 +41,13 @@ export default async function HealthcareProviders() {
                     </h3>
                     <p className="text-sm text-gray-600">
                       {doctor.specialization
-                        ? doctor.specialization
+                        ? doctor.specialization.charAt(0).toUpperCase() + doctor.specialization.slice(1)
                         : "General Practitioner"}
                     </p>
                     <p className="text-sm text-gray-600">
                       Ratings: {doctor.ratings ? doctor.ratings : "N/A"}
                     </p>
-                    <p className="mt-2 text-gray-700">{doctor.bio}</p>
+                    <p className="mt-2 text-gray-700 whitespace-nowrap overflow-hidden text-overflow-ellipsis text-sm">{doctor.bio}</p>
                   </div>
                   <div className="flex flex-col flex-wrap gap-4 sm:flex-row">
                     <Button variant="outline" className="flex-1" asChild>

@@ -34,7 +34,7 @@ export default function NewUserForm() {
   )
 
   if (userRole === role.patient) return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-indigo-100 to-purple-100 p-4">
+    <main className="flex min-h-screen items-center justify-center bg-primaryLight p-4">
       <PatientForm />
     </main>
   )

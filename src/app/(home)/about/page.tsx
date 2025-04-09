@@ -1,50 +1,8 @@
 import Image from "next/image"
 import Link from "next/link"
+import { Card, CardContent } from "~/components/ui/card"
 import Footer from "~/components/ui/Footer"
 import { Header } from "~/components/ui/Header"
-
-const teamMembers = [
-  {
-    name: "Tej Patel",
-    role: "CEO",
-    description:
-      "Tej's experience in neuroscience research and AI-driven diagnostics, developed during his leadership of machine learning projects at Cedars Sinai's Neurosurgery Department and Cleveland Clinic's Neuroradiology Department, enables him to spearhead Hippocampi's market research and business development, ensuring the company's vision remains aligned with healthcare's evolving needs.",
-    image: "/team/tej.png",
-    link: "https://www.linkedin.com/in/tej-patel-873b952a8/",
-  },
-  {
-    name: "Kshitij Purani",
-    role: "CMO",
-    description:
-      "Kshitij brings a wealth of healthcare experience, driving our strategic initiatives and ensuring that our patient outreach is both empathetic and effective.",
-    image: "/team/kshitij.png",
-    link: "https://www.linkedin.com/in/kshitij-purani-285661289/",
-  },
-  {
-    name: "Kenan Blair",
-    role: "Head of AI & Web Development",
-    description:
-      "With a background in SaaS and Django-based backend development, Kenan leads our AI efforts and develops computational models that power our personalized care platform.",
-    image: "/team/kenan.png",
-    link: "#",
-  },
-  {
-    name: "Hriday Meka",
-    role: "CFO",
-    description:
-      "Hriday manages our financial strategy, ensuring that our growth is sustainable and that every dollar is invested to improve patient care.",
-    image: "/team/hriday.png",
-    link: "https://www.linkedin.com/in/hridaymeka/",
-  },
-  {
-    name: "Travis Dao",
-    role: "CTO",
-    description:
-      "Travis is responsible for our technical infrastructure and product innovation, driving our mission to provide an intuitive, secure, and powerful platform for healthcare providers and patients alike.",
-    image: "/team/travis.png",
-    link: "https://www.linkedin.com/in/travis-dao-40b998325/",
-  },
-]
 
 export default function AboutPage() {
   return (
@@ -80,83 +38,32 @@ export default function AboutPage() {
         </section>
 
         {/* Team Section */}
-        <section className="w-full flex justify-evenly pt-36 py-24">
-          <div className="flex flex-col gap-12 w-[30vw]">
-            <div className="flex flex-col gap-3">
-              <h2 className="text-4xl">Meet the team</h2>
-              <p>Our team has been working closely together for the last year. Our unique blend of skills is the blueprint for what we aim for at Hippocampi: patient recovery.</p>
+        <section className="bg-white border-t border-black mx-[72px] mt-[20vh] pt-[20vh] pb-16">
+          <div className="container mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-6xl font-light tracking-tight mb-4">The Founding Team</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Our team has been working closely together for the last year. Our unique blend of skills is the blueprint for what we aim for at Hippocampi: patient recovery.
+              </p>
             </div>
-            <div className="flex flex-col gap-6 w-full">
-              <Image
-                src="/team/tej.png"
-                alt="Neural synapse background"
-                width={9999}
-                height={9999}
-                className="object-cover rounded-3xl aspect-[3/4] bg-lightAccent"
-                priority
-              />
-              <div>
-                <h2 className="text-2xl">Tej Patel</h2>
-                <p>Co-Founder and CEO</p>
-              </div>
-            </div>
-            <div className="flex flex-col gap-6 w-full">
-              <Image
-                src="/team/hriday.png"
-                alt="Neural synapse background"
-                width={9999}
-                height={9999}
-                className="object-cover rounded-3xl aspect-[3/4] bg-lightAccent"
-                priority
-              />
-              <div>
-                <h2 className="text-2xl">Hriday Meka</h2>
-                <p>Head of Growth</p>
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col gap-12 w-[30vw]">
-            <div className="flex flex-col gap-6 w-full">
-              <Image
-                src="/team/kenan.png"
-                alt="Neural synapse background"
-                width={9999}
-                height={9999}
-                className="object-cover rounded-3xl aspect-[3/4] bg-lightAccent"
-                priority
-              />
-              <div>
-                <h2 className="text-2xl">Kenan Blair</h2>
-                <p>Co-Founder and CTO</p>
-              </div>
-            </div>
-            <div className="flex flex-col gap-6 w-full">
-              <Image
-                src="/team/travis.png"
-                alt="Neural synapse background"
-                width={9999}
-                height={9999}
-                className="object-cover rounded-3xl aspect-[3/4] bg-lightAccent"
-                priority
-              />
-              <div>
-                <h2 className="text-2xl">Travis Dao</h2>
-                <p>Chief Software Architect</p>
-              </div>
-            </div>
-            <div className="flex flex-col gap-6 w-full">
-              <Image
-                src="/team/kshitij.png"
-                alt="Neural synapse background"
-                width={9999}
-                height={9999}
-                className="object-cover rounded-3xl aspect-[3/4] bg-lightAccent"
-                priority
-              />
-              <div>
-                <h2 className="text-2xl">Kshitij Purani</h2>
-                <p>Head of Product</p>
-              </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {teamMembers.map((member, index) => (
+                <Card key={index} className="transition-all duration-200 hover:shadow-lg">
+                  <CardContent className="p-6">
+                    <h3 className="font-bold text-xl mb-1">{member.name}</h3>
+                    <p className="text-slate-600 mb-4">{member.title}</p>
+                    <div className="space-y-2">
+                      <div>
+                        <span className="font-semibold">Education:</span> {member.university}
+                      </div>
+                      <div>
+                        <span className="font-semibold">Experience:</span> {member.experience}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         </section>
@@ -166,3 +73,41 @@ export default function AboutPage() {
   )
 }
 
+const teamMembers = [
+  {
+    name: "Tej Patel",
+    title: "Chief Executive Officer",
+    university: "UC Berkeley, Neuroscience and Business",
+    experience: "Neurosurgery Research @ Cedars Sinai",
+  },
+  {
+    name: "Kenan Blair",
+    title: "Chief Technology Officer",
+    university: "Purdue University",
+    experience: "Computational Neuroscience @ UCLA",
+  },
+  {
+    name: "Michael Isayan",
+    title: "Chief Operating Officer",
+    university: "Harvard, Economics and Government",
+    experience: "Executive Producer @ TEDxNHHS Youth",
+  },
+  {
+    name: "Hriday Meka",
+    title: "Chief Financial Officer",
+    university: "Yale, Economics and Biomedical Engineering",
+    experience: "Leukemia Research @ City of Hope",
+  },
+  {
+    name: "Travis Dao",
+    title: "Chief Software Architect",
+    university: "UC San Diego, Computer Science",
+    experience: "Lead Developer @ SATSummit",
+  },
+  {
+    name: "Kshitij Purani",
+    title: "Head of Product",
+    university: "UC Berkeley, Molecular Biology",
+    experience: "Telemedicine Research @ IEEE EMBS",
+  },
+]

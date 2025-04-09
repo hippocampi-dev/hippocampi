@@ -12,7 +12,7 @@ export function Header() {
 
   return (
     <header className="w-screen">
-      <nav className="mx-auto px-[5%] py-6">
+      <nav className="px-[5%] py-6">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex-1 text-2xl text-primary">
             Hippocampi

@@ -133,7 +133,7 @@ export default function TermsOfUsePage() {
                 </ul>
 
                 <p className="mt-4">
-                  Arbitration will be conducted by the American Arbitration Association (AAA) under its rules and procedures, including the AAA's Consumer Arbitration Rules (as applicable), as modified by this agreement. The AAA's rules are available at www.adr.org. The arbitration shall be conducted by a single, neutral arbitrator. Any judgment on the award rendered by the arbitrator may be entered in any court of competent jurisdiction. The arbitrator shall be empowered to grant whatever relief would be available in a court under law or in equity. The arbitrator's award shall be written and shall be binding on the parties.
+                  Arbitration will be conducted by a single, neutral arbitrator. You agree that, by agreeing to these terms and conditions, the U.S. Federal Arbitration Act governs the interpretation and enforcement of this provision. This arbitration provision shall survive termination of these terms and conditions and any other contractual relationship between you and Hippocampi. Any judgment on the award rendered by the arbitrator may be entered in any court of competent jurisdiction. The arbitrator shall be empowered to grant whatever relief would be available in a court under law or in equity. The arbitrator's award shall be written and shall be binding on the parties.
                 </p>
 
                 <p className="mt-4">
