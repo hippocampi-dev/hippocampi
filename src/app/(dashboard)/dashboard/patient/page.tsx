@@ -16,11 +16,11 @@ export default async function DashboardHome() {
     <div className='p-8'>
       <TitleCard name={session.user.name} />
       <div className="grid flex-1 gap-8 overflow-hidden md:grid-cols-3">
-        <PatientNotifications />
+        {/* <PatientNotifications /> */}
+        <HealthcareProviders />
         <div className="flex flex-col space-y-8">
           <UpcomingAppointments />
         </div>
-        <HealthcareProviders />
       </div>
     </div>
   );

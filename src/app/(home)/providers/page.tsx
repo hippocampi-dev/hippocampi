@@ -60,15 +60,15 @@ export default function ProviderPage() {
 
         <section className="w-full h-[70vh] flex justify-center items-center px-48">
           <p className="text-5xl font-light">
-            At Hippocampi, we take care of all your administrative tasks. 
-            <span className="text-darkAccent">We free up your time so you can focus on what matters most: your patients' health.</span>
+            At Hippocampi, we take care of all your administrative tasks, freeing up your time so you can do what matters most: 
+            <span className="text-darkAccent">your patients' health.</span>
           </p>
         </section>
 
         <section className="w-full px-[72px] py-16 flex flex-col gap-36">
           <div className="w-full flex justify-between gap-8">
             <h2 ref={h2Ref} className="w-1/3 text-5xl font-light">
-              From the patient to their insurance, we take care of it all.
+              From scheduling to insurance to advertisement, we take care of it all.
             </h2>
             <div className="relative overflow-hidden rounded-xl" style={{ height: `${h2Height}px`, width: `${h2Height * 4 / 3}px` }}>
               <Image
@@ -82,7 +82,7 @@ export default function ProviderPage() {
           <div className="flex flex-col gap-6">
             <h4 className="text-lg/7">What we take care of</h4>
             <Accordion type="single" collapsible className="w-full">
-              {accordian.map((item, index) => (
+              {accordion.map((item, index) => (
                 <AccordionItem key={index} value={`item-${index}`} className="py-8">
                   <AccordionTrigger className="text-left text-5xl font-light">
                     <div className="flex items-center">
@@ -127,8 +127,7 @@ export default function ProviderPage() {
     </div>
   )
 }
-
-const accordian = [
+const accordion = [
   {
     task: "Billing and Coding Support",
     description:
@@ -140,43 +139,18 @@ const accordian = [
       "Developing AI solutions to streamline cancer-related documentation, reducing administrative time for doctors.",
   },
   {
-    task: "Marketing Management",
+    task: "Comprehensive Administrative Support",
     description:
-      "Overseeing all marketing efforts to attract new patients and maintain a strong professional presence.",
+      "Handling scheduling, credentialing, insurance onboarding, customer support, and claim denial management to eliminate administrative burdens.",
+  },
+  {
+    task: "Patient Acquisition - Marketing",
+    description:
+      "Managing all advertising and marketing efforts to build the practice and increase patient flow.",
   },
   {
     task: "Strategic Partnerships",
     description:
-      "Building relationships with top cancer centers like MD Anderson to improve referrals and collaboration opportunities.",
-  },
-  {
-    task: "Advertising Strategy and Execution",
-    description:
-      "Handling all advertising campaigns to boost awareness and reputation in the healthcare industry.",
-  },
-  {
-    task: "Patient Outreach and Acquisition",
-    description:
-      "Implementing targeted strategies to connect doctors with patients who need specialized care.",
-  },
-  // {
-  //   task: "Compliance and Regulation Assistance",
-  //   description:
-  //     "Ensuring all billing, coding, and marketing activities align with medical industry regulations and best practices.",
-  // },
-  // {
-  //   task: "Revenue Cycle Optimization",
-  //   description:
-  //     "Enhancing financial efficiency by reducing claim denials, improving payment collection, and maximizing revenue.",
-  // },
-  // {
-  //   task: "Brand Development for Doctors and Practices",
-  //   description:
-  //     "Crafting a strong professional image through personalized branding, online presence, and reputation management.",
-  // },
-  {
-    task: "Reducing Non-Clinical Workload",
-    description:
-      "Taking over administrative, marketing, and advertising tasks so doctors can focus entirely on patient care.",
-  },
+      "Building partnerships with cancer centers, non-profits, and organizations to create referral pathways for specialized care.",
+  }
 ];

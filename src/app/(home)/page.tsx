@@ -1,9 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "~/components/ui/button";
-import { ArrowRight, Brain, ChevronRight } from "lucide-react";
+import { ArrowRight, Brain, ChevronRight, Calendar, Network, ClipboardCheck } from "lucide-react";
 import { Header } from "~/components/ui/Header";
 import Footer from "~/components/ui/Footer";
+import { Card, CardContent, CardDescription, CardHeader } from "~/components/ui/card";
 
 export default function LandingPage() {
   return (
@@ -39,9 +40,9 @@ export default function LandingPage() {
 
         <section className="w-full h-[70vh] flex justify-center items-center px-48">
           <p className="text-5xl font-light">
-            Our telehealth platform connects patients with specialized cognitive and mental care.
+            The first telehealth platform that connects patients with specialized cognitive and mental care.
             <br></br>
-            <span className="text-darkAccent">Short wait times. Smart assessment. Integrated care team.</span>
+            <span className="text-darkAccent">Shorter wait times. Personalized treatment. Accessible care.</span>
           </p>
         </section>
 
@@ -54,22 +55,23 @@ export default function LandingPage() {
                 <span className="text-darkAccent">health platform</span>
               </p>
               <div className="flex-1">
-                <p className="text-darkAccent">Long-term care. Preventative care. For a healthier life.</p>
+                <p className="text-darkAccent">Transform your cancer care journey.</p>
               </div>
             </div>
-            <div className="flex gap-4">
-              <div className="flex items-end flex-1 bg-lightShade p-6 aspect-square rounded-2xl">
-                <p className="text-lg/7">Appointments within 7 to 14 days, always on time.</p>
-              </div>
-              <div className="flex items-end flex-1 bg-lightShade p-6 aspect-square rounded-2xl">
-                <p className="text-lg/7">AI driven cognitive assessments</p>
-              </div>
-              <div className="flex items-end flex-1 bg-lightShade p-6 aspect-square rounded-2xl">
-                <p className="text-lg/7">Insurance Assistance</p>
-              </div>
-              <div className="flex items-end flex-1 bg-lightShade p-6 aspect-square rounded-2xl">
-                <p className="text-lg/7">Certified specialized physicians</p>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {features.map((feature, index) => (
+                <div key={index} className="relative aspect-square rounded-3xl flex flex-col bg-white">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="bg-sky-100 p-6 rounded-full">
+                      <feature.icon className="h-20 w-20 text-primary" />
+                    </div>
+                  </div>
+
+                  <div className="mt-auto p-4 text-center">
+                    <p className="text-base text-darkAccent">{feature.description}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -110,3 +112,26 @@ export default function LandingPage() {
     </div>
   );
 }
+
+const features = [
+  {
+    title: "Timely Appointments",
+    description: "Appointments within 7 to 14 days.",
+    icon: Calendar,
+  },
+  {
+    title: "AI Screening",
+    description: "AI driven chemo-brain screening.",
+    icon: Brain,
+  },
+  {
+    title: "Care Network",
+    description: "A comprehensive care network.",
+    icon: Network,
+  },
+  {
+    title: "Administrative Efficiency",
+    description: "Eliminating administrative burdens.",
+    icon: ClipboardCheck,
+  },
+]
