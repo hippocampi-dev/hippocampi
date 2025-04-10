@@ -82,7 +82,7 @@ export function Header() {
                   asChild
                   className="border-primary text-primary hover:bg-blue-50 py-2 px-6"
                 >
-                  <Link href="/dashboard/patient">Go to Dashboard</Link>
+                  <Link href="/dashboard">Go to Dashboard</Link>
                 </Button>
               </motion.div>
             )}

@@ -18,18 +18,21 @@ import { eq } from "drizzle-orm";
  */
 declare module "next-auth" {
   interface Session extends DefaultSession {
+    sessionVerified: boolean,
     user: {
-      id: string;
-      name: string;
-      mfaEnabled: boolean,
-      mfaVerified: boolean,
-    } & DefaultSession["user"];
+      id: string
+      name: string
+      mfaEnabled: boolean
+      mfaVerified: boolean
+    } & DefaultSession["user"]
   }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+  interface JWT {
+    id: string
+    mfaEnabled: boolean // for set up
+    mfaVerified: boolean // for set up
+    sessionVerified: boolean
+  }
 }
 
 export const authConfig = {
@@ -43,10 +46,6 @@ export const authConfig = {
         },
       },
     }),
-    // FacebookProvider({
-    //   clientId: process.env.FACEBOOK_CLIENT_ID,
-    //   clientSecret: process.env.FACEBOOK_CLIENT_SECRET
-    // }),
   ],
   adapter: DrizzleAdapter(db, {
     usersTable: users,
@@ -55,10 +54,11 @@ export const authConfig = {
     verificationTokensTable: verificationTokens,
   }),
   callbacks: {
-    jwt: async ({ token, user }) => {
+    jwt: async ({ token, user, session, trigger }) => {
       if (user) {
         token.id = user.id
         token.name = user.name
+
         // Fetch MFA status from the database
         const dbUser = await db.query.users.findFirst({
           where: eq(users.id, user.id as "string"),
@@ -67,15 +67,27 @@ export const authConfig = {
             mfaVerified: true,
           },
         })
+
         if (dbUser) {
           token.mfaEnabled = dbUser.mfaEnabled
           token.mfaVerified = dbUser.mfaVerified
         }
       }
+
+      if (session) {
+        token.sessionVerified = false;
+        if (trigger === "update") {
+          // console.log('session verified:', session.sessionVerified)
+          token.sessionVerified = session.sessionVerified;
+          // console.log(session)
+        }
+      }
+      // console.log(token)
       return token
     },
     session: ({ session, token }) => ({
       ...session,
+      sessionVerified: token.sessionVerified as boolean,
       user: {
         ...session.user,
         id: token.id as string,

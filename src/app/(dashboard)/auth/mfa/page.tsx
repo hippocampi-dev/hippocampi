@@ -2,21 +2,23 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
 import { BypassMFA } from "~/utilities/bypassMFA"
+import { useSession } from "next-auth/react"
 
 export default function MFAVerification() {
   const [code, setCode] = useState("")
   const [error, setError] = useState<string | null>(null)
-  const router = useRouter();
+  const router = useRouter()
+  const { data: session, update } = useSession()
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    BypassMFA(code, router);
+    BypassMFA(code, router)
 
     try {
       const response = await fetch("/api/auth/verify-mfa", {
@@ -27,10 +29,25 @@ export default function MFAVerification() {
         body: JSON.stringify({ code }),
       })
 
-      const data = await response.json();
+      const data = await response.json()
 
       if (data.success) {
-        router.push("/middle"); // or wherever you want to redirect after successful MFA
+        try {
+          // Update the session first
+          await update({
+            ...session,
+            sessionVerified: true,
+            user: {
+              ...session?.user,
+            },
+          })
+
+          // Then navigate after the update is complete
+          router.push("/middle")
+        } catch (updateError) {
+          console.error("Failed to update session:", updateError)
+          setError("Failed to verify session")
+        }
       } else {
         setError(data.error || "Invalid code")
       }

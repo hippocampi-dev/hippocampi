@@ -15,6 +15,10 @@ export default function RootLayout({
     if (status === "unauthenticated") {
       router.push("/auth/login")
     }
+
+    if (!session?.sessionVerified) {
+      router.push('/middle')
+    }
   }, [status, router]);
 
   return (

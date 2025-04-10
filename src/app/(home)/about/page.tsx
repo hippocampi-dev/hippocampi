@@ -106,7 +106,7 @@ const teamMembers = [
   },
   {
     name: "Kshitij Purani",
-    title: "Head of Product",
+    title: "Chief Product Officer",
     university: "UC Berkeley, Molecular Biology",
     experience: "Telemedicine Research @ IEEE EMBS",
   },

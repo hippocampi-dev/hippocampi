@@ -60,8 +60,8 @@ export default function ProviderPage() {
 
         <section className="w-full h-[70vh] flex justify-center items-center px-48">
           <p className="text-5xl font-light">
-            At Hippocampi, we take care of all your administrative tasks, freeing up your time so you can do what matters most: 
-            <span className="text-darkAccent">your patients' health.</span>
+            At Hippocampi, we take care of all your administrative tasks, freeing up your time so you can do what matters most:
+            <span className="text-darkAccent"> your patients' health.</span>
           </p>
         </section>
 
