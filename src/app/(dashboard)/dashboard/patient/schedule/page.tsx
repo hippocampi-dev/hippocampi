@@ -1,12 +1,21 @@
 import { redirect } from "next/navigation";
 import { getUserId } from "~/utilities/getUser";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-
 import { getAllPatientDoctorManagement, getAppointments } from "~/server/db/queries";
 import { CurrentAppointments } from "./CurrentAppointments";
 import { DoctorAppointments } from "./DoctorAppointments";
+import Loading from "~/components/loading/page";
+import { Suspense } from "react";
 
-export default async function PatientSchedulePage() {
+export default function PatientSchedulePage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <PatientScheduleContainer />
+    </Suspense>
+  );
+}
+
+async function PatientScheduleContainer() {
   const patientId1 = await getUserId();
   const patientId = patientId1 as "string";
   if (!patientId) {

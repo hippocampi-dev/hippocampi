@@ -1,7 +1,6 @@
 import Conversation from "~/components/message/Conversation";
 import { createMessage, getMessages, getTargetConversation, getUser } from "~/server/db/queries";
 
-
 interface props {
   params: Promise<{ id: string }>;
 }

@@ -6,17 +6,24 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
-import { auth } from "~/server/auth";
 import { getPatient, getPatientHealthInformation } from "~/server/db/queries";
-import type { UserIdInterface, PatientHealthInformationInterface } from "~/server/db/type";
+import type { PatientHealthInformationInterface } from "~/server/db/type";
 import { getUserId } from "~/utilities/getUser";
 import {PatientInfoSections, InfoItem} from "~/components/patient-dashboard/PatientsInfoSections";
+import { Suspense } from "react";
+import Loading from "~/components/loading/page";
 // For a server component, you might use your own session retrieval logic.
 // For this example, we'll assume a function getUserId() returns the current user ID.
 
+export default function MyInformationPage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <MyInformationContainer />
+    </Suspense>
+  );
+}
   
-  
-export default async function MyInformationPage() {
+async function MyInformationContainer() {
   const userId = await getUserId() as "string";
   if (!userId) {
     notFound();

@@ -3,6 +3,8 @@ export const dynamic = "force-dynamic"
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import Loading from "~/components/loading/page";
 import { ChangeInformationForm } from "~/components/patient-dashboard/ChangeInformationForm"
 import { Button } from "~/components/ui/button";
 import { PatientSchemaType } from "~/lib/schemas/patients";
@@ -10,14 +12,22 @@ import { getPatient } from "~/server/db/queries";
 import { PatientsInterface } from "~/server/db/type";
 import { getUserId } from "~/utilities/getUser"
 
-export default async function ChangeInformationPage() {
+export default function ChangeInformationPage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <ChangeInformationContainer />
+    </Suspense>
+  );
+}
+
+async function ChangeInformationContainer() {
   const userId = await getUserId() as string;
   const userIdString = userId as "string";
     if (!userId) {
       notFound();
     }
   const patient = await getPatient(userIdString) as PatientsInterface as PatientSchemaType;
-  console.log(patient)
+  // console.log(patient)
 
   return (
     <div className="container mx-auto py-10">
