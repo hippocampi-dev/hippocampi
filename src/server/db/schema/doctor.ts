@@ -83,7 +83,7 @@ export const doctorAvailabilities = createTable(
       .$defaultFn(() => crypto.randomUUID()),
     doctorId: varchar('doctor_id', { length: 255 })
       .notNull()
-      .references(() => doctors.doctorId),
+      .references(() => doctors.doctorId, {onDelete: 'cascade'}),
     dayOfWeek: daysOfWeekEnum("day_of_week").notNull(),
     startTime: varchar("start_time").notNull(),
     endTime: varchar("end_time").notNull(),

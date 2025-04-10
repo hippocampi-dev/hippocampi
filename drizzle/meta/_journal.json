@@ -22,6 +22,20 @@
       "when": 1743662502346,
       "tag": "0002_fearless_tombstone",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1744171936304,
+      "tag": "0003_magenta_thor",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1744172056163,
+      "tag": "0004_yellow_bloodaxe",
+      "breakpoints": true
     }
   ]
 }
