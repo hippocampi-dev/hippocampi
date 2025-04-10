@@ -11,12 +11,12 @@ import Image from "next/image"
 import { BypassMFA } from "~/utilities/bypassMFA"
 
 export default function SetupMFAPage() {
-  const { data: session } = useSession()
   const router = useRouter()
   const [qrCode, setQrCode] = useState<string | null>(null)
   const [secret, setSecret] = useState<string | null>(null)
   const [verificationCode, setVerificationCode] = useState("")
   const [error, setError] = useState("")
+  const { data: session, update } = useSession()
 
   useEffect(() => {
     async function fetchMFASetup() {
@@ -58,9 +58,24 @@ export default function SetupMFAPage() {
       const data = await response.json();
 
       if (data.success) {
-        router.push("/middle");
+        try {
+          // Update the session first
+          await update({
+            ...session,
+            sessionVerified: true,
+            user: {
+              ...session?.user,
+            },
+          })
+
+          // Then navigate after the update is complete
+          router.push("/middle")
+        } catch (updateError) {
+          console.error("Failed to update session:", updateError)
+          setError("Failed to verify session")
+        }
       } else {
-        setError(data.error || "Failed to verify MFA");
+        setError(data.error || "Invalid code")
       }
     } catch (err) {
       setError("An unexpected error occurred");

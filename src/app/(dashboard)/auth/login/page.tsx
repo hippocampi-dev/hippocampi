@@ -10,7 +10,7 @@ import { ArrowLeft } from "lucide-react"
 export default function SignIn() {
   const handleSignIn = () => {
     signIn("google", {
-      callbackUrl: `${window.location.origin}/dashboard`,
+      callbackUrl: `${window.location.origin}/auth/check-mfa`,
     })
   }
   return (
