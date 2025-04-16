@@ -13,7 +13,9 @@ export const env = createEnv({
         : z.string().optional(),
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
-    DATABASE_URL: z.string().url(),
+    DATABASE_URL_PRODUCTION: z.string().url(),
+    DATABASE_URL_PREVIEW: z.string().url(),
+    DATABASE_URL: z.string().url().optional(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -36,6 +38,8 @@ export const env = createEnv({
     AUTH_SECRET: process.env.AUTH_SECRET,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    DATABASE_URL_PRODUCTION: process.env.DATABASE_URL_PRODUCTION,
+    DATABASE_URL_PREVIEW: process.env.DATABASE_URL_PREVIEW,
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
   },
@@ -50,3 +54,15 @@ export const env = createEnv({
    */
   emptyStringAsUndefined: true,
 });
+
+// Helper function to get the appropriate database URL based on environment
+export function getDatabaseUrl() {
+  console.log(env.DATABASE_URL_PREVIEW)
+  if (process.env.NODE_ENV === "production") {
+    // console.log('using production db url')
+    return env.DATABASE_URL_PRODUCTION;
+  } else {
+    // console.log('using preview db url')
+    return env.DATABASE_URL_PREVIEW;
+  }
+}
