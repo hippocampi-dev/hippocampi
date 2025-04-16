@@ -15,7 +15,7 @@ export default defineConfig({
   dialect: "postgresql",
   dbCredentials: {
     url: getDatabaseUrl(),
-    ssl: true
+    // ssl: true
   },
   tablesFilter: ["hippocampi_*"],
 })

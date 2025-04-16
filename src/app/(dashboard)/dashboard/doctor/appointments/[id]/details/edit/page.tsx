@@ -20,7 +20,7 @@ import { useToast } from "~/app/contexts/ToastContext"
 import { MoreHorizontal, Trash2, Plus, Save, FileText, ArrowLeft } from "lucide-react";
 import { fetchDoctorDetails, getAppointmentDetails } from '~/app/_actions/schedule/actions';
 import { getPatientDetails, getPatientHealthInfo } from '~/app/_actions/users/actions';
-import { uploadAppointmentNotesFile } from '~/app/_actions/blob/actions';
+import { uploadAppointmentNotesFile } from '~/app/_actions/upload/actions';
 
 import { 
   saveConsultationDraft, 

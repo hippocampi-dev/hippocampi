@@ -16,6 +16,9 @@ export const env = createEnv({
     DATABASE_URL_PRODUCTION: z.string().url(),
     DATABASE_URL_PREVIEW: z.string().url(),
     DATABASE_URL: z.string().url().optional(),
+    SUPABASE_PROJECT_URL: z.string().url(),
+    SUPABASE_API_KEY: z.string(),
+    SUPABASE_SERVICE_KEY: z.string(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -41,6 +44,9 @@ export const env = createEnv({
     DATABASE_URL_PRODUCTION: process.env.DATABASE_URL_PRODUCTION,
     DATABASE_URL_PREVIEW: process.env.DATABASE_URL_PREVIEW,
     DATABASE_URL: process.env.DATABASE_URL,
+    SUPABASE_PROJECT_URL: process.env.SUPABASE_PROJECT_URL,
+    SUPABASE_API_KEY: process.env.SUPABASE_API_KEY,
+    SUPABASE_SERVICE_KEY: process.env.SUPABASE_SERVICE_KEY,
     NODE_ENV: process.env.NODE_ENV,
   },
   /**
@@ -57,7 +63,6 @@ export const env = createEnv({
 
 // Helper function to get the appropriate database URL based on environment
 export function getDatabaseUrl() {
-  console.log(env.DATABASE_URL_PREVIEW)
   if (process.env.NODE_ENV === "production") {
     // console.log('using production db url')
     return env.DATABASE_URL_PRODUCTION;

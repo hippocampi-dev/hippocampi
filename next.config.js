@@ -19,7 +19,7 @@ const config = {
   //   return config;
   // },
   images: {
-    domains: ['images.unsplash.com'],
+    domains: ['images.unsplash.com', 'rlurtkitmuskcxsokskb.supabase.co', 'jbntzomzylpmbukwqrds.supabase.co'],
     remotePatterns: [
       {
         protocol: 'https',
