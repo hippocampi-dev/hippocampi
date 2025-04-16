@@ -1,6 +1,6 @@
 import { defineConfig } from "drizzle-kit";
 
-import { env } from "~/env";
+import { env, getDatabaseUrl } from "~/env";
 
 export default defineConfig({
   schema: [
@@ -14,7 +14,8 @@ export default defineConfig({
   ],
   dialect: "postgresql",
   dbCredentials: {
-    url: env.DATABASE_URL,
+    url: getDatabaseUrl(),
+    ssl: true
   },
   tablesFilter: ["hippocampi_*"],
 })
