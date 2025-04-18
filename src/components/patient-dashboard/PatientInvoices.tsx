@@ -1,6 +1,7 @@
 "use client"
 import { loadStripe } from "@stripe/stripe-js";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
+import { getStripeConsultationProductID } from "~/env";
 import { AppointmentInvoiceDict, InvoicesInterface } from "~/server/db/type"
 
 interface props {
@@ -9,7 +10,6 @@ interface props {
 }
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
-const priceId = 'price_1QnrfxDOGzHyZjJng2sXhkSq';
 
 export default function PatientInvoices({ invoices, appointmentInvoiceDict }: props) {
   const handleCheckout = async (id: string) => {
@@ -23,7 +23,7 @@ export default function PatientInvoices({ invoices, appointmentInvoiceDict }: pr
         },
         body: JSON.stringify({
           id: id,
-          priceId: priceId
+          priceId: getStripeConsultationProductID()
         }),
       }).then(res => res.json());
 

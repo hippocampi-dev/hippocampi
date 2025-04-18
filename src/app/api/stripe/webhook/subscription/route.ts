@@ -4,6 +4,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { getDoctorSubscription, setDoctorSubscription } from "~/server/db/queries";
 import { SubscriptionsInterface } from "~/server/db/type";
 import { headers } from "next/headers";
+import { getStripeSubscriptionWebhookSecret } from "~/env";
 
 export async function POST(request: NextRequest) {
   let event: Stripe.Event;
@@ -13,7 +14,7 @@ export async function POST(request: NextRequest) {
     event = stripe.webhooks.constructEvent(
       await request.text(),
       stripeSignature as string,
-      process.env.STRIPE_SUBSCRIPTION_WEBHOOK_SECRET as string
+      getStripeSubscriptionWebhookSecret()
     );
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';

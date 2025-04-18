@@ -19,7 +19,6 @@ export interface Plan {
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
-
 export default function SubscriptionPlans() {
   const [loading, setLoading] = useState<boolean>(false)
   const [plans, setPlans] = useState<Plan[]>([]);
