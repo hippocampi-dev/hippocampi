@@ -108,7 +108,7 @@ export default function CredentialsSubmission() {
     if (Object.keys(data).length > 0) {
       setNpiData((prev) => ({ ...prev, ...data }))
     }
-    console.log(data)
+    // console.log(data)
   }
 
   const updateLicenseData = (data: Partial<LicenseFormData>) => {

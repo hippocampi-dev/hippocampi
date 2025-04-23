@@ -6,19 +6,16 @@ import { addDoctor, addDoctorCredentials, addDoctorSubscription, getDoctor, setD
 import { DoctorCredentialsInterface, DoctorsInterface, SubscriptionsInterface } from "~/server/db/type";
 import { uploadCredentialsFile } from "../upload/actions";
 
-export async function updateDoctorOnboardingStatus(status: 
-  'not-started' |
-  'profile' |
-  'credentials' |
-  'pending' |
-  'approved' | 'rejected') {
-  const session = await auth();
-  const doctor = await getDoctor(session?.user.id as "string");
+export async function updateDoctorOnboardingStatus(
+  status: 'not-started' | 'profile' | 'credentials' | 'pending' | 'approved' | 'rejected',
+  doctorId: string
+) {
+  const doctor = await getDoctor(doctorId as "string");
   const modifiedDoctor: DoctorsInterface = {
     ...doctor!,
     onboardingStatus: status
   }
-  return await setDoctor(session?.user.id as "string", modifiedDoctor);
+  return await setDoctor(doctorId as "string", modifiedDoctor);
 }
 
 export async function addDoctorOnboarding(doctor: DoctorsInterface) {
@@ -40,7 +37,7 @@ export async function addDoctorCredentialLinksOnboarding(id: string, credentials
 
   if (returnedCredentials) {
     // update doctor onboarding status
-    await updateDoctorOnboardingStatus('pending');
+    await updateDoctorOnboardingStatus('pending', id);
   }
 
   return returnedCredentials;

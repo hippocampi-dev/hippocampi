@@ -29,12 +29,12 @@ export default function OnboardingComplete() {
             <p className="text-sm text-muted-foreground">
               If you have any questions or need assistance, please contact our provider support team:
             </p>
-            <div className="mt-2 text-sm">
-              <p>
-                Email: <span className="font-medium">info@hippocampi.co</span>
+            <div className="mt-2">
+              <p className="text-sm">
+                Email: info@hippocampi.co
               </p>
-              <p>
-                Phone: <span className="font-medium">+1 (818) 913-0022</span>
+              <p className="text-sm">
+                Phone: +1 (818) 913-0022
               </p>
             </div>
           </div>
