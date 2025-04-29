@@ -5,6 +5,7 @@ import { Button } from "~/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~/components/ui/card"
 import { loadStripe } from '@stripe/stripe-js';
 import Loading from "../loading/page";
+import { getStripePublishableKey } from "~/env";
 
 // Define types for your plans
 export interface Plan {
@@ -17,7 +18,7 @@ export interface Plan {
   features: string[]
 }
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+const stripePromise = loadStripe(getStripePublishableKey());
 
 export default function SubscriptionPlans() {
   const [loading, setLoading] = useState<boolean>(false)

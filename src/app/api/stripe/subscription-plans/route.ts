@@ -1,11 +1,9 @@
 import { NextResponse } from 'next/server';
-import Stripe from 'stripe';
 import { Plan } from '~/components/subscription-plans/SubscriptionPlans';
 import { getStripeDoctorSubscriptionProductId } from '~/env';
 import { getUserRole } from '~/server/db/queries';
 import { getUserId } from '~/utilities/getUser';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+import { stripe } from '~/utilities/stripe';
 
 // Define feature arrays at the top level
 const featuresPatient = [

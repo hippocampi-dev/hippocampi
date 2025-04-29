@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { getDoctorSubscriptionDetails } from "~/app/_actions/users/actions";
 import { DoctorDashboardSidebar } from "~/components/doctor-dashboard/DoctorSidebar";
 import { SidebarProvider } from "~/components/ui/sidebar";
 import { DoctorsInterface, UserRolesInterface } from "~/server/db/type";
@@ -25,6 +26,11 @@ export default function DoctorLayout({
   
       if (!doctor || doctor.onboardingStatus !== 'approved') { // not approved
         router.push('/middle');
+      }
+      
+      const doctorSubscription = await getDoctorSubscriptionDetails(doctor?.doctorId!);
+      if (doctorSubscription?.status === 'unsubscribed') {
+        router.push('/checkout/subscription');
       }
     }
 

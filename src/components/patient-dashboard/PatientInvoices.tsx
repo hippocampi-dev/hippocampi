@@ -1,7 +1,7 @@
 "use client"
 import { loadStripe } from "@stripe/stripe-js";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
-import { getStripeConsultationProductID } from "~/env";
+import { getStripeConsultationProductID, getStripePublishableKey } from "~/env";
 import { AppointmentInvoiceDict, InvoicesInterface } from "~/server/db/type"
 
 interface props {
@@ -9,7 +9,7 @@ interface props {
   appointmentInvoiceDict: AppointmentInvoiceDict
 }
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+const stripePromise = loadStripe(getStripePublishableKey());
 
 export default function PatientInvoices({ invoices, appointmentInvoiceDict }: props) {
   const handleCheckout = async (id: string) => {

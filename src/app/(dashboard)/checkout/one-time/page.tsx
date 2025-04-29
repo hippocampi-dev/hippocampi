@@ -1,9 +1,9 @@
 'use client'
 
 import { loadStripe } from '@stripe/stripe-js';
-import { getStripeConsultationProductID } from '~/env';
+import { getStripeConsultationProductID, getStripePublishableKey } from '~/env';
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+const stripePromise = loadStripe(getStripePublishableKey());
 
 export default function Checkout() {
   const handleCheckout = async (priceId: string) => {

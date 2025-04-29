@@ -23,6 +23,8 @@ export const env = createEnv({
     STRIPE_INVOICE_WEBHOOK_SECRET_PROD: z.string(),
     STRIPE_DOCTOR_SUBSCRIPTION_PRODUCT_ID_PROD: z.string(),
     STRIPE_CONSULTATION_PRICE_ID_PROD: z.string(),
+    STRIPE_PUBLISHABLE_KEY_PROD: z.string(),
+    STRIPE_SECRET_KEY_PROD: z.string(),
     
     // Development
     DATABASE_URL_DEV: z.string().url(),
@@ -33,6 +35,8 @@ export const env = createEnv({
     STRIPE_INVOICE_WEBHOOK_SECRET_DEV: z.string(),
     STRIPE_DOCTOR_SUBSCRIPTION_PRODUCT_ID_DEV: z.string(),
     STRIPE_CONSULTATION_PRICE_ID_DEV: z.string(),
+    STRIPE_PUBLISHABLE_KEY_DEV: z.string(),
+    STRIPE_SECRET_KEY_DEV: z.string(),
 
     // Actual
     // DATABASE_URL: z.string().url().optional(),
@@ -72,6 +76,8 @@ export const env = createEnv({
     STRIPE_INVOICE_WEBHOOK_SECRET_PROD: process.env.STRIPE_INVOICE_WEBHOOK_SECRET_PROD,
     STRIPE_DOCTOR_SUBSCRIPTION_PRODUCT_ID_PROD: process.env.STRIPE_DOCTOR_SUBSCRIPTION_PRODUCT_ID_PROD,
     STRIPE_CONSULTATION_PRICE_ID_PROD: process.env.STRIPE_CONSULTATION_PRICE_ID_PROD,
+    STRIPE_PUBLISHABLE_KEY_PROD: process.env.STRIPE_PUBLISHABLE_KEY_PROD,
+    STRIPE_SECRET_KEY_PROD: process.env.STRIPE_SECRET_KEY_PROD,
 
     // Development
     DATABASE_URL_DEV: process.env.DATABASE_URL_DEV,
@@ -82,6 +88,8 @@ export const env = createEnv({
     STRIPE_INVOICE_WEBHOOK_SECRET_DEV: process.env.STRIPE_INVOICE_WEBHOOK_SECRET_DEV,
     STRIPE_DOCTOR_SUBSCRIPTION_PRODUCT_ID_DEV: process.env.STRIPE_DOCTOR_SUBSCRIPTION_PRODUCT_ID_DEV,
     STRIPE_CONSULTATION_PRICE_ID_DEV: process.env.STRIPE_CONSULTATION_PRICE_ID_DEV,
+    STRIPE_PUBLISHABLE_KEY_DEV: process.env.STRIPE_PUBLISHABLE_KEY_DEV,
+    STRIPE_SECRET_KEY_DEV: process.env.STRIPE_SECRET_KEY_DEV,
 
     // Actual
     // DATABASE_URL: process.env.DATABASE_URL,
@@ -160,5 +168,19 @@ export function getStripeConsultationProductID() {
     return env.STRIPE_CONSULTATION_PRICE_ID_PROD;
   } else {
     return env.STRIPE_CONSULTATION_PRICE_ID_DEV;
+  }
+}
+export function getStripePublishableKey() {
+  if (process.env.NODE_ENV === "production") {
+    return env.STRIPE_PUBLISHABLE_KEY_PROD;
+  } else {
+    return env.STRIPE_PUBLISHABLE_KEY_DEV;
+  }
+}
+export function getStripeSecretKey() {
+  if (process.env.NODE_ENV === "production") {
+    return env.STRIPE_SECRET_KEY_PROD;
+  } else {
+    return env.STRIPE_SECRET_KEY_DEV;
   }
 }
