@@ -1,3 +1,8 @@
+// webhook for testing
+// stripe login
+// stripe listen --forward-to localhost:3000/api/stripe/webhook/subscription
+// stripe trigger payment_intent.succeeded
+
 import { stripe } from "~/utilities/stripe";
 import Stripe from "stripe";
 import { NextResponse, NextRequest } from "next/server";
@@ -104,8 +109,3 @@ export async function OPTIONS() {
     },
   });
 }
-
-// webhook for testing
-// stripe login
-// stripe listen --forward-to localhost:3000/api/stripe/webhook/subscription
-// stripe trigger payment_intent.succeeded

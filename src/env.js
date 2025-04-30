@@ -23,7 +23,6 @@ export const env = createEnv({
     STRIPE_INVOICE_WEBHOOK_SECRET_PROD: z.string(),
     STRIPE_DOCTOR_SUBSCRIPTION_PRODUCT_ID_PROD: z.string(),
     STRIPE_CONSULTATION_PRICE_ID_PROD: z.string(),
-    STRIPE_PUBLISHABLE_KEY_PROD: z.string(),
     STRIPE_SECRET_KEY_PROD: z.string(),
     
     // Development
@@ -35,7 +34,6 @@ export const env = createEnv({
     STRIPE_INVOICE_WEBHOOK_SECRET_DEV: z.string(),
     STRIPE_DOCTOR_SUBSCRIPTION_PRODUCT_ID_DEV: z.string(),
     STRIPE_CONSULTATION_PRICE_ID_DEV: z.string(),
-    STRIPE_PUBLISHABLE_KEY_DEV: z.string(),
     STRIPE_SECRET_KEY_DEV: z.string(),
 
     // Actual
@@ -76,7 +74,6 @@ export const env = createEnv({
     STRIPE_INVOICE_WEBHOOK_SECRET_PROD: process.env.STRIPE_INVOICE_WEBHOOK_SECRET_PROD,
     STRIPE_DOCTOR_SUBSCRIPTION_PRODUCT_ID_PROD: process.env.STRIPE_DOCTOR_SUBSCRIPTION_PRODUCT_ID_PROD,
     STRIPE_CONSULTATION_PRICE_ID_PROD: process.env.STRIPE_CONSULTATION_PRICE_ID_PROD,
-    STRIPE_PUBLISHABLE_KEY_PROD: process.env.STRIPE_PUBLISHABLE_KEY_PROD,
     STRIPE_SECRET_KEY_PROD: process.env.STRIPE_SECRET_KEY_PROD,
 
     // Development
@@ -88,7 +85,6 @@ export const env = createEnv({
     STRIPE_INVOICE_WEBHOOK_SECRET_DEV: process.env.STRIPE_INVOICE_WEBHOOK_SECRET_DEV,
     STRIPE_DOCTOR_SUBSCRIPTION_PRODUCT_ID_DEV: process.env.STRIPE_DOCTOR_SUBSCRIPTION_PRODUCT_ID_DEV,
     STRIPE_CONSULTATION_PRICE_ID_DEV: process.env.STRIPE_CONSULTATION_PRICE_ID_DEV,
-    STRIPE_PUBLISHABLE_KEY_DEV: process.env.STRIPE_PUBLISHABLE_KEY_DEV,
     STRIPE_SECRET_KEY_DEV: process.env.STRIPE_SECRET_KEY_DEV,
 
     // Actual
@@ -172,9 +168,9 @@ export function getStripeConsultationProductID() {
 }
 export function getStripePublishableKey() {
   if (process.env.NODE_ENV === "production") {
-    return env.STRIPE_PUBLISHABLE_KEY_PROD;
+    return process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY_PROD;
   } else {
-    return env.STRIPE_PUBLISHABLE_KEY_DEV;
+    return process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY_DEV;
   }
 }
 export function getStripeSecretKey() {

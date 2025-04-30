@@ -29,8 +29,13 @@ export default function DoctorLayout({
       }
       
       const doctorSubscription = await getDoctorSubscriptionDetails(doctor?.doctorId!);
-      if (doctorSubscription?.status === 'unsubscribed') {
-        router.push('/checkout/subscription');
+      if (doctorSubscription?.status === 'unsubscribed') { // if no subscription
+        if (doctorSubscription.stripeCustomerId) { // if canceled subscription
+          router.push('/checkout/billing');
+        }
+        else { // if new customer
+          router.push('/checkout/subscription');
+        }
       }
     }
 

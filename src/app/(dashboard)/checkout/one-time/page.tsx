@@ -3,7 +3,7 @@
 import { loadStripe } from '@stripe/stripe-js';
 import { getStripeConsultationProductID, getStripePublishableKey } from '~/env';
 
-const stripePromise = loadStripe(getStripePublishableKey());
+const stripePromise = loadStripe(getStripePublishableKey()!);
 
 export default function Checkout() {
   const handleCheckout = async (priceId: string) => {

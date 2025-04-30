@@ -106,7 +106,7 @@ export default function ProfileInformation() {
 
       const subscriptionData: SubscriptionsInterface = {
         userId: session?.user.id!,
-        status: isLocalHost() ? 'subscribed' : 'unsubscribed'
+        status: 'unsubscribed'
       }
 
       // API call to save profile information

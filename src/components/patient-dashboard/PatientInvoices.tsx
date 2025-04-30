@@ -9,7 +9,7 @@ interface props {
   appointmentInvoiceDict: AppointmentInvoiceDict
 }
 
-const stripePromise = loadStripe(getStripePublishableKey());
+const stripePromise = loadStripe(getStripePublishableKey()!);
 
 export default function PatientInvoices({ invoices, appointmentInvoiceDict }: props) {
   const handleCheckout = async (id: string) => {
