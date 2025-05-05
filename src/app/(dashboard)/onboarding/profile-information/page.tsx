@@ -16,7 +16,6 @@ import { calculateAge } from "~/utilities/calculateAge"
 import { addDoctorCredentialsOnboarding, addDoctorOnboarding, addDoctorSubscriptionOnboarding } from "~/app/_actions/onboarding/actions"
 import { DoctorCredentialsInterface, DoctorsInterface, SubscriptionsInterface } from "~/server/db/type"
 import { useSession } from "next-auth/react"
-import { isLocalHost } from "~/utilities/isLocalHost"
 import { useToast } from "~/app/contexts/ToastContext"
 
 export default function ProfileInformation() {

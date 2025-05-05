@@ -1,12 +1,13 @@
 "use client"
 import { loadStripe } from "@stripe/stripe-js";
+import Stripe from "stripe";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
-import { getStripeConsultationProductID, getStripePublishableKey } from "~/env";
+import { getStripeConsultationPriceID, getStripePublishableKey } from "~/env";
 import { AppointmentInvoiceDict, InvoicesInterface } from "~/server/db/type"
 
 interface props {
   invoices: InvoicesInterface[],
-  appointmentInvoiceDict: AppointmentInvoiceDict
+  appointmentInvoiceDict: AppointmentInvoiceDict,
 }
 
 const stripePromise = loadStripe(getStripePublishableKey()!);
@@ -23,7 +24,7 @@ export default function PatientInvoices({ invoices, appointmentInvoiceDict }: pr
         },
         body: JSON.stringify({
           id: id,
-          priceId: getStripeConsultationProductID()
+          priceId: getStripeConsultationPriceID()
         }),
       }).then(res => res.json());
 
@@ -60,7 +61,7 @@ export default function PatientInvoices({ invoices, appointmentInvoiceDict }: pr
               <TableCell>{new Date(appointmentInvoiceDict[invoice.id!]?.scheduledAt!).toLocaleString()}</TableCell>
               <TableCell>${invoice.hourlyRate}.00</TableCell>
               <TableCell>~60 min</TableCell>
-              <TableCell>${process.env.NEXT_PUBLIC_HOURLY_RATE}.00</TableCell>
+              <TableCell>${invoice.hourlyRate}.00</TableCell>
               <TableCell className="capitalize">{invoice.status}</TableCell>
             </TableRow>
           ))}

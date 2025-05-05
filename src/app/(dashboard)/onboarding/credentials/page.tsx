@@ -84,6 +84,7 @@ export default function CredentialsSubmission() {
     toast({
       title: "Section Completed",
       description: `${section.charAt(0).toUpperCase() + section.slice(1)} information saved successfully.`,
+      variant: 'success'
     })
 
     // Move to next tab if available
@@ -95,6 +96,7 @@ export default function CredentialsSubmission() {
       toast({
         title: "All Credentials Submitted",
         description: "Thank you for completing the credential submission process.",
+        variant: 'success'
       })
     } else if (currentIndex < sections.length - 2) {
       // -2 to skip confirmation until all others are done
