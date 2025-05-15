@@ -1,7 +1,5 @@
-import Stripe from "stripe";
 import { NextResponse } from "next/server";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+import { stripe } from '~/utilities/stripe';
 
 export async function POST(request: Request) {
   const { priceId } = await request.json();

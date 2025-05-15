@@ -30,7 +30,7 @@ export default function DoctorApprovalPage({ id, dict, data }: props) {
 
   const handleApprove = async () => {
 
-    await updateDoctorOnboardingStatus('approved').then(
+    await updateDoctorOnboardingStatus('approved', id).then(
       () => setTimeout(() => {
       router.push("/dashboard/admin")
     }, 500))
@@ -38,7 +38,7 @@ export default function DoctorApprovalPage({ id, dict, data }: props) {
 
   const handleReject = async () => {
 
-    await updateDoctorOnboardingStatus('rejected').then(
+    await updateDoctorOnboardingStatus('rejected', id).then(
       () => setTimeout(() => {
       router.push("/dashboard/admin")
     }, 500))

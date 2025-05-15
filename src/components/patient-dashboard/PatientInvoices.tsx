@@ -1,20 +1,33 @@
 "use client"
+
 import { loadStripe } from "@stripe/stripe-js";
+import { useToast } from "~/app/contexts/ToastContext";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
+import { getStripeConsultationPriceID, getStripePublishableKey, isStripeDisabled } from "~/env";
 import { AppointmentInvoiceDict, InvoicesInterface } from "~/server/db/type"
 
 interface props {
   invoices: InvoicesInterface[],
-  appointmentInvoiceDict: AppointmentInvoiceDict
+  appointmentInvoiceDict: AppointmentInvoiceDict,
 }
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
-const priceId = 'price_1QnrfxDOGzHyZjJng2sXhkSq';
+const stripePromise = loadStripe(getStripePublishableKey()!);
 
 export default function PatientInvoices({ invoices, appointmentInvoiceDict }: props) {
+  const { toast } = useToast()
+
   const handleCheckout = async (id: string) => {
+    if (isStripeDisabled()) {
+      toast({
+        title: "Payment is currently disabled.",
+        description: "We apologize for any inconviences.",
+        variant: 'destructive'
+      })
+      return;
+    }
+
     const stripe = await stripePromise;
-    
+
     try {
       const { sessionId } = await fetch('/api/stripe/create-checkout-sessions/invoice', {
         method: 'POST',
@@ -23,7 +36,7 @@ export default function PatientInvoices({ invoices, appointmentInvoiceDict }: pr
         },
         body: JSON.stringify({
           id: id,
-          priceId: priceId
+          priceId: getStripeConsultationPriceID()
         }),
       }).then(res => res.json());
 
@@ -60,7 +73,7 @@ export default function PatientInvoices({ invoices, appointmentInvoiceDict }: pr
               <TableCell>{new Date(appointmentInvoiceDict[invoice.id!]?.scheduledAt!).toLocaleString()}</TableCell>
               <TableCell>${invoice.hourlyRate}.00</TableCell>
               <TableCell>~60 min</TableCell>
-              <TableCell>${process.env.NEXT_PUBLIC_HOURLY_RATE}.00</TableCell>
+              <TableCell>${invoice.hourlyRate}.00</TableCell>
               <TableCell className="capitalize">{invoice.status}</TableCell>
             </TableRow>
           ))}

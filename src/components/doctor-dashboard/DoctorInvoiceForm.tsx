@@ -10,7 +10,9 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select"
 import type { InvoicesInterface, PatientDict, PatientsInterface } from "~/server/db/type"
+import { useToast } from "~/app/contexts/ToastContext"
 import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
 
 const invoiceFormSchema = z.object({
   patientId: z.string({
@@ -27,12 +29,15 @@ type InvoiceFormValues = z.infer<typeof invoiceFormSchema>
 interface Props {
   patients: PatientsInterface[]
   patientDict: PatientDict
+  price: string
 }
 
-export default function InvoiceForm({ patients, patientDict }: Props) {
+export default function CreateInvoiceForm({ patients, patientDict, price }: Props) {
+  const { toast } = useToast()
   const { data: session } = useSession();
   const [isSaving, setIsSaving] = useState(false);
   const [selectedPatientId, setSelectedPatientId] = useState('');
+  const router = useRouter()
 
   const form = useForm<InvoiceFormValues>({
     resolver: zodResolver(invoiceFormSchema),
@@ -50,7 +55,7 @@ export default function InvoiceForm({ patients, patientDict }: Props) {
         patientId: data.patientId,
         doctorId: session?.user.id!,
         appointmentId: data.appointmentId,
-        hourlyRate: process.env.NEXT_PUBLIC_HOURLY_RATE!,
+        hourlyRate: String(Number(price) / 100),
         notes: data.notes,
       }
 
@@ -64,8 +69,15 @@ export default function InvoiceForm({ patients, patientDict }: Props) {
         throw new Error("Failed to create invoice")
       }
 
-      console.log("Patient invoice created successfully")
-      form.reset() // Reset form after successful submission
+      // console.log("Patient invoice created successfully")
+      // form.reset() // Reset form after successful submission
+
+
+      toast({
+        title: "Patient invoice created successfully",
+        variant: "success",
+      })
+      router.push('/dashboard/doctor/invoices');
     } catch (error) {
       console.error("Failed to create patient invoice:", error)
     } finally {
@@ -134,11 +146,11 @@ export default function InvoiceForm({ patients, patientDict }: Props) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {patientId && patientDict[patientId]?.appointments.map((appointment) => (
+                        {patientId && patientDict[patientId]?.appointments
+                          .filter(appointment => appointment.status === 'Completed')
+                          .map((appointment) => (
                           <SelectItem key={appointment.id} value={appointment.id!}>
-                            {`${new Date(appointment.scheduledAt).toLocaleString()} ${
-                              appointment.status === 'Completed' ? '(Completed)' : ''
-                            }`}
+                            {`${new Date(appointment.scheduledAt).toLocaleString()}`}
                           </SelectItem>
                         ))}
                       </SelectContent>

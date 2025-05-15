@@ -44,7 +44,7 @@ export function NPICredentialView({ data }: NPICredentialViewProps) {
                     <FileText className="h-10 w-10 text-muted-foreground" />
                     <div className="text-center">
                       <p className="font-medium text-sm">{typeof data.file === 'string' ? data.file : ''}</p>
-                      <Button variant="secondary" size="sm" className="mt-2">
+                      <Button variant="secondary" size="sm" className="mt-2" onClick={() => console.log(data)}>
                         View Document
                       </Button>
                     </div>
@@ -56,9 +56,7 @@ export function NPICredentialView({ data }: NPICredentialViewProps) {
                   <DialogTitle>NPI Document</DialogTitle>
                 </DialogHeader>
                 <div className="relative h-[70vh] w-full bg-muted rounded-md overflow-hidden">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <FileViewer fileUrl={data.fileUrl!} />
-                  </div>
+                  <FileViewer fileUrl={data.fileUrl!} />
                 </div>
               </DialogContent>
             </Dialog>

@@ -5,6 +5,7 @@ import { Button } from "~/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~/components/ui/card"
 import { loadStripe } from '@stripe/stripe-js';
 import Loading from "../loading/page";
+import { getStripePublishableKey } from "~/env";
 
 // Define types for your plans
 export interface Plan {
@@ -17,8 +18,7 @@ export interface Plan {
   features: string[]
 }
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
-
+const stripePromise = loadStripe(getStripePublishableKey()!);
 
 export default function SubscriptionPlans() {
   const [loading, setLoading] = useState<boolean>(false)
@@ -54,7 +54,7 @@ export default function SubscriptionPlans() {
     }
   };
 
-  if (plans.length === 0) {
+  if (plans.length < 1) {
     return <Loading />
   }
 
@@ -63,11 +63,11 @@ export default function SubscriptionPlans() {
       {plans.map((plan) => (
         <Card key={plan.id} className="w-full">
           <CardHeader>
-            <CardTitle className="text-xl">
+            <CardTitle className="text-xl mb-2">
               {plan.name}
             </CardTitle>
             <CardDescription>
-              <span className="text-6xl">
+              <span className="text-6xl font-light">
                 ${plan.price / 100}
               </span> / month
               </CardDescription>

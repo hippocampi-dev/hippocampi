@@ -4,26 +4,12 @@ import { Button } from "~/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card"
 
 import { useState } from 'react';
-import { isStripeDisabled } from "~/env";
-import { useToast } from "~/app/contexts/ToastContext";
 
 export default function Billing() {
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast()
 
   const handleManageSubscription = async () => {
     setIsLoading(true);
-
-    if (isStripeDisabled()) {
-      toast({
-        title: "Payment is currently disabled.",
-        description: "We apologize for any inconviences.",
-        variant: 'destructive'
-      })
-      setIsLoading(false);
-      return;
-    }
-
     try {
       const response = await fetch('/api/stripe/create-portal-session', {
         method: 'POST',

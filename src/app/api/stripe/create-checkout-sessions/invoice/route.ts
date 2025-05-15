@@ -1,7 +1,5 @@
-import Stripe from "stripe";
+import { stripe } from '~/utilities/stripe';
 import { NextResponse } from "next/server";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(request: Request) {
   const body = await request.json(); // id of invoice obj from db

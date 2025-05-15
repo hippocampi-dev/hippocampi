@@ -1,9 +1,15 @@
+// webhook for testing
+// stripe login
+// stripe listen --forward-to localhost:3000/api/stripe/webhook/invoice
+// stripe trigger payment_intent.succeeded
+
 import { stripe } from "~/utilities/stripe";
 import Stripe from "stripe";
 import { NextResponse, NextRequest } from "next/server";
 import { getTargetInvoice, setInvoice } from "~/server/db/queries";
 import { InvoicesInterface } from "~/server/db/type";
 import { headers } from "next/headers";
+import { getStripeInvoiceWebhookSecret } from "~/env";
 
 export async function POST(request: NextRequest) {
   let event: Stripe.Event;
@@ -13,7 +19,7 @@ export async function POST(request: NextRequest) {
     event = stripe.webhooks.constructEvent(
       await request.text(),
       stripeSignature as string,
-      process.env.STRIPE_INVOICE_WEBHOOK_SECRET as string
+      getStripeInvoiceWebhookSecret()
     );
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
@@ -28,7 +34,6 @@ export async function POST(request: NextRequest) {
 
   const permittedEvents: string[] = [
     'checkout.session.completed',
-    'payment.'
   ];
 
   let data;
@@ -73,8 +78,3 @@ export async function OPTIONS() {
     },
   });
 }
-
-// webhook for testing
-// stripe login
-// stripe listen --forward-to localhost:3000/api/stripe/webhook/invoice
-// stripe trigger payment_intent.succeeded

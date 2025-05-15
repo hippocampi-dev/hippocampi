@@ -13,9 +13,33 @@ export const env = createEnv({
         : z.string().optional(),
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
-    DATABASE_URL_PRODUCTION: z.string().url(),
-    DATABASE_URL_PREVIEW: z.string().url(),
-    DATABASE_URL: z.string().url().optional(),
+
+    // Production
+    DATABASE_URL_PROD: z.string().url(),
+    SUPABASE_PROJECT_URL_PROD: z.string().url(),
+    SUPABASE_API_KEY_PROD: z.string(),
+    SUPABASE_SERVICE_KEY_PROD: z.string(),
+    STRIPE_SUBSCRIPTION_WEBHOOK_SECRET_PROD: z.string(),
+    STRIPE_INVOICE_WEBHOOK_SECRET_PROD: z.string(),
+    STRIPE_DOCTOR_SUBSCRIPTION_PRODUCT_ID_PROD: z.string(),
+    STRIPE_SECRET_KEY_PROD: z.string(),
+    
+    // Development
+    DATABASE_URL_DEV: z.string().url(),
+    SUPABASE_PROJECT_URL_DEV: z.string().url(),
+    SUPABASE_API_KEY_DEV: z.string(),
+    SUPABASE_SERVICE_KEY_DEV: z.string(),
+    STRIPE_SUBSCRIPTION_WEBHOOK_SECRET_DEV: z.string(),
+    STRIPE_INVOICE_WEBHOOK_SECRET_DEV: z.string(),
+    STRIPE_DOCTOR_SUBSCRIPTION_PRODUCT_ID_DEV: z.string(),
+    STRIPE_SECRET_KEY_DEV: z.string(),
+
+    // Actual
+    // DATABASE_URL: z.string().url().optional(),
+    // SUPABASE_PROJECT_URL: z.string().url().optional(),
+    // SUPABASE_API_KEY: z.string().optional(),
+    // SUPABASE_SERVICE_KEY: z.string().optional(),
+
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -38,9 +62,33 @@ export const env = createEnv({
     AUTH_SECRET: process.env.AUTH_SECRET,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-    DATABASE_URL_PRODUCTION: process.env.DATABASE_URL_PRODUCTION,
-    DATABASE_URL_PREVIEW: process.env.DATABASE_URL_PREVIEW,
-    DATABASE_URL: process.env.DATABASE_URL,
+
+    // Production
+    DATABASE_URL_PROD: process.env.DATABASE_URL_PROD,
+    SUPABASE_PROJECT_URL_PROD: process.env.SUPABASE_PROJECT_URL_PROD,
+    SUPABASE_API_KEY_PROD: process.env.SUPABASE_API_KEY_PROD,
+    SUPABASE_SERVICE_KEY_PROD: process.env.SUPABASE_SERVICE_KEY_PROD,
+    STRIPE_SUBSCRIPTION_WEBHOOK_SECRET_PROD: process.env.STRIPE_SUBSCRIPTION_WEBHOOK_SECRET_PROD,
+    STRIPE_INVOICE_WEBHOOK_SECRET_PROD: process.env.STRIPE_INVOICE_WEBHOOK_SECRET_PROD,
+    STRIPE_DOCTOR_SUBSCRIPTION_PRODUCT_ID_PROD: process.env.STRIPE_DOCTOR_SUBSCRIPTION_PRODUCT_ID_PROD,
+    STRIPE_SECRET_KEY_PROD: process.env.STRIPE_SECRET_KEY_PROD,
+
+    // Development
+    DATABASE_URL_DEV: process.env.DATABASE_URL_DEV,
+    SUPABASE_PROJECT_URL_DEV: process.env.SUPABASE_PROJECT_URL_DEV,
+    SUPABASE_API_KEY_DEV: process.env.SUPABASE_API_KEY_DEV,
+    SUPABASE_SERVICE_KEY_DEV: process.env.SUPABASE_SERVICE_KEY_DEV,
+    STRIPE_SUBSCRIPTION_WEBHOOK_SECRET_DEV: process.env.STRIPE_SUBSCRIPTION_WEBHOOK_SECRET_DEV,
+    STRIPE_INVOICE_WEBHOOK_SECRET_DEV: process.env.STRIPE_INVOICE_WEBHOOK_SECRET_DEV,
+    STRIPE_DOCTOR_SUBSCRIPTION_PRODUCT_ID_DEV: process.env.STRIPE_DOCTOR_SUBSCRIPTION_PRODUCT_ID_DEV,
+    STRIPE_SECRET_KEY_DEV: process.env.STRIPE_SECRET_KEY_DEV,
+
+    // Actual
+    // DATABASE_URL: process.env.DATABASE_URL,
+    // SUPABASE_PROJECT_URL: process.env.SUPABASE_PROJECT_URL,
+    // SUPABASE_API_KEY: process.env.SUPABASE_API_KEY,
+    // SUPABASE_SERVICE_KEY: process.env.SUPABASE_SERVICE_KEY,
+
     NODE_ENV: process.env.NODE_ENV,
   },
   /**
@@ -57,12 +105,83 @@ export const env = createEnv({
 
 // Helper function to get the appropriate database URL based on environment
 export function getDatabaseUrl() {
-  console.log(env.DATABASE_URL_PREVIEW)
   if (process.env.NODE_ENV === "production") {
-    // console.log('using production db url')
-    return env.DATABASE_URL_PRODUCTION;
+    return env.DATABASE_URL_PROD;
   } else {
-    // console.log('using preview db url')
-    return env.DATABASE_URL_PREVIEW;
+    return env.DATABASE_URL_DEV;
   }
+}
+
+export function getSupabaseProjectUrl() {
+  if (process.env.NODE_ENV === "production") {
+    return env.SUPABASE_PROJECT_URL_PROD;
+  } else {
+    return env.SUPABASE_PROJECT_URL_DEV;
+  }
+}
+export function getSupabaseApiKey() {
+  if (process.env.NODE_ENV === "production") {
+    return env.SUPABASE_API_KEY_PROD;
+  } else {
+    return env.SUPABASE_API_KEY_DEV;
+  }
+}
+export function getSupabaseServiceKey() {
+  if (process.env.NODE_ENV === "production") {
+    return env.SUPABASE_SERVICE_KEY_PROD;
+  } else {
+    return env.SUPABASE_SERVICE_KEY_DEV;
+  }
+}
+
+export function getStripeSubscriptionWebhookSecret() {
+  if (process.env.NODE_ENV === "production") {
+    return env.STRIPE_SUBSCRIPTION_WEBHOOK_SECRET_PROD;
+  } else {
+    return env.STRIPE_SUBSCRIPTION_WEBHOOK_SECRET_DEV;
+  }
+}
+export function getStripeInvoiceWebhookSecret() {
+  if (process.env.NODE_ENV === "production") {
+    return env.STRIPE_INVOICE_WEBHOOK_SECRET_PROD;
+  } else {
+    return env.STRIPE_INVOICE_WEBHOOK_SECRET_DEV;
+  }
+}
+export function getStripeDoctorSubscriptionProductId() {
+  if (process.env.NODE_ENV === "production") {
+    return env.STRIPE_DOCTOR_SUBSCRIPTION_PRODUCT_ID_PROD;
+  } else {
+    return env.STRIPE_DOCTOR_SUBSCRIPTION_PRODUCT_ID_DEV;
+  }
+}
+export function getStripeConsultationPriceID() {
+  if (process.env.NODE_ENV === "production") {
+    return process.env.NEXT_PUBLIC_STRIPE_CONSULTATION_PRICE_ID_PROD;
+  } else {
+    return process.env.NEXT_PUBLIC_STRIPE_CONSULTATION_PRICE_ID_DEV;
+  }
+}
+export function getStripePublishableKey() {
+  if (process.env.NODE_ENV === "production") {
+    return process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY_PROD;
+  } else {
+    return process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY_DEV;
+  }
+}
+export function getStripeSecretKey() {
+  if (process.env.NODE_ENV === "production") {
+    return env.STRIPE_SECRET_KEY_PROD;
+  } else {
+    return env.STRIPE_SECRET_KEY_DEV;
+  }
+}
+
+// tests and checks
+export function isStripeDisabled() {
+  return true;
+}
+
+export function isTesting() {
+  return true;
 }

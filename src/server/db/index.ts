@@ -25,7 +25,7 @@ export const conn = globalForDb.conn ?? postgres(connectionString,
   {
     prepare: false,
     ssl: {
-      rejectUnauthorized: true
+      rejectUnauthorized: false
     },
     // Adjust connection pool settings based on environment
     max: env.NODE_ENV === "production" ? 3 : 1,

@@ -6,6 +6,11 @@ import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
 const config = {
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '2mb',
+    },
+  },
   eslint: {
     ignoreDuringBuilds: true
   },
@@ -19,7 +24,7 @@ const config = {
   //   return config;
   // },
   images: {
-    domains: ['images.unsplash.com'],
+    domains: ['images.unsplash.com', 'rlurtkitmuskcxsokskb.supabase.co', 'jbntzomzylpmbukwqrds.supabase.co'],
     remotePatterns: [
       {
         protocol: 'https',

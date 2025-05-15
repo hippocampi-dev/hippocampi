@@ -25,7 +25,7 @@ function AuthErrorMessage() {
           <p className="mt-2 text-center text-sm text-gray-600">{error || "An error occurred during authentication"}</p>
         </div>
         <div className="mt-6">
-          <Link href="/auth/signin">
+          <Link href="/auth/login">
             <Button className="w-full">Back to Sign In</Button>
           </Link>
         </div>

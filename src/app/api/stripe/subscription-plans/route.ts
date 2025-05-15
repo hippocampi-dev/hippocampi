@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server';
-import Stripe from 'stripe';
 import { Plan } from '~/components/subscription-plans/SubscriptionPlans';
+import { getStripeDoctorSubscriptionProductId } from '~/env';
 import { getUserRole } from '~/server/db/queries';
 import { getUserId } from '~/utilities/getUser';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+import { stripe } from '~/utilities/stripe';
 
 // Define feature arrays at the top level
 const featuresPatient = [
@@ -25,9 +24,7 @@ export async function GET() {
     const userRole = await getUserRole(userId);
     
     // Determine product ID based on role
-    const productId = userRole?.userRole === 'doctor'
-      ? 'prod_RhGDXvJrHUDpcj'
-      : 'prod_Rp2PpooYhjF3rK';
+    const productId = getStripeDoctorSubscriptionProductId();
       
     const features = userRole?.userRole === 'doctor' ? featuresDoctors : featuresPatient;
     // console.log(productId)

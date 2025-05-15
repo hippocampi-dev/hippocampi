@@ -32,16 +32,6 @@ export default function Dashboard() {
           if (!doctor) {
             router.push('/middle'); // redirect to doctor signup form
           }
-          
-          const subscription = await fetch('/api/db/management/subscription/get')
-            .then(r => r.json())
-            .then(r => r.response);
-          // console.log(subscription.status === 'unsubscribed');
-          
-          if (subscription.status === 'unsubscribed') { // redirect to subscription
-            router.push('/checkout/subscription');
-            return;
-          }
 
           router.push('/dashboard/doctor');
         } else if (role === 'patient') {

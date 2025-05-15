@@ -81,7 +81,7 @@ export default function OnboardingStart() {
             <div className="space-y-4 rounded-md border p-4">
               <div className="text-sm font-medium">Verbal Agreement</div>
               <div className="text-sm text-muted-foreground">
-                <p>By checking the box below, you acknowledge that:</p>
+                <p className="text-sm">By checking the box below, you acknowledge that:</p>
                 <ul className="list-disc pl-5 pt-2 space-y-1">
                   <li>You have been contacted by our team and verbally agreed to join our network</li>
                   <li>You understand the onboarding timeline of approximately 2-4 weeks</li>
