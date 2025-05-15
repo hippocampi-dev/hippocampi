@@ -16,21 +16,22 @@ export async function uploadCredentialsFile(
 }
 
 // doctors/~doctorId/patients/~patientId/appointments/~appointmentId/~notes.pdf
-// export async function uploadAppointmentNotesFile(
-//   doctorId: string,
-//   patientId: string,
-//   appointmentId: string,
-//   file: File,
-// ) {
-//   const blob = await put(`doctors/${doctorId}/patients/${patientId}/appointments/${appointmentId}/${file.name}`, file, {
-//     access: 'public',
-//     addRandomSuffix: false
-//   });
+export async function uploadAppointmentNotesFile(
+  doctorId: string,
+  patientId: string,
+  appointmentId: string,
+  file: File,
+) {
+  return {}
+  // const blob = await put(`doctors/${doctorId}/patients/${patientId}/appointments/${appointmentId}/${file.name}`, file, {
+  //   access: 'public',
+  //   addRandomSuffix: false
+  // });
 
-//   const response = await uploadAppointmentNotesUrl(appointmentId, blob.url);
+  // const response = await uploadAppointmentNotesUrl(appointmentId, blob.url);
 
-//   return blob; // assume const blob = await uploadAppointmentNotesFile(params), call blob.url to get url to blob db
-// }
+  // return blob; // assume const blob = await uploadAppointmentNotesFile(params), call blob.url to get url to blob db
+}
 
 async function uploadFile(
   bucketName: string,

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic"
+
 import { Suspense } from "react";
 import UpcomingDoctorAppointments from "~/components/doctor-dashboard/DoctorAppointments";
 import PreviousDoctorAppointments from "~/components/doctor-dashboard/PreviousDoctorAppointments";
