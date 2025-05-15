@@ -1,8 +1,9 @@
 "use client"
+
 import { loadStripe } from "@stripe/stripe-js";
-import Stripe from "stripe";
+import { useToast } from "~/app/contexts/ToastContext";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
-import { getStripeConsultationPriceID, getStripePublishableKey } from "~/env";
+import { getStripeConsultationPriceID, getStripePublishableKey, isStripeDisabled } from "~/env";
 import { AppointmentInvoiceDict, InvoicesInterface } from "~/server/db/type"
 
 interface props {
@@ -13,9 +14,20 @@ interface props {
 const stripePromise = loadStripe(getStripePublishableKey()!);
 
 export default function PatientInvoices({ invoices, appointmentInvoiceDict }: props) {
+  const { toast } = useToast()
+
   const handleCheckout = async (id: string) => {
+    if (isStripeDisabled()) {
+      toast({
+        title: "Payment is currently disabled.",
+        description: "We apologize for any inconviences.",
+        variant: 'destructive'
+      })
+      return;
+    }
+
     const stripe = await stripePromise;
-    
+
     try {
       const { sessionId } = await fetch('/api/stripe/create-checkout-sessions/invoice', {
         method: 'POST',

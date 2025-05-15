@@ -176,3 +176,12 @@ export function getStripeSecretKey() {
     return env.STRIPE_SECRET_KEY_DEV;
   }
 }
+
+// tests and checks
+export function isStripeDisabled() {
+  return true;
+}
+
+export function isTesting() {
+  return true;
+}
