@@ -39,6 +39,12 @@ export function Header() {
             >
               Providers
             </Link>
+            <Link
+              href="/blogs"
+              className="text-gray-700 transition duration-300 hover:text-primary"
+            >
+              Blogs
+            </Link>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <span className="text-gray-700 transition-colors hover:text-primary cursor-pointer text-lg">

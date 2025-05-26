@@ -83,7 +83,7 @@ const teamMembers = [
   {
     name: "Kenan Blair",
     title: "Chief Technology Officer",
-    university: "Purdue University",
+    university: "UC San Diego, Artificial Intelligence",
     experience: "Computational Neuroscience @ UCLA",
   },
   {

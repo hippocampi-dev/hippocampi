@@ -217,3 +217,142 @@
 p, a {
   font-size: 18px;
 }
+
+/* Markdown Content Styling */
+.markdown-content {
+  /* Base styling */
+  font-size: 1.125rem;
+  line-height: 1.75;
+  color: #374151;
+  
+  /* Headings */
+  & h1, & h2, & h3, & h4, & h5, & h6 {
+    font-weight: 600;
+    margin-top: 2em;
+    margin-bottom: 1em;
+    line-height: 1.25;
+  }
+  
+  & h1 {
+    font-size: 2.25rem;
+  }
+  
+  & h2 {
+    font-size: 1.875rem;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+  }
+  
+  & h3 {
+    font-size: 1.5rem;
+  }
+  
+  & h4 {
+    font-size: 1.25rem;
+  }
+  
+  /* Lists */
+  & ul, & ol {
+    padding-left: 2rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  & ul {
+    list-style-type: disc;
+  }
+  
+  & ol {
+    list-style-type: decimal;
+  }
+  
+  & li {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Links */
+  & a {
+    color: #2563eb;
+    text-decoration: underline;
+  }
+  
+  & a:hover {
+    text-decoration: none;
+  }
+  
+  /* Blockquotes */
+  & blockquote {
+    border-left: 4px solid #e5e7eb;
+    padding-left: 1rem;
+    margin-left: 0;
+    margin-right: 0;
+    font-style: italic;
+    color: #6b7280;
+  }
+  
+  /* Code */
+  & code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.875em;
+    background-color: #f3f4f6;
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+  }
+  
+  & pre {
+    background-color: #f3f4f6;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  & pre code {
+    background-color: transparent;
+    padding: 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+  
+  /* Tables */
+  & table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  & thead {
+    background-color: #f3f4f6;
+  }
+  
+  & th, & td {
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    text-align: left;
+  }
+  
+  /* Images */
+  & img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Horizontal rule */
+  & hr {
+    border: 0;
+    border-top: 1px solid #e5e7eb;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  /* Task lists */
+  & input[type="checkbox"] {
+    margin-right: 0.5rem;
+  }
+}

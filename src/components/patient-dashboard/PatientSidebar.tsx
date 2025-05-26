@@ -88,6 +88,14 @@ export function PatientDashboardSidebar() {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Link href="/dashboard/patient/ckc">
+                <Bot className="mr-2 h-4 w-4" />
+                <span>Curated Knowledge Center</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="px-4">

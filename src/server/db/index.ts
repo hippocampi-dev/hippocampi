@@ -7,6 +7,7 @@ import * as schema_doctor from './schema/doctor';
 import * as schema_management from './schema/management';
 import * as schema_patient from './schema/patient';
 import * as schema_message from './schema/message';
+import * as schema_cms from './schema/cms';
 
 /**
  * Cache the database connection in development. This avoids creating a new connection on every HMR
@@ -25,7 +26,7 @@ export const conn = globalForDb.conn ?? postgres(connectionString,
   {
     prepare: false,
     ssl: {
-      rejectUnauthorized: false
+      rejectUnauthorized: true
     },
     // Adjust connection pool settings based on environment
     max: env.NODE_ENV === "production" ? 3 : 1,
@@ -42,7 +43,8 @@ const schema = {
   ...schema_doctor, 
   ...schema_management, 
   ...schema_patient, 
-  ...schema_message 
+  ...schema_message,
+  ...schema_cms,
 };
 
 // Create and export the Drizzle ORM instance

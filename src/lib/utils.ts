@@ -88,6 +88,17 @@ export function formatTimeWithAMPM(time: string): string {
   return `${formattedHours}:${formattedMinutes} ${period}`;
 }
 
+/**
+ * Format a date for display in blog posts
+ */
+export function formatDate(date: Date): string {
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    day: 'numeric', 
+    year: 'numeric'
+  }).format(new Date(date));
+}
+
 export const availabilitySchema = z
   .object({
     day: z.enum(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], {
