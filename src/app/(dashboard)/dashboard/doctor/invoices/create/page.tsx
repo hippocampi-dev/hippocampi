@@ -21,7 +21,7 @@ async function CreateInvoiceContainer() {
   const patients = await getPatients(doctorId);
   const patientDict = await getPatientDict(doctorId);
 
-  const price = await stripe.prices.retrieve(getStripeConsultationPriceID());
+  const price = await stripe.prices.retrieve(getStripeConsultationPriceID()!);
 
   return (
     <CreateInvoiceForm

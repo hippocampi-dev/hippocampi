@@ -1,10 +1,10 @@
 'use server'
 
 import { CredentialsInterface } from "~/app/(dashboard)/onboarding/credentials/page";
-import { auth } from "~/server/auth"
 import { addDoctor, addDoctorCredentials, addDoctorSubscription, getDoctor, setDoctor, setDoctorCredentialLinks } from "~/server/db/queries"
 import { DoctorCredentialsInterface, DoctorsInterface, SubscriptionsInterface } from "~/server/db/type";
 import { uploadCredentialsFile } from "../upload/actions";
+import { isTesting } from "~/env";
 
 export async function updateDoctorOnboardingStatus(
   status: 'not-started' | 'profile' | 'credentials' | 'pending' | 'approved' | 'rejected',
@@ -37,7 +37,7 @@ export async function addDoctorCredentialLinksOnboarding(id: string, credentials
 
   if (returnedCredentials) {
     // update doctor onboarding status
-    await updateDoctorOnboardingStatus('pending', id);
+    await updateDoctorOnboardingStatus(isTesting() ? 'approved' : 'pending', id);
   }
 
   return returnedCredentials;

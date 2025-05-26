@@ -1,10 +1,10 @@
+export const dynamic = "force-dynamic"
+
 import { redirect } from "next/navigation";
-import { Button } from "~/components/ui/button";
 import { getDoctorAvailabilities, formatTimeWithAMPM } from "~/server/db/queries";
 import { getUserId } from "~/utilities/getUser";
 import { AddAvailability } from "./AddAvailability";
 import { DeleteAvailability } from "~/app/(dashboard)/dashboard/doctor/schedule/DeleteAvailability";
-import { X } from "lucide-react";
 import { DAYS } from "~/lib/utils";
 
 // Days of the week starting from Monday

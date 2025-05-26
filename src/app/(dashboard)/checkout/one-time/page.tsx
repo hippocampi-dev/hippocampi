@@ -1,7 +1,7 @@
 'use client'
 
 import { loadStripe } from '@stripe/stripe-js';
-import { getStripeConsultationProductID, getStripePublishableKey } from '~/env';
+import { getStripeConsultationPriceID, getStripePublishableKey } from '~/env';
 
 const stripePromise = loadStripe(getStripePublishableKey()!);
 
@@ -31,7 +31,7 @@ export default function Checkout() {
   return (
     <div>
       <h1>Stripe Checkout (One-time)</h1>
-      <button onClick={() => handleCheckout(getStripeConsultationProductID())}>Checkout</button>
+      <button onClick={() => handleCheckout(getStripeConsultationPriceID()!)}>Checkout</button>
     </div>
   );
 }
