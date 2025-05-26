@@ -53,6 +53,7 @@ const config = {
       'cdn.sanity.io',
       'cdn.contentful.com',
       'images.ctfassets.net', // Contentful
+      "cdn.pixabay.com",
     ],
     remotePatterns: [
       {

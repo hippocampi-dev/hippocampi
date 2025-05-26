@@ -32,20 +32,49 @@ import {
   MessagesSquare,
   ReceiptText,
   Calendar1,
+  PanelRight,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
+import { cn } from "~/lib/utils";
 
-export function PatientDashboardSidebar() {
+
+
+export const SidebarContext = React.createContext({ 
+  isExpanded: true, 
+  toggleSidebar: () => {} 
+});
+
+export function PatientDashboardSidebar({ 
+  isExpanded, 
+  onToggle 
+}: { 
+  isExpanded: boolean;
+  onToggle: () => void;
+}) {
   const { data: session } = useSession();
-
+  
   return (
-    <Sidebar className="w-64">
+    <Sidebar className={cn('border-r transition-all duration-300 ease-in-out', 
+                        isExpanded ? 'w-64' : 'w-0', 
+                        'flex h-full')}>
       <SidebarHeader>
-        <h2 className="px-4 pt-2 text-xl font-bold">{`${session?.user.name}`}</h2>
+        <div className="flex justify-between items-center">
+          <h2 className={cn(isExpanded ? '' : 'hidden', "px-4 pt-2 text-xl font-bold")}>
+            {`${session?.user?.name}`}
+          </h2>
+          <button onClick={onToggle} className="px-4 pt-2">
+            {isExpanded ? 
+              <PanelLeftClose className="h-6 w-6 transition-transform duration-300" /> : 
+              <PanelLeftOpen className="h-6 w-6 transition-transform duration-300" />
+            }
+          </button>
+        </div>
       </SidebarHeader>
-      <SidebarContent className="px-4">
+      <SidebarContent className = "">
         <SidebarMenu>
           <SidebarSeparator />
           <SidebarMenuItem>
@@ -98,7 +127,7 @@ export function PatientDashboardSidebar() {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="px-4">
+      <SidebarFooter className= "px-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton>
@@ -134,5 +163,8 @@ export function PatientDashboardSidebar() {
         </DropdownMenu>
       </SidebarFooter>
     </Sidebar>
+
   )
 }
+
+export const useSidebar = () => React.useContext(SidebarContext);

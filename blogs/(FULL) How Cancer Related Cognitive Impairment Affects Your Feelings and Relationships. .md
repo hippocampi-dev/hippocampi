@@ -1,6 +1,6 @@
 
 
-## **II. Relationships and Communication: Fostering Connection Amidst Cognitive Change**
+## **I. Relationships and Communication: Fostering Connection Amidst Cognitive Change**
 
 The advent of CRCI can profoundly disrupt an individual's personal relationships, leading patients to experience a disorienting sense of "not feeling like themselves".1 The core cognitive challenges inherent to CRCI, such as difficulties in word-finding, forming coherent thoughts, and clearly expressing oneself, directly impede effective communication.2 These communication breakdowns, characterized by misunderstandings, impaired listening, or unexpressed feelings, can generate tension, resentment, and emotional distance across all relationship types—be they romantic, familial, or platonic.5 This often results in unmet expectations or feelings of neglect among loved ones.5 The emotional burden stemming from such communication difficulties can be substantial, precipitating feelings of frustration, anxiety, depression, and social isolation.5
 
@@ -43,7 +43,7 @@ Bringing a trusted friend or family member to medical appointments is highly rec
 
 A fundamental challenge arises from the inherent paradox of CRCI: the very cognitive impairment that patients experience, particularly difficulties with communication such as word-finding trouble and forming thoughts, can hinder their ability to explicitly seek the support they need.1 Despite the clear recommendation to "ask for help" and "tell others what is happening" 6, the impairment itself can make this difficult. This highlights the critical necessity for proactive, rather than reactive, support from loved ones and healthcare providers. They should be equipped to *initiate* conversations about cognitive changes and offer assistance without waiting for the patient to explicitly ask. This also underscores the importance of developing simple, direct communication strategies and tools—such as symptom diaries, pre-written explanations, or visual cues—that can help patients overcome this inherent barrier and effectively convey their needs, even when verbal articulation is challenging.
 
-## **III. Coping with Emotional Distress: Addressing the Psychological Toll**
+## **II. Coping with Emotional Distress: Addressing the Psychological Toll**
 
 The psychological impact of CRCI is profound and multifaceted, encompassing a range of distressing emotions. Patients frequently report feelings of frustration, anxiety, depression, and a deep sense of not feeling like their former selves.1 This can manifest as fear, increased dependency on others, and pervasive emotional exhaustion.29 The inability to perform tasks that were once effortless, such as remembering specific details or efficiently multitasking, can lead to significant self-doubt and heightened emotional distress.27
 
@@ -93,7 +93,7 @@ Several types of professionals can provide specialized support:
 
 **Support groups** offer a vital avenue for emotional and social support. These groups, available both in-person and online, connect patients and caregivers with others who share similar experiences, fostering a sense of community, reducing isolation, and providing practical coping strategies.16 Organizations such as the American Cancer Society (ACS), CancerCare, and the Cancer Support Community (CSC) offer various support programs, including helplines, online communities, and direct services.49 The Cancer Survivors Network, for example, provides a safe online space for peer-to-peer connection and sharing of experiences.49 The importance of early and integrated mental health intervention cannot be overstated. Given the bidirectional and exacerbating relationship between emotional distress and cognitive impairment, early screening and intervention for mood disorders are critical to mitigate their impact on cognitive function and improve overall quality of life for cancer survivors.
 
-## **IV. Work and Productivity Adaptation: Reintegrating into Daily Life**
+## **III. Work and Productivity Adaptation: Reintegrating into Daily Life**
 
 Cancer-Related Cognitive Impairment can significantly impede a patient's ability to return to work or manage daily tasks, contributing to a decline in overall work performance, functional independence, and competitive employment.2 Individuals with CRCI frequently report difficulties with slowed processing speed, challenges in planning and multitasking, word-finding difficulties, problems with attention, and a prolonged time to complete tasks.2 These challenges highlight the necessity for practical strategies to adapt work environments and daily routines.
 
@@ -123,7 +123,7 @@ Specific examples of accommodations relevant to cognitive impairment include a g
 
 When discussing accommodations with an employer, a proactive and informed approach is beneficial. While employees are not required to disclose their full diagnosis, they may need to provide medical certification to support their request for accommodation.68 The process typically involves an "interactive process" between the employee and employer to negotiate and agree upon effective accommodations.73 Resources such as the Job Accommodation Network (JAN) can provide valuable guidance and ideas for accommodations.69 Supporting working cancer survivors who experience CRCI is crucial, as it directly contributes to their long-term employability and functional independence, thereby enhancing their overall quality of life.66
 
-## **V. Advocacy and Future Directions**
+## **IV. Advocacy and Future Directions**
 
 Navigating cancer and its complex side effects, such as CRCI, often requires individuals to become proactive advocates for their health and rights. Numerous organizations offer vital resources and support:
 
